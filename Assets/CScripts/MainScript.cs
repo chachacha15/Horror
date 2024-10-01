@@ -17,7 +17,7 @@ public class MainScript : MonoBehaviour
     public GameObject RoomsParent; //部屋プリファブたちの親
     private GameObject RoomsChild; //〃の子を格納するためのもの
     private SceneChanger scenechanger;
-    private string scenename = "Jikkenyou";
+    private string scenename = "Honban";
     // Start is called before the first frame update
     void Start()
     {
