@@ -21,6 +21,10 @@ public class PlayerMove : MonoBehaviour
     private void Update()
     {
         PlayerMovement();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log(this.transform.position);
+        }
     }
 
     private void PlayerMovement()
