@@ -24,7 +24,7 @@ public class MainScript : MonoBehaviour
         scenechanger = FindObjectOfType<SceneChanger>();
 
         // インスタンス化したオブジェクトの子オブジェクトのデータを取得
-        for (int num = 0; num < 16; ++num)
+        for (int num = 0; num < 15; ++num)
         {
             data[num].position = RoomsParent.transform.GetChild(num).position;
             data[num].rotation = RoomsParent.transform.GetChild(num).rotation;
