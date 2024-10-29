@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.GraphicsBuffer;
 
 public class GhostAI : MonoBehaviour
 {
+    private GameObject Target;
+
     NavMeshAgent agent;
+    bool sensor;
+
     private GameObject mouse;
     public float moveRadius = 10f;
     private Vector3[] DestPos = new Vector3[16];
@@ -18,6 +23,7 @@ public class GhostAI : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        Target = GameObject.FindGameObjectWithTag("Player");
 
         DestinationPosition();
 
@@ -35,19 +41,28 @@ public class GhostAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        agent.SetDestination(DestPos[numbers[i]]);
-        if (agent.remainingDistance <= agent.stoppingDistance)  // 目的地に到達したら
+        if (sensor == false)
         {
-            ++i;
 
-            if (i > 15)
+            agent.SetDestination(DestPos[numbers[i]]);
+            if (agent.remainingDistance <= agent.stoppingDistance)  // 目的地に到達したら
             {
-                i = 0;
+                ++i;
+
+                if (i > 15)
+                {
+                    i = 0;
+                }
+
+                agent.SetDestination(DestPos[numbers[i]]);  // 新しい目的地をセット
             }
-
-            agent.SetDestination(DestPos[numbers[i]]);  // 新しい目的地をセット
-
         }
+        else
+        {
+            //Debug.Log(Target.transform.position);
+            agent.SetDestination(Target.transform.position);
+        }
+        
     }
 
     void DestinationPosition()
@@ -121,5 +136,15 @@ public class GhostAI : MonoBehaviour
             Vector3 randomPoint = GetRandomPoint(transform.position, moveRadius);  // ランダムな地点を取得
             agent.SetDestination(randomPoint);  // 新しい目的地をセット
         }
+    }
+
+    public void tuiseki()
+    {
+        sensor = true;
+    }
+
+    public void haikai()
+    {
+        sensor = false;
     }
 }

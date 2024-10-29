@@ -28,8 +28,10 @@ public class MainScript : MonoBehaviour
         {
             data[num].position = RoomsParent.transform.GetChild(num).position;
             data[num].rotation = RoomsParent.transform.GetChild(num).rotation;
+            Debug.Log(RoomsParent.transform.GetChild(num).position);
+            Debug.Log(RoomsParent.transform.GetChild(num).rotation);
         }
-
+        
         scenechanger.ChangeScene(scenename);
 
     }

@@ -9,6 +9,9 @@ public class StageMaker : MonoBehaviour
     public GameObject roomPre;  //部屋のprefab入れる用
     public GameObject playerPre;
     public GameObject enemyPre;
+    public GameObject canvasPrefab; // Canvasのプレハブ
+    public GameObject closetPrefab;
+    public GameObject CameraManagerPrefab;
     private GameObject [] Rooms = new GameObject [16];
     private List<int> numbers = new List<int>();    // 16個の数字（0～15）を格納するリスト
 
@@ -32,19 +35,21 @@ public class StageMaker : MonoBehaviour
         }
 
 
-        GameObject Track = Instantiate(trackPre, new Vector3(0,0,0),Quaternion.Euler(90,0,-180)); //トラックを召喚
+        GameObject Track = Instantiate(trackPre, new Vector3(0,0,0),Quaternion.Euler(0,0,0)); //トラックを召喚
 
         for (int num = 0; num < 16; ++num)
         {
-            Rooms[num] = Instantiate(roomPre, MainScript.data[numbers[num]].position, MainScript.data[numbers[num]].rotation); //部屋をランダムに召喚
+            Rooms[num] = Instantiate(roomPre, MainScript.data[numbers[num]].position  , MainScript.data[numbers[num]].rotation * Quaternion.Euler(0, -90, 0)); //部屋をランダムに召喚
             Rooms[num].name = "Room" + num; //部屋の番号確認用
+            
         }
 
         GameObject Player = Instantiate(playerPre, playerPre.transform.position, playerPre.transform.rotation);
         GameObject Enemy = Instantiate(enemyPre, enemyPre.transform.position, enemyPre.transform.rotation);
-
-
-
+        
+        Instantiate(closetPrefab);
+        Instantiate(canvasPrefab);
+        Instantiate(CameraManagerPrefab);
     }
 
     void Update()

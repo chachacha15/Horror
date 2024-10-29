@@ -22,7 +22,7 @@ public class RoomPlacement : MonoBehaviour
 
             // ドアを配置
             Vector3 position = new Vector3(x, 0, y);  // yは高さ方向に使うなら他の軸に変更
-            Debug.Log(position);
+            //Debug.Log(position);
             //Instantiate(doorPrefab, position, Quaternion.identity);
         }
 

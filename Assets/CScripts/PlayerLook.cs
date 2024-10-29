@@ -45,7 +45,9 @@ public class PlayerLook : MonoBehaviour
 
     private void Update()
     {
+
         CameraRotation();
+
     }
 
     private void CameraRotation()
