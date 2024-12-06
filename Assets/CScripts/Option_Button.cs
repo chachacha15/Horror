@@ -7,11 +7,11 @@ public class Option_Button : MonoBehaviour
 
     public void OnOption_ButtonClick()
     {
+        Debug.Log("1");
         if (instantiatedOption == null)
         {
             // Option Prefabをインスタンス化
             instantiatedOption = Instantiate(optionPrefab, transform);
-
             // 初期位置調整（必要なら）
             RectTransform rectTransform = instantiatedOption.GetComponent<RectTransform>();
             if (rectTransform != null)
