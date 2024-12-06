@@ -9,7 +9,7 @@ public class GhostAI : MonoBehaviour
     private GameObject Target;
 
     NavMeshAgent agent;
-    bool sensor;
+    public bool sensor;
 
     private GameObject mouse;
     public float moveRadius = 10f;
