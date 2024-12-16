@@ -1,19 +1,13 @@
-
 using UnityEngine;
-using System.Collections;
 using UnityEngine.Audio;
-using UnityEngine.UI;
 
 public class OptionLaunch : MonoBehaviour
 {
-
-    //　SoundOptionキャンバスを設定
     [SerializeField]
     private GameObject soundOptionCanvas;
-    //　GameSoundShot
+
     [SerializeField]
     private AudioMixerSnapshot gameSoundShot;
-    //　OptionSoundShot
     [SerializeField]
     private AudioMixerSnapshot optionSoundShot;
 
@@ -22,35 +16,50 @@ public class OptionLaunch : MonoBehaviour
 
     void Update()
     {
-        //　4が押されたらUIをオン・オフ
         if (Input.GetKeyDown("4"))
         {
-            soundOptionCanvas.SetActive(!soundOptionCanvas.activeSelf);
+            bool isActive = soundOptionCanvas.activeSelf;
+            soundOptionCanvas.SetActive(!isActive);
 
-            if (soundOptionCanvas.activeSelf)
+            if (isActive)
             {
-                optionSoundShot.TransitionTo(0.01f);
+                ResumeGame();
             }
             else
             {
-                gameSoundShot.TransitionTo(0.01f);
+                PauseGame();
             }
         }
     }
 
-
-    public void SetMaster(float volume)
+    private void PauseGame()
     {
-        audioMixer.SetFloat("MasterVol", volume);
+        Time.timeScale = 0f;
+        optionSoundShot.TransitionTo(0.01f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
-    public void SetBGM(float volume)
+    private void ResumeGame()
     {
-        audioMixer.SetFloat("BGMVol", volume);
+        Time.timeScale = 1f;
+        gameSoundShot.TransitionTo(0.01f);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
-    public void SetSE(float volume)
+    public void SetMaster(float sliderValue)
     {
-        audioMixer.SetFloat("SEVol", volume);
+        audioMixer.SetFloat("MasterVol", Mathf.Lerp(-80f, 0f, sliderValue));
+    }
+
+    public void SetBGM(float sliderValue)
+    {
+        audioMixer.SetFloat("BGMVol", Mathf.Lerp(-80f, 0f, sliderValue));
+    }
+
+    public void SetSE(float sliderValue)
+    {
+        audioMixer.SetFloat("SEVol", Mathf.Lerp(-80f, 0f, sliderValue));
     }
 }
