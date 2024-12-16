@@ -146,7 +146,6 @@ GameObject:
   - component: {fileID: 3887382744091910891}
   - component: {fileID: 4723891684147810780}
   - component: {fileID: 6283422166367027266}
-  - component: {fileID: 7184919717450831159}
   m_Layer: 5
   m_Name: SE_Slide
   m_TagString: Untagged
@@ -220,8 +219,8 @@ MonoBehaviour:
   m_FillRect: {fileID: 6766441097021473066}
   m_HandleRect: {fileID: 3978668887432485580}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_MinValue: -80
+  m_MaxValue: 20
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
@@ -262,21 +261,6 @@ MonoBehaviour:
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
---- !u!114 &7184919717450831159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 213649175994069581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0988db22459d0e04187eee698545321d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioMixer: {fileID: 0}
-  BGMSlider: {fileID: 3365649293246195742}
-  SESlider: {fileID: 3887382744091910891}
 --- !u!1 &669108427723367639
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,7 +746,6 @@ GameObject:
   - component: {fileID: 3365649293246195742}
   - component: {fileID: 163944469035526906}
   - component: {fileID: 3525511256069880225}
-  - component: {fileID: 3576664702026533523}
   m_Layer: 5
   m_Name: BGM_Slide
   m_TagString: Untagged
@@ -836,13 +819,25 @@ MonoBehaviour:
   m_FillRect: {fileID: 858688898400351665}
   m_HandleRect: {fileID: 9039732422982383143}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_MinValue: -80
+  m_MaxValue: 20
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &163944469035526906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -878,21 +873,6 @@ MonoBehaviour:
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
---- !u!114 &3576664702026533523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4170225267628461844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0988db22459d0e04187eee698545321d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioMixer: {fileID: 0}
-  BGMSlider: {fileID: 3365649293246195742}
-  SESlider: {fileID: 3887382744091910891}
 --- !u!1 &4837247226079659681
 GameObject:
   m_ObjectHideFlags: 0

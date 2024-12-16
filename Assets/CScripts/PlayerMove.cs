@@ -6,6 +6,13 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMove : MonoBehaviour
 {
+   [SerializeField]
+    private GameObject soundOptionPrefab;
+
+    // インスタンス化したサウンドオプションの参照
+    private GameObject soundOptionInstance;
+
+
     [SerializeField] private string horizontalInputName = "Horizontal";
     [SerializeField] private string verticalInputName = "Vertical";
 
@@ -38,12 +45,15 @@ public class PlayerMove : MonoBehaviour
 
     private void Update()
     {
-        PlayerMovement();
+    PlayerMovement();
         if (Input.GetKeyDown(KeyCode.Space))
         {
 
             //Debug.Log(this.transform.position);
         }
+
+
+
     }
 
     private void PlayerMovement()
