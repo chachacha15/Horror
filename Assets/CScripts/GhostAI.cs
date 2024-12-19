@@ -16,6 +16,7 @@ public class GhostAI : MonoBehaviour
     private Vector3[] DestPos = new Vector3[16];
     private List<int> numbers = new List<int>();    // 16個の数字（0～15）を格納するリスト
     private int i = 0;
+    private CameraSwitcher cameraSwitcher;
 
 
 
@@ -24,6 +25,7 @@ public class GhostAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         Target = GameObject.FindGameObjectWithTag("Player");
+        cameraSwitcher = FindObjectOfType<CameraSwitcher>();
 
         DestinationPosition();
 
@@ -41,7 +43,7 @@ public class GhostAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (sensor == false)
+        if (sensor == false || cameraSwitcher.isPlayerHiding == true)
         {
 
             agent.SetDestination(DestPos[numbers[i]]);
