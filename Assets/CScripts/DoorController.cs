@@ -86,6 +86,9 @@ public class DoorController : MonoBehaviour
 
             cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingAtDoor);
         }
+
+        cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingAtDoor);
+
         // 左クリック時にドアを開閉
         if (Input.GetMouseButtonDown(0) && isLookingAtDoor)
         {
