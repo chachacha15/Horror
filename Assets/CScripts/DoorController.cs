@@ -55,6 +55,9 @@ public class DoorController : MonoBehaviour
         // AnimatorのisOpenパラメータを初期状態に同期
         if (animator != null)  animator.SetBool("isOpen", isOpen);
 
+        //MainCameraをタグで動的に取得
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+
     }
     void Update()
     {
