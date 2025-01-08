@@ -16,6 +16,7 @@ public class CameraSwitcher : MonoBehaviour
     public float hideDistance = 5f;    // 隠れられる距離
 
     private bool isClosetCameraActive = false; // 現在のカメラ状態を追跡
+    private Camera currentClosetCamera; // 現在のクローゼットカメラを追跡
 
 
     public Image crosshair;   // クロスヘアのImageコンポーネント
@@ -43,11 +44,11 @@ public class CameraSwitcher : MonoBehaviour
         hideText.SetActive(false);
 
         mainCamera = Camera.main; // メインカメラを動的に取得
-        closetCamera = FindClosetCamera(); // クローゼットカメラを動的に取得
         player = GameObject.FindWithTag("Player");
         
         playerLookScript = mainCamera.GetComponent<PlayerLook>(); // PlayerLookスクリプトを動的に取得
     }
+
     void Update()
     {
         // クローゼットにカーソルがあるかを判定
@@ -56,12 +57,33 @@ public class CameraSwitcher : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, hideDistance, layerMask))
         {
-            if (hit.collider.CompareTag("Closet") && !isClosetCameraActive)
+            if (hit.collider.CompareTag("Closet"))
             {
-                // クローゼットを見ている場合
                 isLookingAtCloset = true;
                 hideText.SetActive(true); // 隠れるTextをONに
 
+                // 左クリックでカメラを切り替える
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (isClosetCameraActive)
+                    {
+                        // クローゼットカメラがアクティブならメインカメラに戻る
+                        SwitchToMainCamera();
+                    }
+                    else
+                    {
+                        // クローゼットカメラに切り替え
+                        Camera targetClosetCamera = FindClosetCamera(hit.collider.gameObject);
+                        if (targetClosetCamera != null)
+                        {
+                            SwitchToClosetCamera(targetClosetCamera);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("対象のクローゼットにカメラが見つかりません！");
+                        }
+                    }
+                }
             }
             else
             {
@@ -77,30 +99,10 @@ public class CameraSwitcher : MonoBehaviour
             hideText.SetActive(false); // 隠れるTextをOFFに
         }
 
-        ClosshairAnimation(10f, 35f, 5f,crosshairRectTransform, isLookingAtCloset);
-        
-        
-
-        if (Input.GetMouseButtonDown(0)) // 左クリックを検出
-        {
-            if (isClosetCameraActive)
-            {
-                SwitchToMainCamera();
-            }
-            else
-            {
-                
-
-                if (Physics.Raycast(ray, out hit, hideDistance, layerMask))
-                {
-                    if (hit.collider.CompareTag("Closet"))
-                    {
-                        SwitchToClosetCamera();
-                    }
-                }
-            }
-        }
+        ClosshairAnimation(10f, 100f, 5f, crosshairRectTransform, isLookingAtCloset);
     }
+
+
     public void ClosshairAnimation(float normalSize, float targetSize, float animationSpeed, 
         RectTransform chRectTransform, bool isLooking)
     {
@@ -111,41 +113,45 @@ public class CameraSwitcher : MonoBehaviour
         chRectTransform.sizeDelta = new Vector2(currentSize, currentSize);
     }
 
-    void SwitchToClosetCamera()
+    void SwitchToClosetCamera(Camera targetCamera)
     {
         isPlayerHiding = true;
         mainCamera.gameObject.SetActive(false);
-        closetCamera.gameObject.SetActive(true);
+        targetCamera.gameObject.SetActive(true); // 指定されたカメラをアクティブに
         playerLookScript.enabled = false; // PlayerLookスクリプトを無効化
         isClosetCameraActive = true;
-        
+
+        currentClosetCamera = targetCamera; // 現在のクローゼットカメラを保持
     }
+
 
     void SwitchToMainCamera()
     {
         isPlayerHiding = false;
         mainCamera.gameObject.SetActive(true);
-        closetCamera.gameObject.SetActive(false);
+
+        if (currentClosetCamera != null)
+        {
+            currentClosetCamera.gameObject.SetActive(false); // 現在のクローゼットカメラを無効化
+            currentClosetCamera = null; // 保持するカメラをリセット
+        }
+
         playerLookScript.enabled = true; // PlayerLookスクリプトを有効化
         isClosetCameraActive = false;
-        
     }
 
-    Camera FindClosetCamera()
+    Camera FindClosetCamera(GameObject closetObject)
     {
-        GameObject closet = GameObject.FindGameObjectWithTag("Closet");
-        if (closet != null)
+        Transform[] children = closetObject.GetComponentsInChildren<Transform>(true);
+        foreach (Transform child in children)
         {
-            Transform[] children = closet.GetComponentsInChildren<Transform>(true);
-            foreach (Transform child in children)
+            if (child.CompareTag("ClosetCamera")) // クローゼットカメラを探す
             {
-                if (child.CompareTag("ClosetCamera"))
-                {
-                    return child.GetComponent<Camera>();
-                }
+                return child.GetComponent<Camera>();
             }
         }
-        return null;
+        return null; // カメラが見つからない場合
     }
+
 }
 
