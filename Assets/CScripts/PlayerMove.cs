@@ -1,12 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
+using UnityStandardAssets.Utility;
+using UnityEngine.SceneManagement; // シーン管理をインポート
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMove : MonoBehaviour
 {
-
     [SerializeField] private string horizontalInputName = "Horizontal";
     [SerializeField] private string verticalInputName = "Vertical";
 
@@ -14,14 +13,20 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float runSpeed = 20f;
     [SerializeField] private StaminaBar staminaBar;
     [SerializeField] private bool isRunning;
+
     private AudioSource audiowalk;
     private AudioSource audiorun;
     private CharacterController charController;
+    private Camera MainCamera;
+    private Transform cameraTransform;
+    Vector3 HeadBob;
+    [SerializeField] private CurveControlledBob bob = new CurveControlledBob();
+
+    [SerializeField] private GameOverScript gameOverScript; // GameOver用のスクリプト参照
 
     private void Awake()
     {
         charController = GetComponent<CharacterController>();
-        
     }
 
     private void Start()
@@ -34,20 +39,41 @@ public class PlayerMove : MonoBehaviour
 
         audiowalk = walk.GetComponent<AudioSource>();
         audiorun = run.GetComponent<AudioSource>();
-      
+
+        // カメラの揺れ
+        MainCamera = Camera.main;
+        cameraTransform = MainCamera.transform;
+        bob.Setup(MainCamera, 1.0f);
+
+        // GameOverScriptを取得
+        gameOverScript = FindObjectOfType<GameOverScript>();
+        if (gameOverScript == null)
+        {
+            Debug.LogError("GameOverScriptが見つかりません！");
+        }
     }
 
     private void Update()
     {
-    PlayerMovement();
-        if (Input.GetKeyDown(KeyCode.Space))
+        PlayerMovement();
+
+        // 状態に応じた揺れ倍率を設定
+        float bobSpeedMultiplier;
+
+        if (isRunning) // 走行中（Spaceキーが押されている場合）
         {
-
-            //Debug.Log(this.transform.position);
+            bobSpeedMultiplier = 3.0f; // 走行中の揺れ
         }
-
-
-
+        else if (Input.GetAxis(verticalInputName) != 0 || Input.GetAxis(horizontalInputName) != 0) // 歩行中（移動がある場合）
+        {
+            bobSpeedMultiplier = 1.8f; // 歩行中の揺れ
+        }
+        else // 立ち止まっている場合
+        {
+            bobSpeedMultiplier = 0.15f; // ちょっとだけ揺れ
+        }
+        HeadBob = bob.DoHeadBob(bobSpeedMultiplier);
+        cameraTransform.localPosition = HeadBob;
     }
 
     private void PlayerMovement()
@@ -72,13 +98,13 @@ public class PlayerMove : MonoBehaviour
         {
             isRunning = false;
             staminaBar.SetRunning(false);
-            
+
         }
 
 
         if (isRunning && staminaBar.CanContinueRunning())　//走っていて走り続けられるとき(スタミナ０になったら走れないように。)
         {
-           
+
             charController.SimpleMove((forwardMovement + rightMovement) * (runSpeed / movementSpeed)); // ダッシュ時の速度を調整
             // 走る音を再生（再生中でない場合のみ）
             if (!audiorun.isPlaying)
@@ -115,5 +141,21 @@ public class PlayerMove : MonoBehaviour
             audiowalk.Stop();
         }
 
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            gameOverScript?.TriggerGameOver(); // GameOverを発動
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            gameOverScript?.TriggerGameOver(); // GameOverを発動
+        }
     }
 }

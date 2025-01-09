@@ -9,37 +9,57 @@ public class GhostAI : MonoBehaviour
     public enum State { Patrol, Chase };
     public State currentState;
 
-    private GameObject playerTarget;          // プレイヤーのターゲット
+    private GameObject playerTarget;    // プレイヤーのターゲット
     private NavMeshAgent agent;         // NavMeshAgent
     private Vector3[] DestPos = new Vector3[27]; // 巡回ポイントのリスト
     private int patrolIndex = 0;        // 巡回ポイントのインデックス
     private float lostTimer = 0f;       // プレイヤーを見失った時間
     public float lostThreshold = 5f;   // プレイヤーを見失うまでの時間（秒）
+    private float visibilityTimer = 0f; // プレイヤーが視界内に留まった時間
+    public float visibilityThreshold = 2f; // 遠距離での発見までの時間（秒）
+    public float patrolSpeed = 2f;      // 巡回時の速度
+    public float chaseSpeed = 5f;       // 追跡時の速度
 
     public float detectionRadius = 10f; // プレイヤー検知の半径
     public float fieldOfView = 30f;     // 視界角度
 
     private bool isPlayerVisible = false; // プレイヤーが視界に入っているか
+
+    //敵の揺れ
+    public float swayAmount = 0.5f; // 揺れの幅
+    public float swaySpeed = 2f;    // 揺れの速さ
+    private float swayOffset = 0f;
+
     private CameraSwitcher cameraSwitcher;
 
-
-
-    // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         playerTarget = GameObject.FindGameObjectWithTag("Player");
         cameraSwitcher = FindObjectOfType<CameraSwitcher>();
 
-        DestinationPosition();// 巡回ポイントの初期化
-        currentState = State.Patrol; // 初期状態は巡回
-
-        
-
+        DestinationPosition(); // 巡回ポイントの初期化
+        currentState = State.Patrol;    // 初期状態は巡回
+        agent.speed = patrolSpeed;      // 初期速度を巡回速度に設定
     }
 
     void Update()
     {
+        // プレイヤーが無効化されている場合でも巡回を継続
+        if (playerTarget == null || !playerTarget.activeInHierarchy)
+        {
+            isPlayerVisible = false;
+
+            // 巡回状態に切り替え
+            if (currentState != State.Patrol)
+            {
+                currentState = State.Patrol;
+                agent.ResetPath(); // ナビメッシュの目標をリセット
+                agent.speed = patrolSpeed; // 巡回速度に設定
+            }
+        }
+
+        // 現在の状態に応じて動作を切り替え
         switch (currentState)
         {
             case State.Patrol:
@@ -50,13 +70,16 @@ public class GhostAI : MonoBehaviour
                 break;
         }
 
-        CheckPlayerVisibility(); // プレイヤーが視界にいるか確認
-    }
+        // プレイヤーが有効な場合のみ視認チェックを行う
+        if (playerTarget != null && playerTarget.activeInHierarchy)
+        {
+            CheckPlayerVisibility();
+        }
 
+    }
 
     void Patrol()
     {
-        // 巡回ポイントを順に移動
         if (agent.remainingDistance <= agent.stoppingDistance)
         {
             patrolIndex = (patrolIndex + 1) % DestPos.Length;
@@ -67,31 +90,36 @@ public class GhostAI : MonoBehaviour
         if (isPlayerVisible)
         {
             currentState = State.Chase;
+            agent.speed = chaseSpeed; // 追跡速度に設定
         }
     }
 
     void Chase()
     {
-        // プレイヤーの位置を追いかける
         if (playerTarget != null)
         {
             agent.SetDestination(playerTarget.transform.position);
         }
+        else
+        {
+            agent.ResetPath();
+            currentState = State.Patrol;
+            agent.speed = patrolSpeed; // 巡回速度に設定
+        }
 
-        // プレイヤーが視界から外れた場合、タイマーを進める
         if (!isPlayerVisible)
         {
             lostTimer += Time.deltaTime;
             if (lostTimer >= lostThreshold)
             {
-                // 一定時間見失ったら巡回に戻る
                 currentState = State.Patrol;
                 lostTimer = 0f;
+                agent.ResetPath();
+                agent.speed = patrolSpeed; // 巡回速度に設定
             }
         }
         else
         {
-            // プレイヤーが視界にいる間はタイマーをリセット
             lostTimer = 0f;
         }
     }
@@ -100,38 +128,56 @@ public class GhostAI : MonoBehaviour
     {
         if (playerTarget == null)
         {
-            Debug.LogWarning("playerTargetが設定されていません");
+            isPlayerVisible = false;
+            visibilityTimer = 0f; // タイマーをリセット
             return;
         }
 
         RaycastHit hit;
+        Vector3 directionToPlayer = playerTarget.transform.position - transform.position;
+        float distanceToPlayer = directionToPlayer.magnitude;
 
-        // 無視するレイヤーマスクを設定（例: IgnoreRaycast）
-        int layerMask = ~LayerMask.GetMask("IgnoreRaycast");
-
-        // Linecastを実行して視線を確認
-        if (Physics.Linecast(transform.position, playerTarget.transform.position, out hit, layerMask))
+        // プレイヤーが視界範囲内にいるかを確認
+        //if (Vector3.Angle(transform.forward, directionToPlayer) < fieldOfView / 2 && distanceToPlayer <= detectionRadius)
         {
-            if (hit.collider.gameObject == playerTarget)
+            if (Physics.Linecast(transform.position, playerTarget.transform.position, out hit))
             {
-                // プレイヤーに直接ヒットした場合
-                Debug.Log("視線はプレイヤーに到達しています");
-                isPlayerVisible = true;
-            }
-            else
-            {
-                // 障害物にヒットした場合
-                Debug.Log($"視線が遮られているオブジェクト: {hit.collider.gameObject.name}");
-                isPlayerVisible = false;
+                if (hit.collider.gameObject == playerTarget)
+                {
+                    // **即座に発見する条件（目の前または近距離）**
+                    if (distanceToPlayer <= detectionRadius * 1f) // 近距離（検知範囲の30%以内）
+                    {
+                        isPlayerVisible = true; // 即座に発見
+                        visibilityTimer = 0f;   // タイマーをリセット
+                        Debug.Log("目の前でプレイヤーを即座に発見しました。");
+                    }
+                    else
+                    {
+                        // **タイマーを使用する条件（後ろや遠距離）**
+                        visibilityTimer += Time.deltaTime;
+                        if (visibilityTimer >= visibilityThreshold)
+                        {
+                            isPlayerVisible = true;
+                            Debug.Log("視認タイマーでプレイヤーを発見しました。");
+                        }
+                    }
+                }
+                else
+                {
+                    // 障害物がある場合
+                    isPlayerVisible = false;
+                    visibilityTimer = 0f; // タイマーをリセット
+                }
             }
         }
-        else
-        {
-            // 視線に遮るものが何もない場合
-            Debug.Log("視線が遮られていません");
-            isPlayerVisible = true;
-        }
+        //else
+        //{
+        //    // 視界外の場合
+        //    isPlayerVisible = false;
+        //    visibilityTimer = 0f; // タイマーをリセット
+        //}
     }
+
 
 
 
@@ -229,5 +275,8 @@ public class GhostAI : MonoBehaviour
             Gizmos.DrawLine(ghostPosition, playerTarget.transform.position);
         }
     }
+    
 
 }
+
+

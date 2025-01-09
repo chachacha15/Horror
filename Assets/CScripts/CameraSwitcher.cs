@@ -12,6 +12,7 @@ public class CameraSwitcher : MonoBehaviour
     public Camera closetCamera;
    
     public MonoBehaviour playerLookScript; // PlayerLookスクリプトを参照
+
     public LayerMask layerMask; // レイキャストの対象レイヤー
     public float hideDistance = 5f;    // 隠れられる距離
 
@@ -47,6 +48,7 @@ public class CameraSwitcher : MonoBehaviour
         player = GameObject.FindWithTag("Player");
         
         playerLookScript = mainCamera.GetComponent<PlayerLook>(); // PlayerLookスクリプトを動的に取得
+
     }
 
     void Update()
@@ -99,7 +101,7 @@ public class CameraSwitcher : MonoBehaviour
             hideText.SetActive(false); // 隠れるTextをOFFに
         }
 
-        ClosshairAnimation(10f, 100f, 5f, crosshairRectTransform, isLookingAtCloset);
+        ClosshairAnimation(10f, 500f, 0.5f, crosshairRectTransform, isLookingAtCloset);
     }
 
 
@@ -122,8 +124,14 @@ public class CameraSwitcher : MonoBehaviour
         isClosetCameraActive = true;
 
         currentClosetCamera = targetCamera; // 現在のクローゼットカメラを保持
-    }
 
+        // クロスヘアと隠れるテキストを非表示にする
+        crosshair.gameObject.SetActive(false);
+        hideText.SetActive(false);
+
+        // プレイヤーのオブジェクトを無効化
+        player.SetActive(false); 
+    }
 
     void SwitchToMainCamera()
     {
@@ -138,7 +146,15 @@ public class CameraSwitcher : MonoBehaviour
 
         playerLookScript.enabled = true; // PlayerLookスクリプトを有効化
         isClosetCameraActive = false;
+
+        // クロスヘアを再表示
+        crosshair.gameObject.SetActive(true);
+
+        // プレイヤーオブジェクトを有効化
+        player.SetActive(true); 
+
     }
+
 
     Camera FindClosetCamera(GameObject closetObject)
     {

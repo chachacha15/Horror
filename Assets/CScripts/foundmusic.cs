@@ -13,26 +13,53 @@ public class foundmusic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // 親オブジェクト Ghost1 から GhostAI スクリプトを取得
-        Transform ghost1Transform = transform.parent; // "Ghost1" の Transform
-        if (ghost1Transform != null)
+        //  Ghost1 から GhostAI スクリプトを取得
+        //if (ghost1Transform != null)
         {
-            ghostAI = ghost1Transform.GetComponent<GhostAI>();
-        }
 
-        // 子オブジェクト "Time_limit" を探して BGM 用 AudioSource を取得
-        Transform timeLimitObject = transform.Find("Time_limit");
+            ghostAI = GetComponent<GhostAI>();
+            if (ghostAI != null)
+            {
+                Debug.Log("GhostAI スクリプトが正常に取得されました");
+            }
+            else
+            {
+                Debug.LogWarning("GhostAI スクリプトが見つかりません");
+            }
+        }
+        
+
+        // 子オブジェクト "EnemyBGM" を探して BGM 用 AudioSource を取得
+        Transform timeLimitObject = transform.Find("EnemyBGM");
         if (timeLimitObject != null)
         {
             bgmAudioSource = timeLimitObject.GetComponent<AudioSource>();
+            if (bgmAudioSource != null)
+            {
+                Debug.Log("BGM用のAudioSourceが正常に取得されました");
+            }
+            else
+            {
+                Debug.LogWarning("EnemyBGM オブジェクトに AudioSource が見つかりません");
+            }
         }
+        
 
-        // 子オブジェクト "found" を探して効果音用 AudioSource を取得
-        Transform foundObject = transform.Find("found");
+        // 子オブジェクト "FoundSound" を探して効果音用 AudioSource を取得
+        Transform foundObject = transform.Find("FoundSound");
         if (foundObject != null)
         {
             sfxAudioSource = foundObject.GetComponent<AudioSource>();
+            if (sfxAudioSource != null)
+            {
+                Debug.Log("効果音用のAudioSourceが正常に取得されました");
+            }
+            else
+            {
+                Debug.LogWarning("found オブジェクトに AudioSource が見つかりません");
+            }
         }
+        
 
         // BGMのループ設定
         if (bgmAudioSource != null)
@@ -41,15 +68,19 @@ public class foundmusic : MonoBehaviour
         }
     }
 
+
     // Update is called once per frame
     void Update()
     {
         if (ghostAI != null && bgmAudioSource != null && sfxAudioSource != null)
         {
-            if (ghostAI != null && ghostAI.currentState == GhostAI.State.Chase) // currentStateがchaseならBGMを再生
+
+            if (ghostAI.currentState == GhostAI.State.Chase) // currentStateがchaseならBGMを再生
             {
+
                 if (!isPlayingBGM)
                 {
+
                     bgmAudioSource.Play();
                     isPlayingBGM = true;
                 }

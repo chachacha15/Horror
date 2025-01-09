@@ -11,7 +11,7 @@ public class DoorController : MonoBehaviour
 
     public Animator animator; // ドアのAnimator
     public Transform player; // プレイヤーのTransform
-    public float interactionDistance = 6f; // ドアとのインタラクション距離
+    private float interactionDistance = 10f; // ドアとのインタラクション距離
 
     private bool isOpen = false;
     private bool isLookingAtDoor = false; // クローゼットを見ている状態か
@@ -90,7 +90,7 @@ public class DoorController : MonoBehaviour
             cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingAtDoor);
         }
 
-        cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingAtDoor);
+        cameraSwitcher.ClosshairAnimation(10f, 500f, 0.5f, cameraSwitcher.crosshairRectTransform, isLookingAtDoor);
 
         // 左クリック時にドアを開閉
         if (Input.GetMouseButtonDown(0) && isLookingAtDoor)

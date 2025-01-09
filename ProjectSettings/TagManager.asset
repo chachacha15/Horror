@@ -10,6 +10,7 @@ TagManager:
   - ClosetCamera
   - Door
   - PatrolPoint
+  - Enemy
   layers:
   - Default
   - TransparentFX
