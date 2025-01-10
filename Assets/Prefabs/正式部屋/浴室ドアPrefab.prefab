@@ -156,7 +156,7 @@ GameObject:
   m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &881337918069526647
 Transform:
@@ -192,7 +192,6 @@ MonoBehaviour:
     m_Bits: 1
   animator: {fileID: 6344494741213286726}
   player: {fileID: 0}
-  interactionDistance: 6
   doortext: {fileID: 0}
   crosshair: {fileID: 0}
 --- !u!65 &5678815768687565596

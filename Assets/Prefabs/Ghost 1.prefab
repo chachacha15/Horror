@@ -66,7 +66,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c94b679a477d3d84eac91e90b50622fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 6497104923255059859}
 --- !u!1001 &6263156128952223938
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -248,5 +247,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 686d7df8e2bbce54883f8242a76d59ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 7077083963641381649, guid: c9811cbd2012606438ebfe10ab2bdba2, type: 3}
-  moveRadius: 10
+  currentState: 0
+  lostThreshold: 5
+  visibilityThreshold: 2
+  patrolSpeed: 2
+  chaseSpeed: 5
+  detectionRadius: 10
+  fieldOfView: 30
+  swayAmount: 0.5
+  swaySpeed: 2

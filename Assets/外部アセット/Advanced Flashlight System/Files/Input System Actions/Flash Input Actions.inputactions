@@ -1,0 +1,74 @@
+{
+    "name": "Flash Input Actions",
+    "maps": [
+        {
+            "name": "FlashLight Actions",
+            "id": "afeb0cc0-e3de-451c-91f5-e978b9086550",
+            "actions": [
+                {
+                    "name": "Use FlashLight",
+                    "type": "Button",
+                    "id": "00e0364e-83c0-445c-892b-7c9248a796b8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reload FlashLight",
+                    "type": "Button",
+                    "id": "020c9da0-2793-44ea-8e49-8d4808e6eab9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pick FlashLight Battery",
+                    "type": "Button",
+                    "id": "10292f32-d806-458b-946a-c51ca536d391",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4b2e97da-c000-4d1e-81f3-1146d91b2d15",
+                    "path": "<Keyboard>/f",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use FlashLight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14373570-990b-4d2f-88fd-e8035adf245e",
+                    "path": "<Keyboard>/r",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reload FlashLight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b5d9ecfd-28a2-4cf4-af11-3895f6656e88",
+                    "path": "<Keyboard>/e",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pick FlashLight Battery",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

@@ -65,6 +65,8 @@ public class DoorController : MonoBehaviour
         // クローゼットにカーソルがあるかを判定
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+        // デバッグ用：レイキャストの可視化
+        Debug.DrawRay(ray.origin, ray.direction * interactionDistance, Color.magenta);
 
         // プレイヤーが近づいたらClickで開閉
         if (Physics.Raycast(ray, out hit, interactionDistance, layerMask))

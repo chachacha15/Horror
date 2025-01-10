@@ -1,11 +1,15 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI; // Text用
+using TMPro; //TextMeshPro用
+
 
 public class GameOverScript : MonoBehaviour
 {
     public GameObject gameOverUI; // GameOver UIを紐づけ
+    public TextMeshProUGUI gameOverText; // GameOver Textオブジェクト
+    private Color textColor;
 
     private void Start()
     {
@@ -19,10 +23,22 @@ public class GameOverScript : MonoBehaviour
             }
         }
 
-        // 念のため、gameOverUIが設定されていない場合にエラーログを出す
+        // GameOverTextを探す
+        if (gameOverUI != null)
+        {
+            gameOverText = gameOverUI.GetComponentInChildren<TextMeshProUGUI>();
+            textColor = gameOverText.color;
+
+        }
+
+        // エラーログの確認
         if (gameOverUI == null)
         {
             Debug.LogError("GameOver UI (Canvas) が見つかりませんでした。");
+        }
+        if (gameOverText == null)
+        {
+            Debug.LogError("GameOver Text が見つかりませんでした。");
         }
     }
 
@@ -40,7 +56,7 @@ public class GameOverScript : MonoBehaviour
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(true); // GameOver UIを表示
-            //Time.timeScale = 0f; // ゲームを一時停止
+            StartCoroutine(FadeTextAlpha()); // ガンマ値（アルファ値）をフェード
         }
         else
         {
@@ -52,5 +68,38 @@ public class GameOverScript : MonoBehaviour
     {
         Time.timeScale = 1f; // 時間を再開
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); // 現在のシーンを再読み込み
+    }
+
+    private IEnumerator FadeTextAlpha()
+    {
+        if (gameOverText == null)
+            yield break;
+
+        float alpha = 0; // 初期アルファ値
+        bool increasing = true; // アルファ値を増加させるか減少させるか
+
+        while (true)
+        {
+            // アルファ値の増減
+            alpha += (increasing ? 1f : -1f) * Time.deltaTime * 2f; // 調整可能な速度
+
+            // アルファ値の範囲を制限
+            if (alpha > 1f)
+            {
+                alpha = 1f;
+                increasing = false; // 減少に切り替え
+            }
+            else if (alpha < 0f)
+            {
+                alpha = 0f;
+                increasing = true; // 増加に切り替え
+            }
+
+            // テキストのカラーを更新
+            textColor.a = alpha; // アルファ値を更新
+            gameOverText.color = textColor;
+
+            yield return null; // 次のフレームまで待機
+        }
     }
 }
