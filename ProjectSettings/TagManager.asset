@@ -12,6 +12,7 @@ TagManager:
   - PatrolPoint
   - Enemy
   - Item
+  - FlashLight
   layers:
   - Default
   - TransparentFX
@@ -22,7 +23,7 @@ TagManager:
   - IgnoreRaycast
   - Bloom
   - ItemLayer
-  - 
+  - HighLight
   - 
   - 
   - 

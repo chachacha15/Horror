@@ -110,7 +110,6 @@ namespace M4DOOM
         //At Start.
         private void Start()
         {
-            Debug.Log(MyInt);
             //Check if the Light is Infinite...Disable FlashLight UI
             if (!UseBatteryLife)
             {
@@ -190,7 +189,7 @@ namespace M4DOOM
                 NormalImage.enabled = false;
 
                 //Display Text.
-                inGameText.text = "Press {E} To Collect";
+                inGameText.text = "[E] : èEÇ§";
 
                 if (UseNewInputSystem)
                 {
@@ -399,10 +398,8 @@ namespace M4DOOM
                 BatterySlider.value = BatteryLife;
 
                 //LightSource intensity to 1.
-                LightSource.intensity = 50;
-                Debug.Log(MyInt);
-                Debug.Log(LightSource.intensity);
-
+                LightSource.intensity = 150;
+                
                 //Decrement Batteries.
                 BatteryCount--;
 

@@ -1,4 +1,13 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "Arvtesh",
+      "url": "https://registry.npmjs.org/",
+      "scopes": [
+        "com.unityfx"
+      ]
+    }
+  ],
   "dependencies": {
     "com.unity.ai.navigation": "1.1.5",
     "com.unity.burst": "1.8.11",
@@ -21,6 +30,8 @@
     "com.unity.ugui": "1.0.0",
     "com.unity.vectorgraphics": "2.0.0-preview.24",
     "com.unity.visualscripting": "1.9.1",
+    "com.unityfx.outline": "0.8.3",
+    "com.unityfx.outline.urp": "0.3.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",

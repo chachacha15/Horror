@@ -5,6 +5,7 @@ using TMPro;
 
 public class ItemChecker : MonoBehaviour
 {
+    #region Varies
     public float interactDistance = 3f; // インタラクト可能な距離
     public LayerMask itemLayer; // アイテムに使用するレイヤー
     public GameObject interactText; // UI テキスト (拾うメッセージを表示)
@@ -17,6 +18,11 @@ public class ItemChecker : MonoBehaviour
     private GameObject currentDisplayedItem; // 現在表示中のアイテム
 
     private TextMeshProUGUI interactTextComponent; // TextMeshProの参照
+
+    [SerializeField] GameObject flashLightSystem;
+
+    #endregion
+
 
     private void Start()
     {
@@ -65,18 +71,30 @@ public class ItemChecker : MonoBehaviour
 
     private void PickupItem(GameObject item)
     {
-
+        // アイテムのデータを検索
         PocketItem itemData = itemDataBase.itemList.Find(i => i.item.name == item.name);
+
         if (itemData != null)
         {
+            // インベントリにアイテムを追加
             inventory.AddItem(itemData);
-            //Display3DItem(itemData.item); // アイテムを3D表示
+
+            // Flashlightの場合にFlashLightSystemをアクティブ化
+            if (item.name == "Flashlight")
+            {
+                if (flashLightSystem != null)
+                {
+                    flashLightSystem.SetActive(true);
+                }
+               
+            }
         }
         else
         {
             Debug.LogWarning("データベースにこのアイテムが存在しません！");
         }
 
+        // アイテムをシーンから削除
         Destroy(item);
     }
 
