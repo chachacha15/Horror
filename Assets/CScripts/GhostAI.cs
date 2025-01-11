@@ -16,12 +16,12 @@ public class GhostAI : MonoBehaviour
     private float lostTimer = 0f;       // プレイヤーを見失った時間
     public float lostThreshold = 5f;   // プレイヤーを見失うまでの時間（秒）
     private float visibilityTimer = 0f; // プレイヤーが視界内に留まった時間
-    public float visibilityThreshold = 2f; // 遠距離での発見までの時間（秒）
+    public float visibilityThreshold = 3f; // 遠距離での発見までの時間（秒）
     public float patrolSpeed = 2f;      // 巡回時の速度
     public float chaseSpeed = 5f;       // 追跡時の速度
 
-    public float detectionRadius = 10f; // プレイヤー検知の半径
-    public float fieldOfView = 30f;     // 視界角度
+    public float detectionRadius = 20f; // プレイヤー検知の半径
+    public float fieldOfView = 150f;     // 視界角度
 
     private bool isPlayerVisible = false; // プレイヤーが視界に入っているか
 
@@ -137,15 +137,21 @@ public class GhostAI : MonoBehaviour
         Vector3 directionToPlayer = playerTarget.transform.position - transform.position;
         float distanceToPlayer = directionToPlayer.magnitude;
 
-        // プレイヤーが視界範囲内にいるかを確認
-        //if (Vector3.Angle(transform.forward, directionToPlayer) < fieldOfView / 2 && distanceToPlayer <= detectionRadius)
+        // プレイヤーが検知範囲にいるかを確認（緑色のレイ範囲に入ると検知可能）
+        if(distanceToPlayer <= detectionRadius)
         {
+            // ここに走ると発見されるコードを書く
+
+            //
+
+            // 敵とプレイヤーの間にレイを発生させる
             if (Physics.Linecast(transform.position, playerTarget.transform.position, out hit))
             {
+                // プレイヤーなら（障害物が無いなら）
                 if (hit.collider.gameObject == playerTarget)
-                {
-                    // **即座に発見する条件（目の前または近距離）**
-                    if (distanceToPlayer <= detectionRadius * 1f) // 近距離（検知範囲の30%以内）
+                {                 
+                    // プレイヤーが視界範囲内にいるかを確認(黄色のレイ範囲に入ると即発見)
+                    if (Vector3.Angle(transform.forward, directionToPlayer) < fieldOfView / 2 && distanceToPlayer <= detectionRadius * 0.5f)
                     {
                         isPlayerVisible = true; // 即座に発見
                         visibilityTimer = 0f;   // タイマーをリセット
@@ -170,14 +176,35 @@ public class GhostAI : MonoBehaviour
                 }
             }
         }
-        //else
-        //{
-        //    // 視界外の場合
-        //    isPlayerVisible = false;
-        //    visibilityTimer = 0f; // タイマーをリセット
-        //}
+
+        // 前方向の長い範囲でのチェック
+        //CheckCustomDetection();
     }
 
+    void CheckCustomDetection()
+    {
+        Vector3 forward = transform.forward;
+        Vector3 ghostPosition = transform.position;
+
+        RaycastHit hit;
+
+        // 前方向に太い範囲で検出
+        float detectionLength = detectionRadius * 1.5f; // 長さ
+        float detectionWidth = detectionRadius; // 半径（幅）
+
+        if (Physics.SphereCast(ghostPosition, detectionWidth, forward, out hit, detectionLength))
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                Debug.Log("プレイヤーが太い検知範囲内にいます！");
+                isPlayerVisible = true;
+
+            }
+        }
+        
+
+
+    }
 
 
 
@@ -250,15 +277,15 @@ public class GhostAI : MonoBehaviour
         Vector3 leftBoundary = Quaternion.Euler(0, -fieldOfView / 2, 0) * forward;
         Vector3 rightBoundary = Quaternion.Euler(0, fieldOfView / 2, 0) * forward;
 
-        Gizmos.DrawRay(ghostPosition, leftBoundary * detectionRadius);
-        Gizmos.DrawRay(ghostPosition, rightBoundary * detectionRadius);
+        Gizmos.DrawRay(ghostPosition, leftBoundary * detectionRadius * 0.5f);
+        Gizmos.DrawRay(ghostPosition, rightBoundary * detectionRadius * 0.5f);
 
         // 扇形を補完するための円弧を描画
         float step = fieldOfView / 20; // 弧を分割するステップ
         for (float angle = -fieldOfView / 2; angle < fieldOfView / 2; angle += step)
         {
-            Vector3 start = Quaternion.Euler(0, angle, 0) * forward * detectionRadius;
-            Vector3 end = Quaternion.Euler(0, angle + step, 0) * forward * detectionRadius;
+            Vector3 start = Quaternion.Euler(0, angle, 0) * forward * detectionRadius * 0.5f;
+            Vector3 end = Quaternion.Euler(0, angle + step, 0) * forward * detectionRadius * 0.5f;
             Gizmos.DrawLine(ghostPosition + start, ghostPosition + end);
         }
 
@@ -268,7 +295,18 @@ public class GhostAI : MonoBehaviour
             return;
         }
 
-        // 3. 視線（Raycast）を描画
+
+        // 3. 検知範囲（前方に長い）
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawLine(ghostPosition, ghostPosition + forward * detectionRadius * 1.5f);
+
+        // 幅を表す線
+        Gizmos.DrawLine(ghostPosition - transform.right * detectionRadius / 2,
+                        ghostPosition + transform.forward * detectionRadius * 1.5f - transform.right * detectionRadius / 2);
+        Gizmos.DrawLine(ghostPosition + transform.right * detectionRadius / 2,
+                        ghostPosition + transform.forward * detectionRadius * 1.5f + transform.right * detectionRadius / 2);
+
+        // 4. 視線（Raycast）を描画
         if (playerTarget != null)
         {
             Gizmos.color = isPlayerVisible ? Color.red : Color.blue;

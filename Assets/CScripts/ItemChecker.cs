@@ -59,7 +59,7 @@ public class ItemChecker : MonoBehaviour
                 interactTextComponent.text = $"Žæ‚é";
                 interactText.SetActive(true);
 
-                if (Input.GetKeyDown(KeyCode.E))
+                if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
                 {
                     PickupItem(hitItem);
                     inventoryDisplay.ToggleInventory();
