@@ -20,6 +20,9 @@ public class ItemChecker : MonoBehaviour
     private TextMeshProUGUI interactTextComponent; // TextMeshProの参照
 
     [SerializeField] GameObject flashLightSystem;
+    [SerializeField] GameObject flashlightTutorial;
+    private TutorialManager tutorialManager;
+
 
     #endregion
 
@@ -37,6 +40,7 @@ public class ItemChecker : MonoBehaviour
         {
             Debug.LogError("ItemDisplayCameraまたはItemDisplayAreaが設定されていません！");
         }
+        tutorialManager = flashlightTutorial.GetComponent<TutorialManager>();
     }
 
     private void Update()
@@ -84,7 +88,18 @@ public class ItemChecker : MonoBehaviour
             {
                 if (flashLightSystem != null)
                 {
+                    //フラッシュライトを使えるようにする
                     flashLightSystem.SetActive(true);
+                    
+                    if (tutorialManager != null)
+                    {
+                        StartCoroutine(tutorialManager.ShowTutorial()); // コルーチンを直接呼び出す
+                    }
+
+                    //フラッシュライトのチュートリアルを表示する
+                    flashlightTutorial.SetActive(true);
+                    flashlightTutorial.transform.GetChild(0).gameObject.SetActive(true);
+
                 }
                
             }
