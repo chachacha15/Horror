@@ -180,9 +180,11 @@ namespace M4DOOM
             //Create Ray from Camera to forward direction.
             ray = new Ray(CameraIntractPointer.position, CameraIntractPointer.forward);
 
+            
             //if Ray hit Battery Layer.
             if (Physics.Raycast(ray, out RaycastHit hit, BatteryPickRange) && hit.transform.gameObject.name.StartsWith("Battery"))
             {
+
                 //Enable Hand Image.
                 HandImage.enabled = true;
                 //Disable Hand Image.
@@ -193,6 +195,7 @@ namespace M4DOOM
 
                 if (UseNewInputSystem)
                 {
+
                     //Input Action is PickBattery_Action.
                     if (PickBattery_Action.action.triggered)
                     {
@@ -205,8 +208,9 @@ namespace M4DOOM
                 }
                 else
                 {
+
                     //Input Key is PickBatteryKey.
-                    if (Input.GetKeyDown(PickBatteryKey))
+                    if (Input.GetKeyDown(PickBatteryKey) || Input.GetMouseButtonDown(0))
                     {
                         //Call addBatery Method.
                         AddBattery();
