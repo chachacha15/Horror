@@ -31,6 +31,8 @@ public class CameraSwitcher : MonoBehaviour
 
     private float currentSize; // 現在のサイズ
     private bool isLookingAtCloset = false; // クローゼットを見ている状態か
+    public bool hasHiddenUnderDesk = false; //一回はクローゼットに隠れたことがあるか
+
 
     // カメラ揺れ用
     [SerializeField] private CurveControlledBob bob = new CurveControlledBob();
@@ -78,7 +80,7 @@ public class CameraSwitcher : MonoBehaviour
                         if (targetClosetCamera != null)
                         {
                             SwitchToClosetCamera(targetClosetCamera);
-
+                            targetClosetCamera.transform.localPosition = new Vector3(-1.4f, 0.172f, 0);
                             // カメラ揺れのセットアップ
                             bob.Setup(targetClosetCamera, 1.0f); 
 
@@ -87,6 +89,8 @@ public class CameraSwitcher : MonoBehaviour
                         {
                             Debug.LogWarning("対象のクローゼットにカメラが見つかりません！");
                         }
+
+                        hasHiddenUnderDesk = true;
                     }
                 }
             }
