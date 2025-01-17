@@ -312,6 +312,21 @@ public class GhostAI : MonoBehaviour
             Gizmos.color = isPlayerVisible ? Color.red : Color.blue;
             Gizmos.DrawLine(ghostPosition, playerTarget.transform.position);
         }
+
+        // 巡回ポイントを描画
+        Gizmos.color = Color.magenta; // 巡回ポイントの色
+        for (int i = 0; i < DestPos.Length; i++)
+        {
+            Gizmos.DrawSphere(DestPos[i], 0.5f); // 巡回ポイントを球体で描画
+        }
+
+        // 現在の目標地点を描画
+        if (agent != null && agent.hasPath)
+        {
+            Gizmos.color = Color.red; // 現在の目標地点の色
+            Gizmos.DrawSphere(agent.destination, 0.7f); // 現在の目標地点を少し大きめの球体で描画
+            Gizmos.DrawLine(transform.position, agent.destination); // ゴーストから目標地点への線を描画
+        }
     }
     
 

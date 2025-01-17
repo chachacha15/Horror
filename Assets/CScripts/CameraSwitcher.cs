@@ -32,7 +32,7 @@ public class CameraSwitcher : MonoBehaviour
     private float currentSize; // 現在のサイズ
     private bool isLookingAtCloset = false; // クローゼットを見ている状態か
     public bool hasHiddenUnderDesk = false; //一回はクローゼットに隠れたことがあるか
-
+    private Vector3 targetCameraBaseLocalPosition;
 
     // カメラ揺れ用
     [SerializeField] private CurveControlledBob bob = new CurveControlledBob();
@@ -49,6 +49,8 @@ public class CameraSwitcher : MonoBehaviour
         player = GameObject.FindWithTag("Player");
 
         playerLookScript = mainCamera.GetComponent<PlayerLook>(); // PlayerLookスクリプトを動的に取得
+
+        targetCameraBaseLocalPosition = this.transform.localPosition;
 
     }
 
@@ -80,7 +82,11 @@ public class CameraSwitcher : MonoBehaviour
                         if (targetClosetCamera != null)
                         {
                             SwitchToClosetCamera(targetClosetCamera);
-                            targetClosetCamera.transform.localPosition = new Vector3(-1.4f, 0.172f, 0);
+                            targetClosetCamera.transform.localPosition = 
+                                new Vector3( targetClosetCamera.transform.localPosition.x,
+                                             0,
+                                             targetClosetCamera.transform.localPosition.z);
+
                             // カメラ揺れのセットアップ
                             bob.Setup(targetClosetCamera, 1.0f); 
 
