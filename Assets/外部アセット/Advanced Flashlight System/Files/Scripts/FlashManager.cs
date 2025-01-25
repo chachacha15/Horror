@@ -402,7 +402,7 @@ namespace M4DOOM
                 BatterySlider.value = BatteryLife;
 
                 //LightSource intensity to 1.
-                LightSource.intensity = 500;
+                LightSource.intensity = 300;
                 
                 //Decrement Batteries.
                 BatteryCount--;

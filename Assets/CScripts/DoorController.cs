@@ -22,9 +22,21 @@ public class DoorController : MonoBehaviour
     public Image crosshair;   // クロスヘアのImageコンポーネント
     private float currentSize; // 現在のサイズ
     CameraSwitcher cameraSwitcher;
+
+    private bool isLockedDoor = true; // ドアがしまっているか
+    private string requiredKeyName; // 必要なカギの名前
+
+    private AudioSource audioSource; // 音を再生するAudioSource
+    public AudioClip UnLockSound; // 開錠音
+    public AudioClip CardKeySound; // ピッというカードキー認証音
+    public AudioClip LockedSound; // ガチャガチャという開けられない音
+
+    public Inventory inventory; // プレイヤーのインベントリ
+
     void Start()
     {
-        
+        audioSource = GetComponent<AudioSource>();
+        inventory = FindObjectOfType<Inventory>();
 
 
         // 自分の親オブジェクトを取得
@@ -58,6 +70,10 @@ public class DoorController : MonoBehaviour
         //MainCameraをタグで動的に取得
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 
+
+        // オブジェクト名から数字を抽出して必要なカギを設定
+        requiredKeyName = GetRequiredKeyNameFromObjectName(gameObject.name);
+        if(requiredKeyName == null) isLockedDoor= false;
     }
     void Update()
     {
@@ -97,7 +113,25 @@ public class DoorController : MonoBehaviour
         // 左クリック時にドアを開閉
         if (Input.GetMouseButtonDown(0) && isLookingAtDoor)
         {
-            ToggleDoor();
+            if (isLockedDoor)
+            {
+                if (HasRequiredKey())
+                {
+                    isLockedDoor = false;
+                    audioSource.PlayOneShot(CardKeySound);
+                    StartCoroutine(PlaySoundWithDelay(UnLockSound, 0.35f));
+                }
+                else
+                {
+                    audioSource.PlayOneShot(LockedSound);
+                    StartCoroutine(DelayText());
+                }
+            }
+            else
+            {
+                ToggleDoor();
+            }
+
         }
 
 
@@ -114,5 +148,51 @@ public class DoorController : MonoBehaviour
 
         if (doorGUI != null) doorGUI.text = isOpen ? "閉める" : "開ける";
 
+    }
+
+
+    // 指定した音を指定した遅延時間後に再生
+    private IEnumerator PlaySoundWithDelay(AudioClip clip, float delay)
+    {
+        yield return new WaitForSeconds(delay); // 指定した秒数だけ待つ
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip); // 音を再生
+        }
+    }
+
+    // オブジェクト名から必要なカギの名前を取得
+    private string GetRequiredKeyNameFromObjectName(string objectName)
+    {
+        System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(objectName, @"\d+");
+      
+        if (match.Success)
+        {
+            return $"カードキー({match.Value}号室)"; // 必要なカギの名前を生成 (例: Room1ドア全体)
+        }
+        else
+        {
+            return null; // 数字がない場合はカギ不要
+        }
+    }
+
+    // 必要なカギを持っているか確認
+    private bool HasRequiredKey()
+    {
+        foreach (var item in inventory.items)
+        {
+            if (item.item.name == requiredKeyName)
+            {
+                return true; // カギを持っている
+            }
+        }
+        return false; // カギがない
+    }
+
+    IEnumerator DelayText()
+    {
+        doorGUI.text = "開かない";
+        yield return new WaitForSeconds(1.0f);
+        doorGUI.text = "開ける";
     }
 }
