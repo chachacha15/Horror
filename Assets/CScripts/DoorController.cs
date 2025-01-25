@@ -165,10 +165,11 @@ public class DoorController : MonoBehaviour
     private string GetRequiredKeyNameFromObjectName(string objectName)
     {
         System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(objectName, @"\d+");
-      
+        Debug.Log(objectName);
+        Debug.Log(match.Value);
         if (match.Success)
         {
-            return $"カードキー({match.Value}号室)"; // 必要なカギの名前を生成 (例: Room1ドア全体)
+            return $"カードキー({match.Value}号室)"; // 必要なカギの名前を生成
         }
         else
         {

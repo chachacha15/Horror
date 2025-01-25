@@ -74,6 +74,7 @@ public class Inventory : MonoBehaviour
         {
             // アイテムスロットを生成
             GameObject slot = Instantiate(itemSlotPrefab, itemLists.transform);
+            slot.name = item.item.name;
 
             // アイコンを設定
             Image iconImage = slot.transform.Find("ItemIcon").GetComponent<Image>();

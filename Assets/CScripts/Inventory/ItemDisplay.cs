@@ -79,7 +79,7 @@ public class ItemDisplay : MonoBehaviour
 
         // ƒXƒƒbƒg‚ğ¶¬
         slot = Instantiate(itemSlotPrefab, itemListParent);
-            
+        slot.name = "Displayed : " + item.item.name;
 
         TextMeshProUGUI itemNameText = slot.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
         //Debug.Log(itemNameText);
