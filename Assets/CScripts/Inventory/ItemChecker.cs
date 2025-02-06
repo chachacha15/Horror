@@ -1,20 +1,23 @@
-using System.Collections;
+ï»¿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using JetBrains.Annotations;
+
+
 
 public class ItemChecker : MonoBehaviour
 {
     #region Variables
-    public float interactDistance = 3f; // ƒCƒ“ƒ^ƒ‰ƒNƒg‰Â”\‚È‹——£
-    public LayerMask itemLayer; // ƒAƒCƒeƒ€‚Ég—p‚·‚éƒŒƒCƒ„[
-    public GameObject interactText; // UI ƒeƒLƒXƒg (E‚¤ƒƒbƒZ[ƒW‚ğ•\¦)
-    public ItemDataBase itemDataBase; // ƒAƒCƒeƒ€ƒf[ƒ^ƒx[ƒX‚ğQÆ
-    public Inventory inventory; // ƒvƒŒƒCƒ„[‚ÌƒCƒ“ƒxƒ“ƒgƒŠ‚ğŠÇ—‚·‚éƒXƒNƒŠƒvƒg
+    public float interactDistance = 3f; // ã‚¤ãƒ³ã‚¿ãƒ©ã‚¯ãƒˆå¯èƒ½ãªè·é›¢
+    public LayerMask itemLayer; // ã‚¢ã‚¤ãƒ†ãƒ ã«ä½¿ç”¨ã™ã‚‹ãƒ¬ã‚¤ãƒ¤ãƒ¼
+    public GameObject interactText; // UI ãƒ†ã‚­ã‚¹ãƒˆ (æ‹¾ã†ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤º)
+    public ItemDataBase itemDataBase; // ã‚¢ã‚¤ãƒ†ãƒ ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’å‚ç…§
+    public Inventory inventory; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªã‚’ç®¡ç†ã™ã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
     public ItemDisplay itemDisplay;
 
 
-    private TextMeshProUGUI interactTextComponent; // TextMeshPro‚ÌQÆ
+    private TextMeshProUGUI interactTextComponent; // TextMeshProã®å‚ç…§
 
     [SerializeField] GameObject flashLightSystem;
     [SerializeField] GameObject flashlightTutorial;
@@ -23,6 +26,9 @@ public class ItemChecker : MonoBehaviour
 
     #endregion
 
+    public Material bloodMaterial; // è¡€ã®ãƒãƒ†ãƒªã‚¢ãƒ«
+    public float fadeDuration = 1.5f;    // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã®æ™‚é–“
+
 
     private void Start()
     {
@@ -30,7 +36,7 @@ public class ItemChecker : MonoBehaviour
 
         if (interactTextComponent == null)
         {
-            Debug.LogError("interactText‚ÉTextMeshProUGUIƒRƒ“ƒ|[ƒlƒ“ƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñI");
+            Debug.LogError("interactTextã«TextMeshProUGUIã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼");
         }
 
         
@@ -39,7 +45,7 @@ public class ItemChecker : MonoBehaviour
 
     private void Update()
     {
-        // ƒŒƒCƒLƒƒƒXƒg‚ÅƒAƒCƒeƒ€‚ğŒŸo
+        // ãƒ¬ã‚¤ã‚­ãƒ£ã‚¹ãƒˆã§ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ¤œå‡º
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         
@@ -50,7 +56,7 @@ public class ItemChecker : MonoBehaviour
 
             if (hitItem.CompareTag("Item"))
             {
-                interactTextComponent.text = $"æ‚é";
+                interactTextComponent.text = $"å–ã‚‹";
                 interactText.SetActive(true);
 
                 if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
@@ -70,43 +76,231 @@ public class ItemChecker : MonoBehaviour
 
     private void PickupItem(GameObject item)
     {
-        // ƒAƒCƒeƒ€‚Ìƒf[ƒ^‚ğŒŸõ
+        // ã‚¢ã‚¤ãƒ†ãƒ ã®ãƒ‡ãƒ¼ã‚¿ã‚’æ¤œç´¢
         PocketItem itemData = itemDataBase.itemList.Find(i => i.item.name == item.name);
 
         if (itemData != null)
         {
-            // ƒCƒ“ƒxƒ“ƒgƒŠ‚ÉƒAƒCƒeƒ€‚ğ’Ç‰Á
+            // ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªã«ã‚¢ã‚¤ãƒ†ãƒ ã‚’è¿½åŠ 
             inventory.AddItem(itemData);
 
-            // Flashlight‚Ìê‡‚ÉFlashLightSystem‚ğƒAƒNƒeƒBƒu‰»
+            // Flashlightã®å ´åˆã«FlashLightSystemã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–åŒ–
             if (item.name == "Flashlight")
             {
                 if (flashLightSystem != null)
                 {
-                    //ƒtƒ‰ƒbƒVƒ…ƒ‰ƒCƒg‚ğg‚¦‚é‚æ‚¤‚É‚·‚é
+                    //ãƒ•ãƒ©ãƒƒã‚·ãƒ¥ãƒ©ã‚¤ãƒˆã‚’ä½¿ãˆã‚‹ã‚ˆã†ã«ã™ã‚‹
                     flashLightSystem.SetActive(true);
                     
                     if (tutorialManager != null)
                     {
-                        StartCoroutine(tutorialManager.ShowTutorial()); // ƒRƒ‹[ƒ`ƒ“‚ğ’¼ÚŒÄ‚Ño‚·
+                        StartCoroutine(tutorialManager.ShowTutorial()); // ã‚³ãƒ«ãƒ¼ãƒãƒ³ã‚’ç›´æ¥å‘¼ã³å‡ºã™
                     }
 
-                    //ƒtƒ‰ƒbƒVƒ…ƒ‰ƒCƒg‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚ğ•\¦‚·‚é
+                    //ãƒ•ãƒ©ãƒƒã‚·ãƒ¥ãƒ©ã‚¤ãƒˆã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚’è¡¨ç¤ºã™ã‚‹
                     flashlightTutorial.SetActive(true);
                     flashlightTutorial.transform.GetChild(0).gameObject.SetActive(true);
 
                 }
                
             }
+
+            if (item.name == "sponge")
+            {
+                private void OnMouseDown()
+                {
+                    // æµ´æ§½ãŒã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸæ™‚ã®å‡¦ç†
+                    if (bloodMaterial != null)
+                    {
+                        StartCoroutine(FadeOutBlood());
+                    }
+                }
+
+                private IEnumerator FadeOutBlood()
+                {
+                    float elapsedTime = 0f;
+                    Color color = bloodMaterial.color;
+                    float startAlpha = color.a;
+
+                    // å¾ã€…ã«é€æ˜åº¦ã‚’0ã«ã—ã¦ã„ã
+                    while (elapsedTime < fadeDuration)
+                    {
+                        elapsedTime += Time.deltaTime;
+                        color.a = Mathf.Lerp(startAlpha, 0f, elapsedTime / fadeDuration);
+                        bloodMaterial.color = color;
+                        yield return null;
+                    }
+
+                    // å®Œå…¨ã«é€æ˜ã«ã™ã‚‹
+                    color.a = 0f;
+                    bloodMaterial.color = color;
+                }
+                /*
+                void OnMouseDown()
+                {
+                    if (bloodMaterial != null)
+                    {
+                        // ãƒãƒ†ãƒªã‚¢ãƒ«ã®é€æ˜åº¦ã‚’0ã«ã—ã¦éè¡¨ç¤ºã«ã™ã‚‹
+                        Color color = bloodMaterial.color;
+                        color.a = 0f;  // é€æ˜åº¦ã‚’0ã«ã™ã‚‹
+                        bloodMaterial.color = color;
+                    }
+                }
+            }
         }
         else
         {
-            Debug.LogWarning("ƒf[ƒ^ƒx[ƒX‚É‚±‚ÌƒAƒCƒeƒ€‚ª‘¶İ‚µ‚Ü‚¹‚ñI");
+            Debug.LogWarning("ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«ã“ã®ã‚¢ã‚¤ãƒ†ãƒ ãŒå­˜åœ¨ã—ã¾ã›ã‚“ï¼");
         }
 
-        // ƒAƒCƒeƒ€‚ğƒV[ƒ“‚©‚çíœ
+        // ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã‚·ãƒ¼ãƒ³ã‹ã‚‰å‰Šé™¤
         Destroy(item);
     }
 
     
+}*/
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+public class ItemChecker : MonoBehaviour
+{
+    #region Variables
+    public float interactDistance = 3f; // ã‚¤ãƒ³ã‚¿ãƒ©ã‚¯ãƒˆå¯èƒ½ãªè·é›¢
+    public LayerMask itemLayer; // ã‚¢ã‚¤ãƒ†ãƒ ã«ä½¿ç”¨ã™ã‚‹ãƒ¬ã‚¤ãƒ¤ãƒ¼
+    public GameObject interactText; // UI ãƒ†ã‚­ã‚¹ãƒˆ (æ‹¾ã†ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤º)
+    public ItemDataBase itemDataBase; // ã‚¢ã‚¤ãƒ†ãƒ ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’å‚ç…§
+    public Inventory inventory; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªã‚’ç®¡ç†ã™ã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
+    public ItemDisplay itemDisplay;
+
+    private TextMeshProUGUI interactTextComponent; // TextMeshProã®å‚ç…§
+
+    [SerializeField] GameObject flashLightSystem;
+    [SerializeField] GameObject flashlightTutorial;
+    private TutorialManager tutorialManager;
+
+    #endregion
+
+    public Material bloodMaterial; // è¡€ã®ãƒãƒ†ãƒªã‚¢ãƒ«
+    public float fadeDuration = 1.5f; // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã®æ™‚é–“
+    private bool hasSponge = false;   // ã‚¹ãƒãƒ³ã‚¸å–å¾—ãƒ•ãƒ©ã‚°
+
+    private void Start()
+    {
+        interactTextComponent = interactText.GetComponent<TextMeshProUGUI>();
+
+        if (interactTextComponent == null)
+        {
+            Debug.LogError("interactTextã«TextMeshProUGUIã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼");
+        }
+
+        tutorialManager = flashlightTutorial.GetComponent<TutorialManager>();
+
+        // ğŸ©¸ åˆæœŸåŒ–ï¼šè¡€ã®é€æ˜åº¦ã‚’100%ã«å¼·åˆ¶è¨­å®š
+        if (bloodMaterial != null)
+        {
+            Color color = bloodMaterial.color;
+            color.a = 1f;  // ä¸é€æ˜ã«åˆæœŸåŒ–
+            bloodMaterial.color = color;
+        }
+    }
+
+    private void Update()
+    {
+        // ãƒ¬ã‚¤ã‚­ãƒ£ã‚¹ãƒˆã§ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ¤œå‡º
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, interactDistance, itemLayer))
+        {
+            GameObject hitItem = hit.collider.gameObject;
+
+            if (hitItem.CompareTag("Item"))
+            {
+                interactTextComponent.text = $"å–ã‚‹";
+                interactText.SetActive(true);
+
+                if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
+                {
+                    PickupItem(hitItem);
+                    itemDisplay.ToggleItemDisplay();
+                    inventory.UpdateInventoryUI();
+                }
+            }
+        }
+        else
+        {
+            interactText.SetActive(false);
+        }
+
+        // ã‚¹ãƒãƒ³ã‚¸å–å¾—å¾Œã«è¡€ã‚’ã‚¯ãƒªãƒƒã‚¯ã—ãŸå ´åˆ
+        if (hasSponge && Input.GetMouseButtonDown(0))
+        {
+            Ray clickRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(clickRay, out hit, interactDistance))
+            {
+                if (hit.collider.CompareTag("Blood"))
+                {
+                    StartCoroutine(FadeOutBlood());
+                }
+            }
+        }
+    }
+
+    private void PickupItem(GameObject item)
+    {
+        PocketItem itemData = itemDataBase.itemList.Find(i => i.item.name == item.name);
+
+        if (itemData != null)
+        {
+            inventory.AddItem(itemData);
+
+            if (item.name == "Flashlight")
+            {
+                if (flashLightSystem != null)
+                {
+                    flashLightSystem.SetActive(true);
+
+                    if (tutorialManager != null)
+                    {
+                        StartCoroutine(tutorialManager.ShowTutorial());
+                    }
+
+                    flashlightTutorial.SetActive(true);
+                    flashlightTutorial.transform.GetChild(0).gameObject.SetActive(true);
+                }
+            }
+
+            if (item.name == "sponge")
+            {
+                hasSponge = true; // ğŸ§½ ã‚¹ãƒãƒ³ã‚¸å–å¾—ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
+            }
+        }
+        else
+        {
+            Debug.LogWarning("ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«ã“ã®ã‚¢ã‚¤ãƒ†ãƒ ãŒå­˜åœ¨ã—ã¾ã›ã‚“ï¼");
+        }
+
+        Destroy(item);
+    }
+
+    private IEnumerator FadeOutBlood()
+    {
+        float elapsedTime = 0f;
+        Color color = bloodMaterial.color;
+        float startAlpha = color.a;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            color.a = Mathf.Lerp(startAlpha, 0f, elapsedTime / fadeDuration);
+            bloodMaterial.color = color;
+            yield return null;
+        }
+
+        color.a = 0f;
+        bloodMaterial.color = color;
+    }
 }

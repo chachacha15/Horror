@@ -3,7 +3,14 @@ guid: 2d2dc9ec6927e2349b6ccd957d0af655
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - interactText: {instanceID: 0}
+  - itemDataBase: {instanceID: 0}
+  - inventory: {instanceID: 0}
+  - itemDisplay: {instanceID: 0}
+  - flashLightSystem: {instanceID: 0}
+  - flashlightTutorial: {instanceID: 0}
+  - bloodMaterial: {fileID: 2100000, guid: 032d891fbdd341745b51a163837e9923, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
