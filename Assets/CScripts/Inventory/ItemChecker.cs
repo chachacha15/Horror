@@ -169,23 +169,34 @@ public class ItemChecker : MonoBehaviour
 {
     #region Variables
     public float interactDistance = 3f; // インタラクト可能な距離
+
+    // アイテム用
     public LayerMask itemLayer; // アイテムに使用するレイヤー
     public GameObject interactText; // UI テキスト (拾うメッセージを表示)
     public ItemDataBase itemDataBase; // アイテムデータベースを参照
     public Inventory inventory; // プレイヤーのインベントリを管理するスクリプト
     public ItemDisplay itemDisplay;
 
+    // 表示するUI用
     private TextMeshProUGUI interactTextComponent; // TextMeshProの参照
+    private bool isLookingItem = false;
 
+    //その他・他クラス
+    private TutorialManager tutorialManager;
+    private CameraSwitcher cameraSwitcher;
+
+    // 手持ちライト用
     [SerializeField] GameObject flashLightSystem;
     [SerializeField] GameObject flashlightTutorial;
-    private TutorialManager tutorialManager;
 
-    #endregion
-
+    // 血・スポンジギミック用
     public Material bloodMaterial; // 血のマテリアル
     public float fadeDuration = 1.5f; // フェードアウトの時間
     private bool hasSponge = false;   // スポンジ取得フラグ
+
+    #endregion
+
+
 
     private void Start()
     {
@@ -197,6 +208,7 @@ public class ItemChecker : MonoBehaviour
         }
 
         tutorialManager = flashlightTutorial.GetComponent<TutorialManager>();
+        cameraSwitcher = FindObjectOfType<CameraSwitcher>();
 
         // 🩸 初期化：血の透明度を100%に強制設定
         if (bloodMaterial != null)
@@ -221,6 +233,8 @@ public class ItemChecker : MonoBehaviour
             {
                 interactTextComponent.text = $"取る";
                 interactText.SetActive(true);
+                isLookingItem = true;
+                cameraSwitcher.ClosshairAnimation(10f, 500f, 0.5f, cameraSwitcher.crosshairRectTransform, isLookingItem);
 
                 if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
                 {
@@ -233,6 +247,8 @@ public class ItemChecker : MonoBehaviour
         else
         {
             interactText.SetActive(false);
+            isLookingItem = false;
+            cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingItem);
         }
 
         // スポンジ取得後に血をクリックした場合
@@ -257,6 +273,7 @@ public class ItemChecker : MonoBehaviour
         {
             inventory.AddItem(itemData);
 
+            // フラッシュライト取得時
             if (item.name == "Flashlight")
             {
                 if (flashLightSystem != null)
@@ -272,10 +289,10 @@ public class ItemChecker : MonoBehaviour
                     flashlightTutorial.transform.GetChild(0).gameObject.SetActive(true);
                 }
             }
-
+            // スポンジ取得時
             if (item.name == "sponge")
             {
-                hasSponge = true; // 🧽 スポンジ取得フラグを立てる
+                hasSponge = true; // スポンジ取得フラグを立てる
             }
         }
         else

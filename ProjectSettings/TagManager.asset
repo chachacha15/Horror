@@ -13,6 +13,9 @@ TagManager:
   - Enemy
   - Item
   - FlashLight
+  - Blood
+  - Bone
+  - Battery
   layers:
   - Default
   - TransparentFX

@@ -21,7 +21,7 @@ public class NearbyItemHighlighter : MonoBehaviour
         {
             GameObject item = collider.gameObject;
 
-            if (item.CompareTag("Item")) // Itemタグを持つオブジェクトを検出
+            if (item.CompareTag("Item") || item.CompareTag("Battery")) // Itemタグを持つオブジェクトを検出
             {
                 if (currentHighlightedItem != item)
                 {
