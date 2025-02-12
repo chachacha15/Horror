@@ -6,9 +6,11 @@ public class Inventory : MonoBehaviour
 {
     #region Variables
     public List<PocketItem> items = new List<PocketItem>(); // インベントリ内のアイテムリスト
-    public Transform itemListParent; // アイテムを表示する親オブジェクト
+    public Transform [] itemListParent; // アイテムを表示する親オブジェクト
     public GameObject itemLists; //アイテムを格納するスロット
     public GameObject itemSlotPrefab; // アイテムスロットのプレハブ
+    public int maxItems = 5; // 最大所持アイテム数
+
     #endregion
     private bool isInventoryOpen = false; // インベントリの開閉状態
 
@@ -19,7 +21,7 @@ public class Inventory : MonoBehaviour
     private void Update()
     {
         // Iキーでインベントリの表示/非表示を切り替える
-        if (Input.GetKeyDown(KeyCode.I))
+        //if (Input.GetKeyDown(KeyCode.I))
         {
             ToggleInventory();
         }
@@ -28,27 +30,30 @@ public class Inventory : MonoBehaviour
     // インベントリの表示/非表示を切り替える
     private void ToggleInventory()
     {
-        isInventoryOpen = !isInventoryOpen;
+        isInventoryOpen = true;
         itemLists.SetActive(isInventoryOpen); // インベントリ画面のオンオフを切り替え
 
-        if (isInventoryOpen)
-        {
-            UpdateInventoryUI(); // 開いたときに内容を更新
-            Cursor.lockState = CursorLockMode.None; // マウスを表示
-            Cursor.visible = true; // カーソルを表示
-        }
-        else
-        {
+        
+        
+        
             Cursor.lockState = CursorLockMode.Locked; // マウスを非表示
             Cursor.visible = false; // カーソルを非表示
-        }
+        
     }
 
     // アイテムを追加
     public void AddItem(PocketItem item)
     {
+        if (items.Count >= maxItems)
+        {
+            Debug.Log("インベントリが満杯です！");
+            return;
+        }
+
         items.Add(item);
         Debug.Log($"アイテムを追加: {item.item.name}");
+
+        UpdateInventoryUI(); // アイテム追加時にUIを更新
     }
 
     // インベントリのアイテムを確認
@@ -63,38 +68,31 @@ public class Inventory : MonoBehaviour
     // インベントリのUIを更新
     public void UpdateInventoryUI()
     {
-        // 現在のアイテム表示をクリア
-        foreach (Transform child in itemLists.transform)
-        {
-            Destroy(child.gameObject);
-        }
 
         // インベントリ内のアイテムを順番に表示
-        foreach (var item in items)
+        for (int i = 0; i < items.Count; i++)
         {
             // アイテムスロットを生成
-            GameObject slot = Instantiate(itemSlotPrefab, itemLists.transform);
-            slot.name = item.item.name;
+            GameObject slot = Instantiate(itemSlotPrefab, itemListParent[i].transform);
+            slot.name = items[i].item.name;
 
             // アイコンを設定
             Image iconImage = slot.transform.Find("ItemIcon").GetComponent<Image>();
-            if (iconImage != null && item.icon != null)
+            if (iconImage != null && items[i].icon != null)
             {
-                iconImage.sprite = item.icon;
+                iconImage.sprite = items[i].icon;
             }
             else
             {
-                Debug.LogWarning($"アイコンが見つからないか、スプライトが設定されていません: {item.item.name}");
+                Debug.LogWarning($"アイコンが見つからないか、スプライトが設定されていません: {items[i].item.name}");
             }
 
             // 必要なら追加の情報を設定する
             Text itemNameText = slot.transform.Find("ItemName").GetComponent<Text>();
             if (itemNameText != null)
             {
-                itemNameText.text = item.item.name;
+                itemNameText.text = items[i].item.name;
             }
         }
-        // Layout Group を再計算
-        //LayoutRebuilder.ForceRebuildLayoutImmediate(itemLists.GetComponent<RectTransform>());
     }
 }
