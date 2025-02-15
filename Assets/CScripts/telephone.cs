@@ -1,96 +1,68 @@
-using UnityEngine;
+/*using UnityEngine;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
-public class Telephone : MonoBehaviour
+public class PhoneController : MonoBehaviour
 {
-    public GameObject phoneUI; // 電話のUI
-    public UnityEngine.UI.Text displayText; // メッセージ表示用テキスト
-    public UnityEngine.UI.Text inputText; // 入力した番号表示用テキスト
+    public GameObject keypadPanel; // キーパッドUI
+    public UnityEngine.UI.Text inputText; // 入力した番号を表示
+    public UnityEngine.UI.Text messageText; // メッセージを表示
+    public string correctNumber = "1234"; // 正解の番号
 
-    private string phoneNumber = "";
-    private bool isCalling = false;
+    private string currentInput = "";
+    private bool isKeypadActive = false;
 
     void Start()
     {
-        if (phoneUI != null)
-        {
-            phoneUI.SetActive(false);
-        }
+        keypadPanel.SetActive(false);
+        messageText.text = "";
     }
 
-    public void OpenPhone()
+    void Update()
     {
-        if (phoneUI != null)
+        if (Input.GetMouseButtonDown(0))
         {
-            phoneUI.SetActive(true);
-            ResetPhoneState();
-        }
-    }
-
-    public void ClosePhone()
-    {
-        if (phoneUI != null)
-        {
-            phoneUI.SetActive(false);
-        }
-    }
-
-    public void InputNumber(string number)
-    {
-        if (phoneNumber.Length < 11) // 11桁まで入力可能
-        {
-            phoneNumber += number;
-            if (inputText != null)
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject)
             {
-                inputText.text = phoneNumber;
+                ToggleKeypad();
             }
+        }
+    }
+
+    public void ToggleKeypad()
+    {
+        isKeypadActive = !isKeypadActive;
+        keypadPanel.SetActive(isKeypadActive);
+    }
+
+    public void PressKey(string key)
+    {
+        if (currentInput.Length < 10)
+        {
+            currentInput += key;
+            inputText.text = currentInput;
         }
     }
 
     public void Call()
     {
-        if (phoneNumber.Length > 0 && !isCalling)
+        if (currentInput == correctNumber)
         {
-            isCalling = true;
-            if (displayText != null)
-            {
-                displayText.text = "発信中...";
-            }
-            Invoke(nameof(ReceiveCall), 2f); // 2秒後に応答
+            messageText.text = "正しい番号です。メッセージが表示されます。";
         }
+        else
+        {
+            messageText.text = "番号が間違っています。";
+        }
+        currentInput = "";
+        inputText.text = "";
     }
 
-    private void ReceiveCall()
+    public void ClearInput()
     {
-        if (displayText != null)
-        {
-            displayText.text = phoneNumber switch
-            {
-                "123" => "助けて...ここは暗い...",
-                "666" => "お前は見てはいけないものを見た",
-                "999" => "これは現実ではない...",
-                _ => "ツー...ツー...ツー..."
-            };
-        }
-        isCalling = false;
+        currentInput = "";
+        inputText.text = "";
     }
-
-    public void HangUp()
-    {
-        ResetPhoneState();
-    }
-
-    private void ResetPhoneState()
-    {
-        if (displayText != null)
-        {
-            displayText.text = "";
-        }
-        if (inputText != null)
-        {
-            inputText.text = "";
-        }
-        phoneNumber = "";
-        isCalling = false;
-    }
-}
+}*/
