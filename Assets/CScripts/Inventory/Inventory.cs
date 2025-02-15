@@ -16,17 +16,22 @@ public class Inventory : MonoBehaviour
 
     // アイテムを手に持つときに使う
     public Transform handSlot; // 手に持つアイテムの位置
-    private GameObject selectedItemObject; // 現在手に持っているアイテム
+    public GameObject selectedItemObject; // 現在手に持っているアイテム
+    public PocketItem selectedItem; // (これを外部から参照してギミックを作ってください)
     public Sprite normalSlotImage;
     public Sprite selectedSlotImage;
     public Color normalSlotColor = Color.white; // 通常時のスロットカラー
     public Color selectedSlotColor = Color.yellow; // 選択中のスロットカラー
     private int currentSlotIndex = -1; // 現在選択されているスロット(-1で持たないようにする)
 
+    public ItemDataBase itemDataBase; // アイテムデータベースを参照
+
+
     #endregion
 
     private void Start()
     {
+        selectedItem = null;
         UpdateInventoryUI(); // 初期状態でUIを更新
     }
     private void Update()
@@ -41,6 +46,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    #region アイテムを手に持つ処理関連
     // アイテムを手に持つ
     private void EquipItem(int index)
     {
@@ -59,8 +65,8 @@ public class Inventory : MonoBehaviour
             return;
         }
 
-        PocketItem selectedItem = items[index];
-
+        selectedItem = items[index];
+        selectedItem.item.name = items[index].item.name;
         // すでに持っているアイテムがあれば削除
         if (selectedItemObject != null)
         {
@@ -68,8 +74,9 @@ public class Inventory : MonoBehaviour
         }
 
         // アイテムを生成して手に持つ
-        Debug.Log(selectedItem.item.transform.rotation);
+        Debug.Log(selectedItem.item.name);
         selectedItemObject = Instantiate(selectedItem.item, handSlot.position, selectedItem.item.transform.rotation);
+
         selectedItemObject.transform.SetParent(handSlot); // 手に持たせる
         selectedItemObject.transform.localPosition = Vector3.zero; // 手の位置に合わせる
         selectedItemObject.transform.localRotation = selectedItem.item.transform.localRotation; // 回転をプレハブの元の回転に設定
@@ -91,7 +98,7 @@ public class Inventory : MonoBehaviour
 
         // 新しいスロットをハイライト
         itemListParent[selectedIndex].GetComponent<Image>().sprite = selectedSlotImage;
-        itemListParent[selectedIndex].GetComponent <Image>().color = selectedSlotColor;
+        itemListParent[selectedIndex].GetComponent<Image>().color = selectedSlotColor;
 
         // 現在のスロットを更新
         currentSlotIndex = selectedIndex;
@@ -118,6 +125,10 @@ public class Inventory : MonoBehaviour
         currentSlotIndex = -1;
     }
 
+    #endregion
+
+
+
     // アイテムを追加
     public void AddItem(PocketItem item)
     {
@@ -138,15 +149,6 @@ public class Inventory : MonoBehaviour
         }
 
         UpdateInventoryUI(); // アイテム追加時にUIを更新
-    }
-
-    // インベントリのアイテムを確認
-    public void ShowInventory()
-    {
-        foreach (var item in items)
-        {
-            Debug.Log($"アイテム: {item.item.name} - {item.explainText}");
-        }
     }
 
     // インベントリのUIを更新
