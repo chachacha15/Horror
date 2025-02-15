@@ -23,6 +23,7 @@ public class CameraSwitcher : MonoBehaviour
     public Sprite normalCrosshair; // 通常時のスプライト
     public Sprite closetCrosshair; // クローゼット時のスプライト
 
+    public GameObject interactCanvas;
     public GameObject hideText;       // 隠れるTextオブジェクト
     public GameObject player;
     public bool isPlayerHiding = false;
@@ -40,10 +41,8 @@ public class CameraSwitcher : MonoBehaviour
 
     private void Start()
     {
-        // 隠れるTextを動的に取得（オブジェクト名が "隠れるText" の場合）
-        hideText = GameObject.Find("隠れるText");
         // 初期状態で非表示に
-        hideText.SetActive(false);
+        interactCanvas.SetActive(false);
 
         mainCamera = Camera.main; // メインカメラを動的に取得
         player = GameObject.FindWithTag("Player");
@@ -65,7 +64,7 @@ public class CameraSwitcher : MonoBehaviour
             if (hit.collider.CompareTag("Closet"))
             {
                 isLookingAtCloset = true;
-                hideText.SetActive(true); // 隠れるTextをONに
+                interactCanvas.SetActive(true); // 隠れるTextをONに
 
                 // 左クリックでカメラを切り替える
                 if (Input.GetMouseButtonDown(0))
@@ -104,14 +103,14 @@ public class CameraSwitcher : MonoBehaviour
             {
                 // 他のオブジェクトの場合
                 isLookingAtCloset = false;
-                hideText.SetActive(false); // 隠れるTextをOFFに
+                interactCanvas.SetActive(false); // 隠れるTextをOFFに
             }
         }
         else
         {
             // 何もヒットしていない場合
             isLookingAtCloset = false;
-            hideText.SetActive(false); // 隠れるTextをOFFに
+            interactCanvas.SetActive(false); // 隠れるTextをOFFに
         }
 
         ClosshairAnimation(10f, 500f, 0.5f, crosshairRectTransform, isLookingAtCloset);
@@ -147,7 +146,7 @@ public class CameraSwitcher : MonoBehaviour
 
         // クロスヘアと隠れるテキストを非表示にする
         crosshair.gameObject.SetActive(false);
-        hideText.SetActive(false);
+        interactCanvas.SetActive(false);
 
         // プレイヤーのオブジェクトを無効化
         player.SetActive(false);

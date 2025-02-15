@@ -16,7 +16,7 @@ public class OptionLaunch : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("4"))
+        if (Input.GetKeyDown("0"))
         {
             bool isActive = soundOptionCanvas.activeSelf;
             soundOptionCanvas.SetActive(!isActive);

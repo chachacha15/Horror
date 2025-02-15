@@ -1,71 +1,166 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
     #region Variables
-    public List<PocketItem> items = new List<PocketItem>(); // �C���x���g�����̃A�C�e�����X�g
-    public Transform[] itemListParent; // �A�C�e����\������e�I�u�W�F�N�g
-    public GameObject itemLists; //�A�C�e�����i�[����X���b�g
-    public GameObject itemSlotPrefab; // �A�C�e���X���b�g�̃v���n�u
-    public int maxItems = 5; // �ő及���A�C�e����
+    // インベントリ内容に使う
+    public List<string> haveGotItems = new List<string>(); // すでに入手経験のあるアイテムリスト 
+    public List<PocketItem> items = new List<PocketItem>(); // インベントリ内のアイテムリスト
+    public Transform[] itemListParent; // アイテムを表示する親オブジェクト
+    public GameObject itemLists; //アイテムを格納するスロット
+    public GameObject itemSlotPrefab; // アイテムスロットのプレハブ
+    public int maxItems = 5; // 最大所持アイテム数
+
+
+    // アイテムを手に持つときに使う
+    public Transform handSlot; // 手に持つアイテムの位置
+    private GameObject selectedItemObject; // 現在手に持っているアイテム
+    public Sprite normalSlotImage;
+    public Sprite selectedSlotImage;
+    public Color normalSlotColor = Color.white; // 通常時のスロットカラー
+    public Color selectedSlotColor = Color.yellow; // 選択中のスロットカラー
+    private int currentSlotIndex = -1; // 現在選択されているスロット(-1で持たないようにする)
 
     #endregion
-    private bool isInventoryOpen = false; // �C���x���g���̊J���
 
     private void Start()
     {
-        UpdateInventoryUI(); // ������Ԃ�UI���X�V
+        UpdateInventoryUI(); // 初期状態でUIを更新
     }
     private void Update()
     {
-        // I�L�[�ŃC���x���g���̕\��/��\����؂�ւ���
-        //if (Input.GetKeyDown(KeyCode.I))
+        // 数字キー (1〜5) を押して手に持つ
+        for (int i = 1; i <= maxItems; i++)
         {
-
+            if (Input.GetKeyDown(KeyCode.Alpha0 + i)) // Alpha1～Alpha5 をチェック
+            {
+                EquipItem(i - 1); // インデックスは 0 から始まるので -1 する
+            }
         }
     }
 
+    // アイテムを手に持つ
+    private void EquipItem(int index)
+    {
 
-    
+        // すでにそのスロットのアイテムを持っている場合、解除する
+        if (currentSlotIndex == index)
+        {
+            Debug.Log($"アイテムを解除: {items[index].item.name}");
+            RemoveItemFromHand();
+            return;
+        }
 
-    // �A�C�e����ǉ�
+        if (index < 0 || index >= items.Count)
+        {
+            Debug.Log("このスロットにはアイテムがありません！");
+            return;
+        }
+
+        PocketItem selectedItem = items[index];
+
+        // すでに持っているアイテムがあれば削除
+        if (selectedItemObject != null)
+        {
+            Destroy(selectedItemObject);
+        }
+
+        // アイテムを生成して手に持つ
+        Debug.Log(selectedItem.item.transform.rotation);
+        selectedItemObject = Instantiate(selectedItem.item, handSlot.position, selectedItem.item.transform.rotation);
+        selectedItemObject.transform.SetParent(handSlot); // 手に持たせる
+        selectedItemObject.transform.localPosition = Vector3.zero; // 手の位置に合わせる
+        selectedItemObject.transform.localRotation = selectedItem.item.transform.localRotation; // 回転をプレハブの元の回転に設定
+
+        // 手に持っていいるアイテムのスロットの色を更新
+        UpdateSlotColors(index);
+    }
+
+    //スロットの色を更新（選択中のスロットをハイライト）
+    private void UpdateSlotColors(int selectedIndex)
+    {
+        // 以前のスロットを通常色に戻す
+        if (currentSlotIndex != -1)
+        {
+            itemListParent[currentSlotIndex].GetComponent<Image>().sprite = normalSlotImage;
+            itemListParent[currentSlotIndex].GetComponent<Image>().color = normalSlotColor;
+        }
+
+
+        // 新しいスロットをハイライト
+        itemListParent[selectedIndex].GetComponent<Image>().sprite = selectedSlotImage;
+        itemListParent[selectedIndex].GetComponent <Image>().color = selectedSlotColor;
+
+        // 現在のスロットを更新
+        currentSlotIndex = selectedIndex;
+    }
+
+    // 手に持っているアイテムを解除
+    private void RemoveItemFromHand()
+    {
+        if (selectedItemObject != null)
+        {
+            Destroy(selectedItemObject);
+            selectedItemObject = null;
+        }
+
+        // スロットの画像を通常のものに戻す
+        if (currentSlotIndex != -1)
+        {
+            itemListParent[currentSlotIndex].GetComponent<Image>().sprite = normalSlotImage;
+            itemListParent[currentSlotIndex].GetComponent<Image>().color = normalSlotColor;
+
+        }
+
+        // 持っているアイテムをなしにする
+        currentSlotIndex = -1;
+    }
+
+    // アイテムを追加
     public void AddItem(PocketItem item)
     {
         if (items.Count >= maxItems)
         {
-            Debug.Log("�C���x���g�������t�ł��I");
+            Debug.Log("インベントリが満杯です！");
             return;
         }
 
         items.Add(item);
-        Debug.Log($"�A�C�e����ǉ�: {item.item.name}");
+        Debug.Log($"アイテムを追加: {item.item.name}");
 
-        UpdateInventoryUI(); // �A�C�e���ǉ�����UI���X�V
+        // 初めて取得したアイテムならリストに追加
+        //if (!haveGotItems.Contains(item.item.name))
+        {
+            haveGotItems.Add(item.item.name);
+            Debug.Log($"初めて入手したアイテム: {item.item.name}");
+        }
+
+        UpdateInventoryUI(); // アイテム追加時にUIを更新
     }
 
-    // �C���x���g���̃A�C�e�����m�F
+    // インベントリのアイテムを確認
     public void ShowInventory()
     {
         foreach (var item in items)
         {
-            Debug.Log($"�A�C�e��: {item.item.name} - {item.explainText}");
+            Debug.Log($"アイテム: {item.item.name} - {item.explainText}");
         }
     }
 
-    // �C���x���g����UI���X�V
+    // インベントリのUIを更新
     public void UpdateInventoryUI()
     {
-
-        // �C���x���g�����̃A�C�e�������Ԃɕ\��
+       
+        // インベントリ内のアイテムを順番に表示
         for (int i = 0; i < items.Count; i++)
         {
-            // �A�C�e���X���b�g�𐶐�
+            // アイテムスロットを生成
             GameObject slot = Instantiate(itemSlotPrefab, itemListParent[i].transform);
             slot.name = items[i].item.name;
 
-            // �A�C�R����ݒ�
+            // アイコンを設定
             Image iconImage = slot.transform.Find("ItemIcon").GetComponent<Image>();
             if (iconImage != null && items[i].icon != null)
             {
@@ -73,15 +168,17 @@ public class Inventory : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"�A�C�R����������Ȃ����A�X�v���C�g���ݒ肳��Ă��܂���: {items[i].item.name}");
+                Debug.LogWarning($"アイコンが見つからないか、スプライトが設定されていません: {items[i].item.name}");
             }
 
-            // �K�v�Ȃ�ǉ��̏���ݒ肷��
+            //　アイテム名を設定
             Text itemNameText = slot.transform.Find("ItemName").GetComponent<Text>();
             if (itemNameText != null)
             {
                 itemNameText.text = items[i].item.name;
             }
         }
+
+       
     }
 }

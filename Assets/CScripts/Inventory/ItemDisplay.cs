@@ -63,8 +63,7 @@ public class ItemDisplay : MonoBehaviour
             if (isItemDisplayON)
             {
                 UpdateItemDisplayUI(); // 開いたときに内容を更新
-                Cursor.lockState = CursorLockMode.None; // マウスを表示
-                Cursor.visible = true;                 // マウスカーソルを表示
+
             }
             
         }

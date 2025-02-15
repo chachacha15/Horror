@@ -16,6 +16,7 @@ public class DoorController : MonoBehaviour
     private bool isOpen = false;
     private bool isLookingAtDoor = false; // クローゼットを見ている状態か
 
+    public GameObject interactCanvas;
     public GameObject doortext;
     TextMeshProUGUI doorGUI;
 
@@ -45,7 +46,7 @@ public class DoorController : MonoBehaviour
         {
             // 親の子供の中からCanvasを探す
             Transform canvasTransform = parentTransform.Find("Canvas");
-
+            interactCanvas = canvasTransform.gameObject;
             if (canvasTransform != null)
             {
                 // Canvasの子供の中から開閉Textを探す
@@ -90,20 +91,20 @@ public class DoorController : MonoBehaviour
             if (hit.collider.gameObject == gameObject) // 現在のドアに一致する場合
             {
                 isLookingAtDoor = true;
-                if (doortext != null) doortext.SetActive(true); // 開閉Textを非表示
+                if (doortext != null) interactCanvas.SetActive(true); // 開閉Textを非表示
 
             }
             else
             {
                 isLookingAtDoor = false;
-                if (doortext != null) doortext.SetActive(false); // 開閉Textを非表示
+                if (doortext != null) interactCanvas.SetActive(false); // 開閉Textを非表示
 
             }
         }
         else
         {
             isLookingAtDoor = false;
-            if (doortext != null) doortext.SetActive(false); // 開閉Textを非表示
+            if (doortext != null) interactCanvas.SetActive(false); // 開閉Textを非表示
 
             cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingAtDoor);
         }

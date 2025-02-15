@@ -11,6 +11,7 @@ public class ItemChecker : MonoBehaviour
 
     // アイテム用
     public LayerMask itemLayer; // アイテムに使用するレイヤー
+    public GameObject takeTextCanvas;
     public GameObject interactText; // UI テキスト (拾うメッセージを表示)
     public ItemDataBase itemDataBase; // アイテムデータベースを参照
     public Inventory inventory; // プレイヤーのインベントリを管理するスクリプト
@@ -67,7 +68,7 @@ public class ItemChecker : MonoBehaviour
             if (hitItem.CompareTag("Item") && !isTakeTextChanged)
             {
                 interactTextComponent.text = $"取る";
-                interactText.SetActive(true);
+                takeTextCanvas.SetActive(true);
                 isLookingItem = true;
                 cameraSwitcher.ClosshairAnimation(10f, 500f, 0.5f, cameraSwitcher.crosshairRectTransform, isLookingItem);
 
@@ -80,7 +81,7 @@ public class ItemChecker : MonoBehaviour
         }
         else
         {
-            interactText.SetActive(false);
+            takeTextCanvas.SetActive(false);
             isLookingItem = false;
             cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingItem);
         }
@@ -99,15 +100,18 @@ public class ItemChecker : MonoBehaviour
                 return;
             }
 
+            bool haveGotThisItem = inventory.haveGotItems.Contains(item.name);
             inventory.AddItem(itemData);
 
-            if (inventory.items.Find(i => i.item.name == itemData.item.name) != null)
+
+            // 初ゲットならディスプレイに表示
+            if (!haveGotThisItem)
             {
                 itemDisplay.ToggleItemDisplay();
                 inventory.UpdateInventoryUI();
-
             }
 
+           
             // フラッシュライト取得時
             if (item.name == "Flashlight")
             {
@@ -145,10 +149,10 @@ public class ItemChecker : MonoBehaviour
     private IEnumerator ChangeTakeText()
     {
         interactTextComponent.text = $"アイテムがいっぱいです";
-        interactText.SetActive(true);
+        takeTextCanvas.SetActive(true);
         isTakeTextChanged = true;
         yield return new WaitForSeconds(2f);
-        interactText.SetActive(false);
+        takeTextCanvas.SetActive(false);
         interactTextComponent.text = $"取る";
         isTakeTextChanged = false;
 

@@ -32,7 +32,7 @@ public class TutorialManager : MonoBehaviour
     public IEnumerator ShowTutorial()
     {
         // 表示中のアルファ値を最大に設定
-        tutorialCanvasGroup.alpha =0.5f;
+        tutorialCanvasGroup.alpha = 1.0f;
 
         // 表示時間を待つ
         yield return new WaitForSeconds(displayTime);
