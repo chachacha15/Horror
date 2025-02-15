@@ -6,7 +6,7 @@ public class Inventory : MonoBehaviour
 {
     #region Variables
     public List<PocketItem> items = new List<PocketItem>(); // インベントリ内のアイテムリスト
-    public Transform [] itemListParent; // アイテムを表示する親オブジェクト
+    public Transform[] itemListParent; // アイテムを表示する親オブジェクト
     public GameObject itemLists; //アイテムを格納するスロット
     public GameObject itemSlotPrefab; // アイテムスロットのプレハブ
     public int maxItems = 5; // 最大所持アイテム数
@@ -16,30 +16,19 @@ public class Inventory : MonoBehaviour
 
     private void Start()
     {
-       UpdateInventoryUI(); // 初期状態でUIを更新
+        UpdateInventoryUI(); // 初期状態でUIを更新
     }
     private void Update()
     {
         // Iキーでインベントリの表示/非表示を切り替える
         //if (Input.GetKeyDown(KeyCode.I))
         {
-            ToggleInventory();
+
         }
     }
 
-    // インベントリの表示/非表示を切り替える
-    private void ToggleInventory()
-    {
-        isInventoryOpen = true;
-        itemLists.SetActive(isInventoryOpen); // インベントリ画面のオンオフを切り替え
 
-        
-        
-        
-            Cursor.lockState = CursorLockMode.Locked; // マウスを非表示
-            Cursor.visible = false; // カーソルを非表示
-        
-    }
+    
 
     // アイテムを追加
     public void AddItem(PocketItem item)

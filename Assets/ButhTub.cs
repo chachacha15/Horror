@@ -20,7 +20,7 @@ public class BathTub : MonoBehaviour
     private void OnMouseDown()
     {
         // スポンジを持っている場合のみフェードアウト
-        if (itemChecker != null && itemChecker.HasSponge() && !isCleaning)
+        if (itemChecker != null && itemChecker.hasSponge && !isCleaning)
         {
             StartCoroutine(FadeOutBlood());
         }

@@ -19,6 +19,7 @@ public class ItemChecker : MonoBehaviour
     // 表示するUI用
     private TextMeshProUGUI interactTextComponent; // TextMeshProの参照
     private bool isLookingItem = false;
+    private bool isTakeTextChanged = false;
 
     //その他・他クラス
     private TutorialManager tutorialManager;
@@ -63,7 +64,7 @@ public class ItemChecker : MonoBehaviour
         {
             GameObject hitItem = hit.collider.gameObject;
 
-            if (hitItem.CompareTag("Item"))
+            if (hitItem.CompareTag("Item") && !isTakeTextChanged)
             {
                 interactTextComponent.text = $"取る";
                 interactText.SetActive(true);
@@ -73,8 +74,7 @@ public class ItemChecker : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
                 {
                     PickupItem(hitItem);
-                    itemDisplay.ToggleItemDisplay();
-                    inventory.UpdateInventoryUI();
+                   
                 }
             }
         }
@@ -93,7 +93,20 @@ public class ItemChecker : MonoBehaviour
 
         if (itemData != null)
         {
+            if(inventory.items.Count >= inventory.maxItems)
+            {
+                StartCoroutine(ChangeTakeText());
+                return;
+            }
+
             inventory.AddItem(itemData);
+
+            if (inventory.items.Find(i => i.item.name == itemData.item.name) != null)
+            {
+                itemDisplay.ToggleItemDisplay();
+                inventory.UpdateInventoryUI();
+
+            }
 
             // フラッシュライト取得時
             if (item.name == "Flashlight")
@@ -116,19 +129,30 @@ public class ItemChecker : MonoBehaviour
             {
                 hasSponge = true; // スポンジ取得フラグを立てる
             }
+
+
+            Destroy(item);
+
         }
         else
         {
             Debug.LogWarning("データベースにこのアイテムが存在しません！");
         }
 
-        Destroy(item);
     }
 
-    // スポンジを持っているか確認するメソッド
-    public bool HasSponge()
+   
+    private IEnumerator ChangeTakeText()
     {
-        return hasSponge;
+        interactTextComponent.text = $"アイテムがいっぱいです";
+        interactText.SetActive(true);
+        isTakeTextChanged = true;
+        yield return new WaitForSeconds(2f);
+        interactText.SetActive(false);
+        interactTextComponent.text = $"取る";
+        isTakeTextChanged = false;
+
+
     }
 }
 
