@@ -13,28 +13,48 @@ public class PhoneController : MonoBehaviour
     [SerializeField] private AudioSource buttonSound; // ボタン音（オプション）
     [SerializeField] private AudioSource correctSound; // 正解時の音
     [SerializeField] private AudioSource incorrectSound; // 間違い時の音
+    [SerializeField] private bool isLookingTelephone = false; // 電話を見ているかどうか
+
+
+    private CameraSwitcher cameraSwitcher;
 
     private string currentInput = "";
     private bool isKeypadActive = false;
 
     void Start()
     {
+        cameraSwitcher = FindObjectOfType<CameraSwitcher>();
+
         keypadPanel.SetActive(false);
         messageText.text = "";
     }
 
-    void Update()
+    private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+        if (isLookingTelephone)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject)
-            {
-                ToggleKeypad();
-            }
+            cameraSwitcher.ClosshairAnimation(10f, 500f, 0.5f, cameraSwitcher.crosshairRectTransform, isLookingTelephone);
         }
+        else if (!isLookingTelephone)
+        {
+            cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingTelephone);
+        }
+    }
+    private void OnMouseEnter()
+    {
+        // カーソルを合わせたとき
+        isLookingTelephone = true;
+    }
+    private void OnMouseExit()
+    {
+        // カーソルが外れたときの処理
+        isLookingTelephone = false;
+    }
+
+    private void OnMouseDown()
+    {
+        // クリックしたときの処理
+         if(!isKeypadActive) ToggleKeypad();
     }
 
     public void ToggleKeypad()
@@ -42,10 +62,13 @@ public class PhoneController : MonoBehaviour
         isKeypadActive = !isKeypadActive;
         keypadPanel.SetActive(isKeypadActive);
 
+        Time.timeScale = 0f; // 時を止める
+        Cursor.lockState = CursorLockMode.None; // マウスを表示
+        Cursor.visible = true;
+
         if (!isKeypadActive)
         {
             messageText.text = "";
-            Debug.Log("aaa");
         }
     }
 
@@ -92,6 +115,7 @@ public class PhoneController : MonoBehaviour
         {
             messageText.text = "正しい番号です。";
             if (correctSound != null) correctSound.Play();
+ 
         }
         else
         {
@@ -108,11 +132,22 @@ public class PhoneController : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         messageText.text = "";
+
     }
 
     public void ClearInput()
     {
         currentInput = "";
         inputText.text = "";
+    }
+
+    public void EscapeInput()
+    {
+        isKeypadActive = !isKeypadActive;
+        keypadPanel.SetActive(isKeypadActive);
+
+        Time.timeScale = 1f; // 時を動かす
+        Cursor.lockState = CursorLockMode.Locked; // マウスを非表示
+        Cursor.visible = false;
     }
 }
