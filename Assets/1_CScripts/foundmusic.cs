@@ -75,7 +75,7 @@ public class foundmusic : MonoBehaviour
         if (ghostAI != null && bgmAudioSource != null && sfxAudioSource != null)
         {
 
-            if (ghostAI.currentState == GhostAI.State.Chase) // currentState‚ªchase‚È‚çBGM‚ğÄ¶
+            if (ghostAI.currentState == State.Chase) // currentState‚ªchase‚È‚çBGM‚ğÄ¶
             {
 
                 if (!isPlayingBGM)

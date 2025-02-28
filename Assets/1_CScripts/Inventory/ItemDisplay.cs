@@ -90,7 +90,6 @@ public class ItemDisplay : MonoBehaviour
         slot.name = "Displayed : " + item.item.name;
 
         TextMeshProUGUI itemNameText = slot.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
-        //Debug.Log(itemNameText);
 
         if (itemNameText != null)
         {

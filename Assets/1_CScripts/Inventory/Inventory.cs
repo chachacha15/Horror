@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour
 {
     #region Variables
+
     // インベントリ内容に使う
     public List<string> haveGotItems = new List<string>(); // すでに入手経験のあるアイテムリスト 
     public List<PocketItem> items = new List<PocketItem>(); // インベントリ内のアイテムリスト
@@ -19,13 +20,30 @@ public class Inventory : MonoBehaviour
 
 
     // アイテムを手に持つときに使う
-    public Transform handSlot; // 手に持つアイテムの位置
+    public Transform handItemPosition; // 手に持つアイテムの位置オブジェクトのtransform
+    public Transform handItemParent; // 手に持つアイテムの親オブジェクトのtransform
+
     public GameObject selectedItemObject; // 現在手に持っているアイテム
     public PocketItem selectedItem; // (これを外部から参照してギミックを作ってください)
-    public Sprite normalSlotImage;
-    public Sprite selectedSlotImage;
+
+    public Sprite normalSlotImage; // 通常のアイテムスロットの見た目
+    public Sprite selectedSlotImage; // 選択中のアイテムスロットの見た目
+
     public Color normalSlotColor = Color.white; // 通常時のスロットカラー
     public Color selectedSlotColor = Color.yellow; // 選択中のスロットカラー
+
+    // 手に持っているアイテムが手にゆっくりと追従させるときに使う
+    private Vector3 velocity = Vector3.zero; // moothDamp() 内部で使用する速度の値（変化する）
+    public float followSpeed = 5f; // 手に持っているアイテムの手の位置についてくるスピード
+    public float threshold = 0.3f; // // 手から離れすぎないように閾値を設定する
+
+    // 手に持っているアイテムに揺れを追加するときに使う
+    public float shakeIntensity = 0.01f; // 揺れの強さ
+    public float shakeSpeed = 3f; // 揺れの速さ
+    private float noiseOffsetX; // x方向の位置ノイズ
+    private float noiseOffsetY; // y方向の位置ノイズ
+    private float noiseOffsetZ; // z方向の位置ノイズ
+
     private int currentSlotIndex = -1; // 現在選択されているスロット(-1で持たないようにする)
     public Transform droppedItemParent; // 落としたアイテム用の親オブジェクト
 
@@ -34,11 +52,11 @@ public class Inventory : MonoBehaviour
 
     #endregion
 
+    
     private void Start()
     {
         selectedItem = null; // 手に持っているアイテムを初期化する
         selectedItemObject = null; // 手に持っているアイテムのオブジェクトを初期化する
-
 
 
         UpdateInventoryUI(); // 初期状態でUIを更新
@@ -59,6 +77,39 @@ public class Inventory : MonoBehaviour
         {
             DropItem();
         }
+
+        // 手に持っているアイテムの位置や回転に遅延をかける・揺れを追加する
+        if (selectedItemObject != null)
+        {
+            // 現在の位置と回転を手の位置と回転に（スムーズに遅れる）
+
+            // **手との距離を計算**
+            float distance = Vector3.Distance(selectedItemObject.transform.position, handItemPosition.position);
+
+            // **しきい値 (`threshold`) を超えたら、subayakuに補正**
+            if (distance < threshold)
+            {
+                // しきい値の範囲内ならゆっくりと追従
+                selectedItemObject.transform.position = Vector3.SmoothDamp(selectedItemObject.transform.position, handItemPosition.position, ref velocity, 1f / followSpeed);        
+            }
+            else
+            {
+                // しきい値の範囲外なら猛スピードで追従
+                selectedItemObject.transform.position = Vector3.SmoothDamp(selectedItemObject.transform.position, handItemPosition.position, ref velocity, 1f / (followSpeed * 10));
+            }
+
+            selectedItemObject.transform.rotation = Quaternion.Slerp(selectedItemObject.transform.rotation, handItemPosition.rotation, Time.deltaTime * followSpeed);
+
+
+            // **揺れ（Perlin Noiseを使用）**
+            float shakeX = (Mathf.PerlinNoise(Time.time * shakeSpeed + noiseOffsetX, 0f) - 0.5f) * shakeIntensity;
+            float shakeY = (Mathf.PerlinNoise(Time.time * shakeSpeed + noiseOffsetY, 1f) - 0.5f) * shakeIntensity;
+            float shakeZ = (Mathf.PerlinNoise(Time.time * shakeSpeed + noiseOffsetZ, 2f) - 0.5f) * shakeIntensity;
+
+            // **現在の位置に揺れを追加**
+            selectedItemObject.transform.position += new Vector3(shakeX, shakeY, shakeZ);
+        }
+
     }
 
     #region アイテムを手に持つ処理関連
@@ -91,10 +142,10 @@ public class Inventory : MonoBehaviour
 
         // アイテムを生成して手に持つ
         Debug.Log(selectedItem.item.name);
-        selectedItemObject = Instantiate(selectedItem.item, handSlot.position, selectedItem.item.transform.rotation);
+        selectedItemObject = Instantiate(selectedItem.item, handItemPosition.position, selectedItem.item.transform.rotation);
         selectedItemObject.tag = "Untagged";
 
-        selectedItemObject.transform.SetParent(handSlot); // 手に持たせる
+        selectedItemObject.transform.SetParent(handItemParent); // 手に持たせる
         selectedItemObject.transform.localPosition = Vector3.zero; // 手の位置に合わせる
 
         // 回転を設定
@@ -109,6 +160,8 @@ public class Inventory : MonoBehaviour
 
         // 手に持っていいるアイテムのスロットの色を更新
         UpdateSlotColors(index);
+
+
     }
 
     //スロットの色を更新（選択中のスロットをハイライト）
@@ -162,7 +215,7 @@ public class Inventory : MonoBehaviour
         }
 
         // 落とす位置（プレイヤーの前方 & 少し下）
-        Vector3 dropPosition = handSlot.position + handSlot.forward * 0.5f + Vector3.down * 0.5f;
+        Vector3 dropPosition = handItemPosition.position + handItemPosition.forward * 0.5f + Vector3.down * 0.5f;
 
         // アイテムを生成
         GameObject droppedItem = Instantiate(selectedItemObject, dropPosition, selectedItemObject.transform.rotation);

@@ -81,7 +81,7 @@ public class GameOverScript : MonoBehaviour
         while (true)
         {
             // アルファ値の増減
-            alpha += (increasing ? 1f : -1f) * Time.deltaTime * 2f; // 調整可能な速度
+            alpha += (increasing ? 1f : -1f) * Time.deltaTime * 1f; // 調整可能な速度
 
             // アルファ値の範囲を制限
             if (alpha > 1f)

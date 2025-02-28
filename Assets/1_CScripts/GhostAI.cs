@@ -4,10 +4,16 @@ using UnityEngine;
 using UnityEngine.AI;
 using static UnityEngine.GraphicsBuffer;
 
+// 敵の状態(巡回状態か追跡状態)
+public enum State { Patrol, Chase }; // **他のクラスからもアクセスできる**
+
 public class GhostAI : MonoBehaviour
 {
-    public enum State { Patrol, Chase };
+    #region Variables
+
     public State currentState;
+
+
 
     private GameObject playerTarget;    // プレイヤーのターゲット
     private NavMeshAgent agent;         // NavMeshAgent
@@ -25,18 +31,22 @@ public class GhostAI : MonoBehaviour
 
     private bool isPlayerVisible = false; // プレイヤーが視界に入っているか
 
-    //敵の揺れ
+    // 敵の揺れ
     public float swayAmount = 0.5f; // 揺れの幅
     public float swaySpeed = 2f;    // 揺れの速さ
-    private float swayOffset = 0f;
 
+    // 他クラス
     private CameraSwitcher cameraSwitcher;
+    private EnemyManager enemyManager;
+
+    #endregion
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         playerTarget = GameObject.FindGameObjectWithTag("Player");
         cameraSwitcher = FindObjectOfType<CameraSwitcher>();
+        enemyManager = FindObjectOfType<EnemyManager>();
 
         DestinationPosition(); // 巡回ポイントの初期化
         currentState = State.Patrol;    // 初期状態は巡回
@@ -56,6 +66,7 @@ public class GhostAI : MonoBehaviour
                 currentState = State.Patrol;
                 agent.ResetPath(); // ナビメッシュの目標をリセット
                 agent.speed = patrolSpeed; // 巡回速度に設定
+                enemyManager.FindChasingEnemy();
             }
         }
 
@@ -91,6 +102,8 @@ public class GhostAI : MonoBehaviour
         {
             currentState = State.Chase;
             agent.speed = chaseSpeed; // 追跡速度に設定
+            enemyManager.FindChasingEnemy();
+
         }
     }
 
@@ -105,6 +118,8 @@ public class GhostAI : MonoBehaviour
             agent.ResetPath();
             currentState = State.Patrol;
             agent.speed = patrolSpeed; // 巡回速度に設定
+            enemyManager.FindChasingEnemy();
+
         }
 
         if (!isPlayerVisible)
@@ -116,6 +131,8 @@ public class GhostAI : MonoBehaviour
                 lostTimer = 0f;
                 agent.ResetPath();
                 agent.speed = patrolSpeed; // 巡回速度に設定
+                enemyManager.FindChasingEnemy();
+
             }
         }
         else
@@ -223,23 +240,7 @@ public class GhostAI : MonoBehaviour
 
     void DestinationPosition()
     {
-        //DestPos[0] = new Vector3(-20.03f, -1.08f, 5.17f);
-        //DestPos[1] = new Vector3(-14.34f, 1.08f, 8.35f);
-        //DestPos[2] = new Vector3(-6.99f, 1.08f, 10.18f);
-        //DestPos[3] = new Vector3(-0.18f, 1.10f, 10.60f);
-        //DestPos[4] = new Vector3(6.44f, 1.08f, 10.10f);
-        //DestPos[5] = new Vector3(13.73f, 1.08f, 8.47f);
-        //DestPos[6] = new Vector3(20.50f, 1.08f, 5.02f);
-        //DestPos[7] = new Vector3(24.05f, 1.08f, 0.28f);
-        //DestPos[8] = new Vector3(20.82f, 1.08f, -4.80f);
-        //DestPos[9] = new Vector3(14.36f, 1.08f, -8.12f);
-        //DestPos[10] = new Vector3(7.19f, 1.08f, -9.97f);
-        //DestPos[11] = new Vector3(0.13f, 1.12f, -10.64f);
-        //DestPos[12] = new Vector3(-6.60f, 1.08f, -9.66f);
-        //DestPos[13] = new Vector3(-13.93f, 1.08f, -7.96f);
-        //DestPos[14] = new Vector3(-20.00f, 1.08f, -4.61f);
-        //DestPos[15] = new Vector3(-23.44f, 1.11f, -0.17f);
-
+        
 
         GameObject[] points = GameObject.FindGameObjectsWithTag("PatrolPoint");
 
