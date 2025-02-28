@@ -10,6 +10,10 @@ public class GameOverScript : MonoBehaviour
     public GameObject gameOverUI; // GameOver UIを紐づけ
     public TextMeshProUGUI gameOverText; // GameOver Textオブジェクト
     private Color textColor;
+    public Image image;
+    private FadeManager fadeManager;
+    private AudioSource audioSource;
+    public AudioClip gameOverSound;
 
     private void Start()
     {
@@ -40,6 +44,10 @@ public class GameOverScript : MonoBehaviour
         {
             Debug.LogError("GameOver Text が見つかりませんでした。");
         }
+
+        fadeManager = FindObjectOfType<FadeManager>();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -55,8 +63,11 @@ public class GameOverScript : MonoBehaviour
     {
         if (gameOverUI != null)
         {
+            audioSource.PlayOneShot(gameOverSound); // ゲームオーバーサウンドを再生
             gameOverUI.SetActive(true); // GameOver UIを表示
             StartCoroutine(FadeTextAlpha()); // ガンマ値（アルファ値）をフェード
+            StartCoroutine(fadeManager.FadeOut(image));
+
         }
         else
         {
