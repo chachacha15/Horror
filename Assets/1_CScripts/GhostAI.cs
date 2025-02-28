@@ -131,6 +131,7 @@ public class GhostAI : MonoBehaviour
                 lostTimer = 0f;
                 agent.ResetPath();
                 agent.speed = patrolSpeed; // 巡回速度に設定
+
                 enemyManager.FindChasingEnemy();
 
             }

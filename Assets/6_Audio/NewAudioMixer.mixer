@@ -106,7 +106,9 @@ AudioMixerSnapshotController:
   m_Name: Gamesoundshot
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: f64de55e1d850e84496a5f7d2faeac6c
-  m_FloatValues: {}
+  m_FloatValues:
+    fcdaa6f51b7138348a5aca6a622e0b2a: 15
+    474994988c84f284eb0d0733f0751a23: 0
   m_TransitionOverrides: {}
 --- !u!244 &1874600965599125753
 AudioMixerEffectController:

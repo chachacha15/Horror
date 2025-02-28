@@ -12,6 +12,8 @@ public class GameOverScript : MonoBehaviour
     private Color textColor;
     public Image image;
     private FadeManager fadeManager;
+
+    // ゲームオーバーサウンド用
     private AudioSource audioSource;
     public AudioClip gameOverSound;
 
