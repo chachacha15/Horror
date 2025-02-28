@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class FlashlightManager : MonoBehaviour
 {
+
+    #region Variables
     // 他クラス
     private Inventory inventory;
 
@@ -13,10 +15,15 @@ public class FlashlightManager : MonoBehaviour
     private TutorialManager tutorialManager;
     private bool hasTutorialShown = false; // チュートリアルがもう表示されたか
 
+    #endregion
+
+    #region Methods
+
 
     // Start is called before the first frame update
     void Start()
     {
+        // 他クラスを取得
         tutorialManager = flashlightTutorial.GetComponent<TutorialManager>();
         inventory = FindObjectOfType<Inventory>();
     }
@@ -24,18 +31,22 @@ public class FlashlightManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        // 手にフラッシュライトを持っているとき
         if (inventory.selectedItem != null && inventory.selectedItem.item.name == "Flashlight")
         {
+            // フラッシュライトシステムがあるか
             if (flashLightSystem != null)
             {
+                // フラッシュライトを持つとフラッシュライトシステムがONになる
                 flashLightSystem.SetActive(true);
 
                 if (tutorialManager != null && !hasTutorialShown)
                 {
-                    hasTutorialShown = true;
-                    StartCoroutine(tutorialManager.ShowTutorial());
-                    flashlightTutorial.SetActive(true);
-                    flashlightTutorial.transform.GetChild(0).gameObject.SetActive(true);
+                    hasTutorialShown = true; // チュートリアル画面が見えているというフラグを立てる
+                    StartCoroutine(tutorialManager.ShowTutorial()); // チュートリアル表示
+                    flashlightTutorial.SetActive(true); // フラッシュライトチュートリアル表示
+                    flashlightTutorial.transform.GetChild(0).gameObject.SetActive(true); // フラッシュライトオブジェクトをONにする
                 }
             }
         }
@@ -43,9 +54,11 @@ public class FlashlightManager : MonoBehaviour
         {
             if (flashLightSystem != null)
             {
-                flashLightSystem.SetActive(false);
+                flashLightSystem.SetActive(false); // フラッシュライトオブジェクトをONにする
 
             }
         }
     }
+
+    #endregion
 }

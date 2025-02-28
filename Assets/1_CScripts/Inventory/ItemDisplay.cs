@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class ItemDisplay : MonoBehaviour
 {
     #region Variables
+
     public GameObject ItemDisplayUI; // インベントリ画面の親オブジェクト
     public Transform itemListParent; // アイテムリストを表示する親オブジェクト
     public GameObject itemSlotPrefab; // アイテムスロットのプレハブ
@@ -31,12 +32,20 @@ public class ItemDisplay : MonoBehaviour
 
     void Update()
     {
+        // ディスプレイ中は、アイテムをふわふわさせて横回転させる
         if (isItemDisplayON)
         {
             // 時間に基づいて上下に移動
             float floatOffset = Mathf.Sin(Time.unscaledTime * 2f) * 0.05f; // 振幅と速度を調整
             currentDisplayedItem.transform.position = itemDisplayPosition.position + new Vector3(0f, floatOffset, 0f);
+
+            // 少しずつ横回転
+            float rotationSpeed = 20f; // 回転速度（度/秒）
+            Vector3 currentRotation = currentDisplayedItem.transform.localEulerAngles;
+            currentRotation.y += rotationSpeed * Time.unscaledDeltaTime; // Y軸のみ回転
+            currentDisplayedItem.transform.localEulerAngles = currentRotation;
         }
+    
 
         //　ディスプレイ画面を閉じる時
         if (isPausedByDisplayItem && Input.GetMouseButtonDown(0)) // 0は左クリック

@@ -12,6 +12,9 @@ public class Inventory : MonoBehaviour
     public Transform[] itemListParent; // アイテムを表示する親オブジェクト
     public GameObject itemLists; //アイテムを格納するスロット
     public GameObject itemSlotPrefab; // アイテムスロットのプレハブ
+    public Texture[] displayTextures = new Texture[5]; // インベントリ表示用のレンダーテクスチャ
+    public Transform[] displayCameraTransform = new Transform[5]; // インベントリ表示用のカメラの位置を取得するのに使う
+    private GameObject[] displayObjects = new GameObject[5]; // ディスプレイ用のオブジェクトを入れる配列
     public int maxItems = 5; // 最大所持アイテム数
 
 
@@ -33,8 +36,11 @@ public class Inventory : MonoBehaviour
 
     private void Start()
     {
-        selectedItem = null;
-        selectedItemObject = null;
+        selectedItem = null; // 手に持っているアイテムを初期化する
+        selectedItemObject = null; // 手に持っているアイテムのオブジェクトを初期化する
+
+
+
         UpdateInventoryUI(); // 初期状態でUIを更新
     }
     private void Update()
@@ -56,6 +62,7 @@ public class Inventory : MonoBehaviour
     }
 
     #region アイテムを手に持つ処理関連
+
     // アイテムを手に持つ
     private void EquipItem(int index)
     {
@@ -89,7 +96,16 @@ public class Inventory : MonoBehaviour
 
         selectedItemObject.transform.SetParent(handSlot); // 手に持たせる
         selectedItemObject.transform.localPosition = Vector3.zero; // 手の位置に合わせる
-        selectedItemObject.transform.localRotation = selectedItem.item.transform.localRotation; // 回転をプレハブの元の回転に設定
+
+        // 回転を設定
+        if (selectedItem.item.name == "Flashlight") // フラッシュライトは向きが違うため例外
+        {
+            selectedItemObject.transform.localRotation = Quaternion.Euler(-90f, 0, 180f);
+        }
+        else
+        {
+            selectedItemObject.transform.localRotation = Quaternion.Euler(-90f, 0, 0);
+        }
 
         // 手に持っていいるアイテムのスロットの色を更新
         UpdateSlotColors(index);
@@ -187,11 +203,12 @@ public class Inventory : MonoBehaviour
         Debug.Log($"アイテムを追加: {item.item.name}");
 
         // 初めて取得したアイテムならリストに追加
-        //if (!haveGotItems.Contains(item.item.name))
+        if (!haveGotItems.Contains(item.item.name))
         {
             haveGotItems.Add(item.item.name);
             Debug.Log($"初めて入手したアイテム: {item.item.name}");
         }
+
 
         UpdateInventoryUI(); // アイテム追加時にUIを更新
     }
@@ -247,7 +264,10 @@ public class Inventory : MonoBehaviour
             {
                 Destroy(child.gameObject);
             }
+
+            Destroy(displayObjects[i]);
         }
+
         // インベントリ内のアイテムを順番に表示
         for (int i = 0; i < items.Count; i++)
         {
@@ -256,16 +276,9 @@ public class Inventory : MonoBehaviour
             GameObject slot = Instantiate(itemSlotPrefab, itemListParent[i].transform);
             slot.name = items[i].item.name;
 
-            // アイコンを設定
-            Image iconImage = slot.transform.Find("ItemIcon").GetComponent<Image>();
-            if (iconImage != null && items[i].icon != null)
-            {
-                iconImage.sprite = items[i].icon;
-            }
-            else
-            {
-                Debug.LogWarning($"アイコンが見つからないか、スプライトが設定されていません: {items[i].item.name}");
-            }
+
+            
+
 
             //　アイテム名を設定
             Text itemNameText = slot.transform.Find("ItemName").GetComponent<Text>();
@@ -273,8 +286,32 @@ public class Inventory : MonoBehaviour
             {
                 itemNameText.text = items[i].item.name;
             }
+
+            // アイコンを設定
+            RawImage iconImage = slot.transform.Find("ItemIcon").GetComponent<RawImage>();
+            if (iconImage != null && displayTextures[i] != null)
+            {
+                iconImage.texture = displayTextures[i];
+            }
+            else
+            {
+                Debug.LogWarning($"アイコンが見つからないか、スプライトが設定されていません: {items[i].item.name}");
+            }
+            // アイテムをスロット内に表示
+            displayObjects[i] = Instantiate(items[i].item, displayCameraTransform[i].position, Quaternion.Euler(-80f, 34f, 0f));
+            displayObjects[i].transform.SetParent(displayCameraTransform[i]); // 親を設定して移動を簡単に
+            displayCameraTransform[i].transform.localScale = new Vector3(displayCameraTransform[i].transform.localScale.x * 3f, displayCameraTransform[i].transform.localScale.y * 3f, displayCameraTransform[i].transform.localScale.z * 3f);
+
+            // 不要なコンポーネントを無効化（物理やインタラクションなど）
+            Collider collider = displayObjects[i].GetComponent<Collider>();
+            if (collider != null) collider.enabled = false;
+
+            Rigidbody rigidbody = displayObjects[i].GetComponent<Rigidbody>();
+            if (rigidbody != null) rigidbody.isKinematic = true;
+
         }
-      
+
     }
+
     #endregion 
 }
