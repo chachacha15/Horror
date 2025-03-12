@@ -16,6 +16,8 @@ TagManager:
   - Blood
   - Bone
   - Battery
+  - Window
+  - Wall
   layers:
   - Default
   - TransparentFX

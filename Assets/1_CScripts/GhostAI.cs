@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.AI;
 using static UnityEngine.GraphicsBuffer;
@@ -19,6 +20,15 @@ public class GhostAI : MonoBehaviour
     private NavMeshAgent agent;         // NavMeshAgent
     private Vector3[] DestPos = new Vector3[27]; // 巡回ポイントのリスト
     private int patrolIndex = 0;        // 巡回ポイントのインデックス
+    private const float doorCheckDistance = 5.0f; // 開閉する障害物を開けようとする距離
+    private const float openingTime = 1.0f; // 開けるのにかかる時間 
+
+    public bool isWaiting = false; // 待機中かどうか
+
+    private GameObject currentTargetDoor; // 現在向かっているドア
+
+
+
     private float lostTimer = 0f;       // プレイヤーを見失った時間
     public float lostThreshold = 5f;   // プレイヤーを見失うまでの時間（秒）
     private float visibilityTimer = 0f; // プレイヤーが視界内に留まった時間
@@ -31,6 +41,10 @@ public class GhostAI : MonoBehaviour
 
     private bool isPlayerVisible = false; // プレイヤーが視界に入っているか
 
+    public bool isWallEnemy = false; // 壁の擬態をする敵か
+    public float shrinkSpeed = 0.3f; // Z軸を 0 にする速さ
+
+
     // 敵の揺れ
     public float swayAmount = 0.5f; // 揺れの幅
     public float swaySpeed = 2f;    // 揺れの速さ
@@ -38,6 +52,8 @@ public class GhostAI : MonoBehaviour
     // 他クラス
     private CameraSwitcher cameraSwitcher;
     private EnemyManager enemyManager;
+    private DoorController doorController;
+    private DoorManager doorManager;
 
     #endregion
 
@@ -47,14 +63,24 @@ public class GhostAI : MonoBehaviour
         playerTarget = GameObject.FindGameObjectWithTag("Player");
         cameraSwitcher = FindObjectOfType<CameraSwitcher>();
         enemyManager = FindObjectOfType<EnemyManager>();
+        doorController = FindObjectOfType<DoorController>();
+        doorManager = FindObjectOfType<DoorManager>();
 
         DestinationPosition(); // 巡回ポイントの初期化
         currentState = State.Patrol;    // 初期状態は巡回
         agent.speed = patrolSpeed;      // 初期速度を巡回速度に設定
+
+        if (isWallEnemy) agent.enabled = false;
     }
 
     void Update()
     {
+
+        if (isWaiting) return; // 停止中なら処理しない
+
+        AdjustPositionIfNearWall(); // 壁や障害物との距離を保つ
+
+
         // プレイヤーが無効化されている場合でも巡回を継続
         if (playerTarget == null || !playerTarget.activeInHierarchy)
         {
@@ -91,10 +117,25 @@ public class GhostAI : MonoBehaviour
 
     void Patrol()
     {
-        if (agent.remainingDistance <= agent.stoppingDistance)
+        if (isWallEnemy)
         {
-            patrolIndex = (patrolIndex + 1) % DestPos.Length;
-            agent.SetDestination(DestPos[patrolIndex]);
+            // Z軸を徐々に 2D に近づける
+            float newZ = Mathf.Lerp(gameObject.transform.localScale.z, 0f, Time.deltaTime * shrinkSpeed);
+            gameObject.transform.localScale = new Vector3(1, 1, newZ);
+        }
+
+        if (agent.enabled == true)
+        {
+            // 目標地点にある程度近づけば
+            if (agent.remainingDistance <= agent.stoppingDistance)
+            {
+                patrolIndex = (patrolIndex + 1) % DestPos.Length;
+                agent.SetDestination(DestPos[patrolIndex]);
+            }
+
+            // 開閉する障害物があるかチェック
+            CheckDoorInPath();
+            CheckWindowInPath();
         }
 
         // プレイヤーが視界に入ったら追跡に移行
@@ -109,6 +150,18 @@ public class GhostAI : MonoBehaviour
 
     void Chase()
     {
+        if (isWallEnemy)
+        {
+            // 顔を徐々に 3D にする
+            float newZ = Mathf.Lerp(gameObject.transform.localScale.z, 1f, Time.deltaTime * shrinkSpeed);
+            gameObject.transform.localScale = new Vector3(1, 1, newZ);
+
+            // 追跡を開始する
+            agent.enabled = true;
+
+        }
+
+
         if (playerTarget != null)
         {
             agent.SetDestination(playerTarget.transform.position);
@@ -122,8 +175,13 @@ public class GhostAI : MonoBehaviour
 
         }
 
+        // 開閉する障害物があるかチェック
+        CheckDoorInPath();
+        CheckWindowInPath();
+
         if (!isPlayerVisible)
         {
+            // ある時間プレイヤーが見えないと、追跡を停止
             lostTimer += Time.deltaTime;
             if (lostTimer >= lostThreshold)
             {
@@ -141,6 +199,157 @@ public class GhostAI : MonoBehaviour
             lostTimer = 0f;
         }
     }
+
+
+
+    #region 障害物通過処理
+
+
+    #region ドア通過処理
+    /// <summary>
+    /// 移動中に閉まっているドアに直面したら処理を行う
+    /// </summary>
+    private void CheckDoorInPath()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, agent.velocity.normalized, out hit, doorCheckDistance))
+        {
+            DoorController door = hit.collider.GetComponent<DoorController>();
+            if (door != null && !door.isOpen) // ドアが閉まっている
+            {
+                //currentTargetDoor = door;
+                StartCoroutine(HandleDoorInteraction(door));
+            }
+        }
+    }
+
+    /// <summary>
+    /// 閉まっているドアに直面したときの処理
+    /// </summary>
+    private IEnumerator HandleDoorInteraction(DoorController door)
+    {
+        isWaiting = true; // 停止状態にする
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero; // 滑りを防ぐ
+
+        yield return new WaitForSeconds(openingTime); // 1秒間停止
+
+        if (door.isLockedDoor) // ロックされていたら巡回ルートを変更
+        {
+            Debug.Log("ドアがロックされているため、巡回ルートを変更します。");
+            agent.ResetPath();
+            patrolIndex = (patrolIndex + 1) % DestPos.Length; // 次の巡回ポイントへ
+            agent.SetDestination(DestPos[patrolIndex]);
+        }
+        else // ロックされていなければドアを開けて進む
+        {
+            Debug.Log("ドアを開けて進む！");
+            if (!door.isOpen) door.ToggleDoor();
+        }
+
+        isWaiting = false; // 停止解除
+        agent.isStopped = false;
+    }
+    #endregion
+
+
+    #region 窓通過処理
+
+    /// <summary>
+    /// 移動中に閉まっている窓に直面したら処理を行う
+    /// </summary>
+    private void CheckWindowInPath()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, agent.velocity.normalized, out hit, doorCheckDistance))
+        {
+            WindowManager window = hit.collider.GetComponent<WindowManager>();
+            if (window != null && !window.isOpen) // ドアが閉まっている
+            {
+                StartCoroutine(HandleWindowInteraction(window));
+            }
+        }
+    }
+
+    /// <summary>
+    /// 閉まっている窓に直面したときの処理
+    /// </summary>
+    private IEnumerator HandleWindowInteraction(WindowManager window)
+    {
+        isWaiting = true; // 停止状態にする
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero; // 滑りを防ぐ
+
+        yield return new WaitForSeconds(openingTime); // 1秒間停止
+
+        if (!window.isOpen) // ドアを開けて進む
+        {
+            Debug.Log("ドアを開けて進む！");
+            if (!window.isOpen) window.ToggleWindow();
+        }
+
+        isWaiting = false; // 停止解除
+        agent.isStopped = false;
+    }
+
+    #endregion
+
+
+    #endregion
+
+    // 壁との距離を調整するメソッド
+    void AdjustPositionIfNearWall()
+    {
+        float wallDistance = 4.0f; // 壁との適切な距離
+        float doorDistance = 2.0f; // 壁との適切な距離
+
+        float adjustSpeed = 0.06f; // 壁を回避する速度
+
+        Vector3 adjustDirection = Vector3.zero;
+
+        // 前方向の壁チェック
+        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hitF, doorDistance))
+        {
+            if (hitF.collider.CompareTag("Door"))
+            {
+                adjustDirection -= transform.forward * adjustSpeed;
+            }
+        }
+
+        // 後ろ方向の壁チェック
+        if (Physics.Raycast(transform.position, -transform.forward, out RaycastHit hitB, wallDistance))
+        {
+            if (hitB.collider.CompareTag("Wall") || hitB.collider.CompareTag("Door"))
+            {
+                adjustDirection += transform.forward * adjustSpeed;
+            }
+        }
+
+        // 右方向の壁チェック
+        if (Physics.Raycast(transform.position, transform.right, out RaycastHit hitR, wallDistance))
+        {
+            if (hitR.collider.CompareTag("Wall") || hitR.collider.CompareTag("Door"))
+            {
+                adjustDirection -= transform.right * adjustSpeed;
+            }
+        }
+
+        // 左方向の壁チェック
+        if (Physics.Raycast(transform.position, -transform.right, out RaycastHit hitL, wallDistance))
+        {
+            if (hitL.collider.CompareTag("Wall") || hitL.collider.CompareTag("Door"))
+            {
+                adjustDirection += transform.right * adjustSpeed;
+            }
+        }
+
+        // NavMeshAgent の移動を微調整
+        if (adjustDirection != Vector3.zero)
+        {
+            agent.Move(adjustDirection);
+        }
+    }
+
 
     void CheckPlayerVisibility()
     {
@@ -261,6 +470,7 @@ public class GhostAI : MonoBehaviour
 
     }
 
+    // レイで索敵範囲を可視化
     void OnDrawGizmos()
     {
         if (playerTarget == null)
@@ -330,7 +540,10 @@ public class GhostAI : MonoBehaviour
             Gizmos.DrawLine(transform.position, agent.destination); // ゴーストから目標地点への線を描画
         }
     }
-    
+
+
+
+   
 
 }
 

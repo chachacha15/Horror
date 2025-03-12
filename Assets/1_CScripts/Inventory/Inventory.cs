@@ -86,27 +86,27 @@ public class Inventory : MonoBehaviour
             // **手との距離を計算**
             float distance = Vector3.Distance(selectedItemObject.transform.position, handItemPosition.position);
 
-            // **しきい値 (`threshold`) を超えたら、subayakuに補正**
+            // しきい値 (`threshold`) を超えたら、補正
             if (distance < threshold)
             {
-                // しきい値の範囲内ならゆっくりと追従
+                // ゆっくりと追従
                 selectedItemObject.transform.position = Vector3.SmoothDamp(selectedItemObject.transform.position, handItemPosition.position, ref velocity, 1f / followSpeed);        
             }
             else
             {
-                // しきい値の範囲外なら猛スピードで追従
+                // 猛スピードで追従
                 selectedItemObject.transform.position = Vector3.SmoothDamp(selectedItemObject.transform.position, handItemPosition.position, ref velocity, 1f / (followSpeed * 10));
             }
 
             selectedItemObject.transform.rotation = Quaternion.Slerp(selectedItemObject.transform.rotation, handItemPosition.rotation, Time.deltaTime * followSpeed);
 
 
-            // **揺れ（Perlin Noiseを使用）**
+            // 揺れ（Perlin Noiseを使用）
             float shakeX = (Mathf.PerlinNoise(Time.time * shakeSpeed + noiseOffsetX, 0f) - 0.5f) * shakeIntensity;
             float shakeY = (Mathf.PerlinNoise(Time.time * shakeSpeed + noiseOffsetY, 1f) - 0.5f) * shakeIntensity;
             float shakeZ = (Mathf.PerlinNoise(Time.time * shakeSpeed + noiseOffsetZ, 2f) - 0.5f) * shakeIntensity;
 
-            // **現在の位置に揺れを追加**
+            // 現在の位置に揺れを追加
             selectedItemObject.transform.position += new Vector3(shakeX, shakeY, shakeZ);
         }
 

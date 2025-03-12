@@ -8,8 +8,14 @@ public class TutorialManager : MonoBehaviour
     public float fadeDuration = 1f;         // フェード時間
     private bool isFading = false;          // フェード中かどうかのフラグ
 
+
+    // 他クラス
+    private GameStart gameStart;
     private void Start()
     {
+        // 他クラスを取得
+        gameStart = FindObjectOfType<GameStart>();
+
         if(tutorialCanvasGroup.name == "StartTutorial")
         {
             // チュートリアルを表示
