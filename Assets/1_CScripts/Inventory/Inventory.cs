@@ -72,6 +72,17 @@ public class Inventory : MonoBehaviour
             }
         }
 
+        // マウススクロールでアイテム変更
+        if (Input.mouseScrollDelta.y > 0) // 上スクロール（次のアイテム）
+        {
+            ScrollItem(1);
+        }
+        else if (Input.mouseScrollDelta.y < 0) // 下スクロール（前のアイテム）
+        {
+            ScrollItem(-1);
+        }
+
+
         // `Q` キーでアイテムを落とす
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -83,7 +94,7 @@ public class Inventory : MonoBehaviour
         {
             // 現在の位置と回転を手の位置と回転に（スムーズに遅れる）
 
-            // **手との距離を計算**
+            // 手との距離を計算
             float distance = Vector3.Distance(selectedItemObject.transform.position, handItemPosition.position);
 
             // しきい値 (`threshold`) を超えたら、補正
@@ -163,6 +174,29 @@ public class Inventory : MonoBehaviour
 
 
     }
+
+
+    /// マウススクロールでアイテムを変更
+    private void ScrollItem(int direction)
+    {
+        if (items.Count == 0) return; // アイテムがない場合は何もしない
+        else if (items.Count == 1)
+        {
+            
+            EquipItem(1); // １個の場合は、選択状態にして動かさない
+            return;
+        }
+        // 現在のインデックスを変更
+        int newIndex = currentSlotIndex + direction;
+
+        // インデックスをループさせる
+        if (newIndex >= items.Count) newIndex = 0; // 最後 → 最初
+        if (newIndex < 0) newIndex = items.Count - 1; // 最初 → 最後
+
+        EquipItem(newIndex);
+    }
+
+
 
     //スロットの色を更新（選択中のスロットをハイライト）
     private void UpdateSlotColors(int selectedIndex)
