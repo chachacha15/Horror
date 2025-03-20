@@ -105,8 +105,7 @@ QualitySettings:
     terrainBillboardStart: 50
     terrainFadeLength: 5
     terrainMaxTrees: 50
-    excludedTargetPlatforms:
-    - Server
+    excludedTargetPlatforms: []
   - serializedVersion: 3
     name: High Fidelity
     pixelLightCount: 2
