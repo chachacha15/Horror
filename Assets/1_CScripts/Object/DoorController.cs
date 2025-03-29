@@ -196,3 +196,170 @@ public class DoorController : MonoBehaviour
         doorGUI.text = "開ける";
     }
 }
+
+
+/*
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+
+public class DoorController : MonoBehaviour
+{
+    #region ドア関連
+    [Header("Door Settings")]
+    [SerializeField] private Animator doorAnimator; // ドアのAnimator
+    public bool isOpen = false;                   // ドアの開閉状態
+    [SerializeField] private AudioSource audioSource; // ドア操作時のサウンド用
+    [SerializeField] private AudioClip unlockSound; // 正解時のサウンド
+    [SerializeField] private AudioClip lockedSound; // 間違い時のサウンド（またはロック時のサウンド）
+    #endregion
+
+    #region キーパッドUI関連
+    [Header("Keypad UI Settings")]
+    [SerializeField] private GameObject keypadPanel; // キーパッドのUIパネル
+    [SerializeField] private TMP_Text inputText;       // 入力された番号を表示するText
+    [SerializeField] private TMP_Text messageText;     // メッセージ表示用Text（正解、不正解など）
+    [SerializeField] private string correctNumber = "1234"; // このドアを開くための正解番号
+    #endregion
+
+
+    public bool isLockedDoor = true; // ドアがしまっているか
+
+
+    #region その他
+    private string currentInput = "";     // 現在の入力状態
+    private bool isKeypadActive = false;  // キーパッドが表示中か
+    #endregion
+
+    void Start()
+    {
+        // キーパッドは初期状態非表示
+        keypadPanel.SetActive(false);
+        messageText.text = "";
+    }
+
+    // ドアオブジェクトがクリックされたとき（Collider付きのオブジェクトにこのスクリプトを付ける）
+    private void OnMouseDown()
+    {
+        // キーパッドが非表示なら表示する
+        if (!isKeypadActive)
+        {
+            ToggleKeypad();
+        }
+    }
+
+    /// <summary>
+    /// キーパッドパネルの表示/非表示を切り替え、時間停止やカーソル表示も切り替える
+    /// </summary>
+    public void ToggleKeypad()
+    {
+        isKeypadActive = !isKeypadActive;
+        keypadPanel.SetActive(isKeypadActive);
+
+        if (isKeypadActive)
+        {
+            // キーパッド表示中は時間停止、カーソル表示
+            Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            // キーパッド非表示時は通常状態に戻す
+            Time.timeScale = 1f;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            messageText.text = "";
+            currentInput = "";
+            inputText.text = "";
+        }
+    }
+
+    /// <summary>
+    /// キーパッドの数字ボタンが押されたときに呼ばれる
+    /// </summary>
+    /// <param name="key">押された数字（文字列）</param>
+    public void PressKey(string key)
+    {
+        if (!isKeypadActive) return;
+        if (currentInput.Length < 4)
+        {
+            currentInput += key;
+            inputText.text = currentInput;
+            // オプション：ボタン音を再生するなど
+        }
+    }
+
+    /// <summary>
+    /// バックスペースボタンが押されたとき
+    /// </summary>
+    public void Backspace()
+    {
+        if (currentInput.Length > 0)
+        {
+            currentInput = currentInput.Substring(0, currentInput.Length - 1);
+            inputText.text = currentInput;
+        }
+    }
+
+    /// <summary>
+    /// 「Call」ボタンが押され、入力番号をチェックする
+    /// </summary>
+    public void Call()
+    {
+        if (!isKeypadActive) return;
+
+        if (currentInput == correctNumber)
+        {
+            messageText.text = "正しい番号です。";
+            if (unlockSound != null)
+                audioSource.PlayOneShot(unlockSound);
+
+            // 正解の場合、ドアを開く
+            ToggleDoor();
+        }
+        else
+        {
+            messageText.text = "番号が間違っています。";
+            if (lockedSound != null)
+                audioSource.PlayOneShot(lockedSound);
+        }
+        StartCoroutine(ClearMessageAfterDelay(2.0f));
+        currentInput = "";
+        inputText.text = "";
+    }
+
+    /// <summary>
+    /// 指定秒数後にメッセージをクリアするコルーチン
+    /// </summary>
+    /// <param name="delay">待機時間（秒）</param>
+    /// <returns></returns>
+    IEnumerator ClearMessageAfterDelay(float delay)
+    {
+        // 時間停止中でも進むように unscaledDeltaTime を使う
+        float elapsed = 0f;
+        while (elapsed < delay)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        messageText.text = "";
+    }
+
+    /// <summary>
+    /// ドアの開閉を切り替え、アニメーションを再生する
+    /// </summary>
+    public void ToggleDoor()
+    {
+        isOpen = !isOpen;
+        doorAnimator.SetBool("isOpen", isOpen);
+        // UI上に「開ける」「閉める」などの表示を更新する場合はここで行う
+
+        // ドア操作後、キーパッドを閉じ、時間を再開
+        ToggleKeypad();
+    }
+}
+*/

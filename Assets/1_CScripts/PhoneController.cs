@@ -54,7 +54,7 @@ public class PhoneController : MonoBehaviour
     private void OnMouseDown()
     {
         // クリックしたときの処理
-         if(!isKeypadActive) ToggleKeypad();
+        if (!isKeypadActive) ToggleKeypad();
     }
 
     public void ToggleKeypad()
@@ -115,7 +115,7 @@ public class PhoneController : MonoBehaviour
         {
             messageText.text = "正しい番号です。";
             if (correctSound != null) correctSound.Play();
- 
+
         }
         else
         {
