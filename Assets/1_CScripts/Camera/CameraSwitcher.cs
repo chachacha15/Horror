@@ -8,8 +8,10 @@ using UnityStandardAssets.Utility; // CurveControlledBob を使用
 
 public class CameraSwitcher : MonoBehaviour
 {
+
+    #region Variables
+
     public Camera mainCamera;
-    //public Camera closetCamera;
 
     public MonoBehaviour playerLookScript; // PlayerLookスクリプトを参照
 
@@ -17,7 +19,7 @@ public class CameraSwitcher : MonoBehaviour
     public float hideDistance = 5f;    // 隠れられる距離
 
     private bool isClosetCameraActive = false; // 現在のカメラ状態を追跡
-    private Camera currentClosetCamera; // 現在のクローゼットカメラを追跡
+    public Camera currentClosetCamera; // 現在のクローゼットカメラを追跡
 
     public Image crosshair;   // クロスヘアのImageコンポーネント
     public Sprite normalCrosshair; // 通常時のスプライト
@@ -39,6 +41,15 @@ public class CameraSwitcher : MonoBehaviour
     [SerializeField] private CurveControlledBob bob = new CurveControlledBob();
     private Transform closetCameraTransform;
 
+    // 他クラス
+    private ItemChecker itemChecker;
+
+
+
+    #endregion
+
+    #region Methods
+
     private void Start()
     {
         // 初期状態で非表示に
@@ -47,7 +58,9 @@ public class CameraSwitcher : MonoBehaviour
         mainCamera = Camera.main; // メインカメラを動的に取得
         player = GameObject.FindWithTag("Player");
 
-        playerLookScript = mainCamera.GetComponent<PlayerLook>(); // PlayerLookスクリプトを動的に取得
+        // 他クラスを取得
+        itemChecker = FindObjectOfType<ItemChecker>();
+        playerLookScript = mainCamera.GetComponent<PlayerLook>();
 
         targetCameraBaseLocalPosition = this.transform.localPosition;
 
@@ -67,7 +80,7 @@ public class CameraSwitcher : MonoBehaviour
                 interactCanvas.SetActive(true); // 隠れるTextをONに
 
                 // 左クリックでカメラを切り替える
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && !itemChecker.isLookingItem)
                 {
                     if (isClosetCameraActive)
                     {
@@ -123,6 +136,15 @@ public class CameraSwitcher : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// クローセットを見たときに、クロスヘアをアニメ－ション
+    /// </summary>
+    /// <param name="normalSize"></param>
+    /// <param name="targetSize"></param>
+    /// <param name="animationSpeed"></param>
+    /// <param name="chRectTransform"></param>
+    /// <param name="isLooking"></param>
     public void ClosshairAnimation(float normalSize, float targetSize, float animationSpeed,
         RectTransform chRectTransform, bool isLooking)
     {
@@ -133,12 +155,15 @@ public class CameraSwitcher : MonoBehaviour
         chRectTransform.sizeDelta = new Vector2(currentSize, currentSize);
     }
 
+    /// <summary>
+    /// クローゼットカメラに切り替えるメソッド
+    /// </summary>
+    /// <param name="targetCamera"></param>
     void SwitchToClosetCamera(Camera targetCamera)
     {
         isPlayerHiding = true;
         mainCamera.gameObject.SetActive(false);
         targetCamera.gameObject.SetActive(true); // 指定されたカメラをアクティブに
-        playerLookScript.enabled = false; // PlayerLookスクリプトを無効化
         isClosetCameraActive = true;
 
         currentClosetCamera = targetCamera; // 現在のクローゼットカメラを保持
@@ -152,6 +177,9 @@ public class CameraSwitcher : MonoBehaviour
         player.SetActive(false);
     }
 
+    /// <summary>
+    /// メインカメラに戻すメソッド
+    /// </summary>
     void SwitchToMainCamera()
     {
         isPlayerHiding = false;
@@ -163,7 +191,6 @@ public class CameraSwitcher : MonoBehaviour
             currentClosetCamera = null; // 保持するカメラをリセット
         }
 
-        playerLookScript.enabled = true; // PlayerLookスクリプトを有効化
         isClosetCameraActive = false;
 
         // クロスヘアを再表示
@@ -173,6 +200,12 @@ public class CameraSwitcher : MonoBehaviour
         player.SetActive(true);
     }
 
+
+    /// <summary>
+    /// クローゼットカメラを取得するメソッド
+    /// </summary>
+    /// <param name="closetObject"></param>
+    /// <returns></returns>
     Camera FindClosetCamera(GameObject closetObject)
     {
         Transform[] children = closetObject.GetComponentsInChildren<Transform>(true);
@@ -185,4 +218,7 @@ public class CameraSwitcher : MonoBehaviour
         }
         return null; // カメラが見つからない場合
     }
+
+    #endregion
+
 }

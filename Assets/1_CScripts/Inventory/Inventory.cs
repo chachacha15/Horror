@@ -49,6 +49,10 @@ public class Inventory : MonoBehaviour
 
     public ItemDataBase itemDataBase; // アイテムデータベースを参照
 
+    // 他クラス
+    private CameraSwitcher cameraSwitcher;
+    
+
 
     #endregion
 
@@ -58,6 +62,8 @@ public class Inventory : MonoBehaviour
         selectedItem = null; // 手に持っているアイテムを初期化する
         selectedItemObject = null; // 手に持っているアイテムのオブジェクトを初期化する
 
+        // 他クラスを取得
+        cameraSwitcher = FindObjectOfType<CameraSwitcher>();
 
         UpdateInventoryUI(); // 初期状態でUIを更新
     }

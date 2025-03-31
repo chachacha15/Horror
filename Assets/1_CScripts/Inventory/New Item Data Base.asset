@@ -67,3 +67,6 @@ MonoBehaviour:
   - item: {fileID: 4552011857134225814, guid: 3159828aed4696e4ebe3022b9090a1db, type: 3}
     explainText: "\u61D0\u4E2D\u96FB\u706F"
     icon: {fileID: 21300000, guid: a5785c0719d12cf48a93bec70a5a459e, type: 3}
+  - item: {fileID: 5845324458439467950, guid: 19e4208c53f8e004b98941523c4b110c, type: 3}
+    explainText: "\u30A8\u30EC\u30D9\u30FC\u30BF\u30FC\u8D77\u52D5\u53EF\u80FD"
+    icon: {fileID: 0}

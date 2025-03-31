@@ -19,12 +19,13 @@ public class ItemChecker : MonoBehaviour
 
     // 表示するUI用
     private TextMeshProUGUI interactTextComponent; // TextMeshProの参照
-    private bool isLookingItem = false;
+    public bool isLookingItem = false;
     private bool isTakeTextChanged = false;
 
     //その他・他クラス
     private CameraSwitcher cameraSwitcher;
 
+    Ray ray;
  
 
     // 血・スポンジギミック用
@@ -54,7 +55,8 @@ public class ItemChecker : MonoBehaviour
     private void Update()
     {
         // レイキャストでアイテムを検出
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (!cameraSwitcher.isPlayerHiding) ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        else if (cameraSwitcher.isPlayerHiding) ray = cameraSwitcher.currentClosetCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, interactDistance, itemLayer))

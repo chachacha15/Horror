@@ -104,7 +104,12 @@ namespace M4DOOM
         Vector3 RotateValues = new Vector3(1, 1, 0);
         Vector3 XYvalue;
 
+        // 他クラス
+        private CameraSwitcher cameraSwitcher;
+
+
         #endregion
+
 
         #region Methods
         //At Start.
@@ -140,6 +145,9 @@ namespace M4DOOM
             {
                 XYMotion[i].Set(Mathf.Cos(Random.value), Mathf.Sin(Random.value));
             }
+
+            // 他クラスを取得
+            cameraSwitcher = FindObjectOfType<CameraSwitcher>();
         }
 
         //Every Frame.
@@ -283,6 +291,9 @@ namespace M4DOOM
             transform.position = TrackCamera.transform.position + -(TrackCamera.transform.forward);
             //Rotation to Slerp(Camera Rotation * Track Speed * FlashModeChanger).
             transform.rotation = Quaternion.Slerp(transform.rotation, TrackCamera.transform.rotation, TrackSpeed * Time.deltaTime);
+
+            if (!cameraSwitcher.isPlayerHiding) TrackCamera = cameraSwitcher.mainCamera;
+            else if (cameraSwitcher.isPlayerHiding) TrackCamera = cameraSwitcher.currentClosetCamera;
         }
 
         //To Repeat Noise On Flash.
@@ -402,7 +413,7 @@ namespace M4DOOM
                 BatterySlider.value = BatteryLife;
 
                 //LightSource intensity to 1.
-                LightSource.intensity = 300;
+                LightSource.intensity = 30;
                 
                 //Decrement Batteries.
                 BatteryCount--;
