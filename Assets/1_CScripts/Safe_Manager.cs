@@ -2,30 +2,31 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems; // 変更点: EventSystem利用のため追加
 using System.Collections;
+using TMPro;
 
 public class Safe_Manager : MonoBehaviour
 {
-    // 変更点: 正しい4桁の番号を定義（例："1234"）
+    // 正しい4桁の番号を定義（例："1234"）
     public string correctCode = "1234";
 
-    // 変更点: 入力フィールドのGameObjectを設定（初期状態は非表示にする）
+    // 入力フィールドのGameObjectを設定（初期状態は非表示にする）
     public GameObject inputFieldObject;
-    private InputField inputField;
+    private TMP_InputField inputField;
 
-    // 変更点: 金庫の各パーツの参照をInspectorから設定
+    // 金庫の各パーツの参照をInspectorから設定
     public GameObject door;    // 金庫の扉部分
     public GameObject dial;    // 金庫のダイヤル部分（扉の子オブジェクト）
     public GameObject handle;  // 金庫のハンドル部分（扉の子オブジェクト）
 
-    // 変更点: 金庫の開閉状態を管理する変数
+    // 金庫の開閉状態を管理する変数
     private bool isOpen = false;
 
-    // 変更点: 扉を開くための最終的なY軸の角度（例: -90度に設定）
+    // 扉を開くための最終的なY軸の角度（例: -90度に設定）
     public float openDoorAngle = -90f;
-    // 変更点: 扉が開くスピード（度/秒）
+    // 扉が開くスピード（度/秒）
     public float doorOpenSpeed = 90f;
 
-    // 変更点: 他のキー入力処理を持つオブジェクトを一時的に無効化するための参照
+    // 他のキー入力処理を持つオブジェクトを一時的に無効化するための参照
     public GameObject otherInputManager;
 
     void Start()
@@ -33,49 +34,52 @@ public class Safe_Manager : MonoBehaviour
         if (inputFieldObject != null)
         {
             inputFieldObject.SetActive(false);
-            inputField = inputFieldObject.GetComponent<InputField>();
+            inputField = inputFieldObject.GetComponent<TMP_InputField>();
             if (inputField != null)
             {
-                // 変更点: InputFieldを数字入力専用に設定
-                inputField.contentType = InputField.ContentType.IntegerNumber;
+                // InputFieldを数字入力専用に設定
+                inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
                 inputField.interactable = true;
                 inputField.ForceLabelUpdate();
 
-                // 変更点: 入力完了時のイベントにリスナーを追加
+                // 入力完了時のイベントにリスナーを追加
                 inputField.onEndEdit.AddListener(ValidateCode);
             }
         }
     }
 
-    // 変更点: 金庫がクリックされた際、入力フィールドを表示し、他の入力処理を無効化
+    // 金庫がクリックされた際、入力フィールドを表示し、他の入力処理を無効化
     void OnMouseDown()
     {
         if (!isOpen && inputFieldObject != null)
         {
             inputFieldObject.SetActive(true);
-            // 変更点: 他の入力処理を持つオブジェクトを無効化
+            // 他の入力処理を持つオブジェクトを無効化
             if (otherInputManager != null)
             {
                 otherInputManager.SetActive(false);
             }
-            // 変更点: ゲーム全体を一時停止（UIはUnscaledTimeで動作するため入力可能）
+
+            // ゲーム全体を一時停止
             Time.timeScale = 0f;
-            EventSystem.current.SetSelectedGameObject(inputField.gameObject);
-            inputField.ActivateInputField();
+
+            EventSystem.current.SetSelectedGameObject(inputFieldObject);
+
+            //inputField.ActivateInputField();
         }
     }
 
-    // 変更点: 入力されたコードを検証するメソッド
+    // 入力されたコードを検証するメソッド
     public void ValidateCode(string enteredCode)
     {
-        // 変更点: 入力が終わったらゲームを再開し、他の入力処理も有効にする
+        // 入力が終わったらゲームを再開し、他の入力処理も有効にする
         Time.timeScale = 1f;
         if (otherInputManager != null)
         {
             otherInputManager.SetActive(true);
         }
 
-        if (enteredCode == correctCode)
+        if (inputField.text == correctCode)
         {
             StartCoroutine(OpenSafe());
         }
@@ -86,7 +90,7 @@ public class Safe_Manager : MonoBehaviour
         }
     }
 
-    // 変更点: 金庫を開く処理（扉、ダイヤル、ハンドルの回転を制御）
+    // 金庫を開く処理（扉、ダイヤル、ハンドルの回転を制御）
     IEnumerator OpenSafe()
     {
         isOpen = true;

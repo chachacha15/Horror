@@ -22,6 +22,10 @@ public class WindowManager : MonoBehaviour
 
     public bool isWindow1 = true; // どっちの窓か
 
+    // サウンド
+    [SerializeField] private AudioClip windowSound;
+    private AudioSource windowAS;
+
     // アニメーション目標移動座標
     private float openTargetX;
     private float closeTargetX;
@@ -41,6 +45,9 @@ public class WindowManager : MonoBehaviour
 
         //MainCameraをタグで動的に取得
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+
+        // AS
+        windowAS = GetComponent<AudioSource>();
 
 
         // 自分の親オブジェクトを取得
@@ -123,6 +130,9 @@ public class WindowManager : MonoBehaviour
 
         // 窓のアニメーション
         StartCoroutine(MoveWindow(isOpen ? openTargetX : closeTargetX));
+
+        // サウンド
+        windowAS.PlayOneShot(windowSound);
     }
 
     /// <summary>

@@ -13,55 +13,55 @@ MonoBehaviour:
   m_Name: New Item Data Base
   m_EditorClassIdentifier: 
   itemList:
-  - item: {fileID: 8713357493971281527, guid: caab6bb7ecb7ed741b612973ab7b297b, type: 3}
+  - item: {fileID: 4873405674805984531, guid: 32b40640df3a4af4f9562130f7130bb5, type: 3}
     explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(1\u53F7\u5BA4)"
     icon: {fileID: 21300000, guid: 868a2d0cc84ae37478b3dc1b1d664e7c, type: 3}
-  - item: {fileID: 6339974252919160105, guid: 3ce421cda532f1a48a788254468a5a43, type: 3}
+  - item: {fileID: 7595292998625853993, guid: f92e3045547f2114caee31a6ec855e12, type: 3}
     explainText: 2
     icon: {fileID: 0}
-  - item: {fileID: 4632967668758891515, guid: 26f322e3e1743274088cbc14541a39d4, type: 3}
+  - item: {fileID: 8993290392035506406, guid: f51dca2ac6e2d674a8fdbc34248db6db, type: 3}
     explainText: 3
     icon: {fileID: 0}
-  - item: {fileID: 8583251458748183258, guid: 4e9a54f9ae555f5488376543fb878bf1, type: 3}
+  - item: {fileID: 3781996991015358552, guid: 3ecd7d7daadf6c94c8a4ae302a99ed09, type: 3}
     explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(4\u53F7\u5BA4)"
     icon: {fileID: 21300000, guid: 9651e9cdb4321a74a9aa9b229aaac2f7, type: 3}
-  - item: {fileID: 4230285337328636784, guid: 60f7b8afcc10b414d80be901b320ef93, type: 3}
+  - item: {fileID: 322115876639743377, guid: e639e1645412c224a9171a8a322703a8, type: 3}
     explainText: 5
     icon: {fileID: 0}
-  - item: {fileID: 5946915942191730156, guid: 5ca253c9ec9204f4c8f6b1f3c2587cee, type: 3}
+  - item: {fileID: 4916761520433326964, guid: ab2d50271cb1b1f4aa4c09fde6fc8135, type: 3}
     explainText: 6
     icon: {fileID: 0}
-  - item: {fileID: 1214085106636524013, guid: e424f4fdd6c07d14ea7fbff03b59dfcb, type: 3}
+  - item: {fileID: 2605767343011699014, guid: 7a575babac75a1d479995be7a3826245, type: 3}
     explainText: 7
     icon: {fileID: 0}
-  - item: {fileID: 4701053260543733594, guid: 4d4c56443e884514192ff9ff54bc32ce, type: 3}
+  - item: {fileID: 4272556656842868613, guid: faa1726196d5b04458f403316fc7829e, type: 3}
     explainText: 8
     icon: {fileID: 0}
-  - item: {fileID: 4609481855126962166, guid: 37e8430cf40d6b24681324f8f08d09c2, type: 3}
+  - item: {fileID: 2699762784413746974, guid: cdd8e0bafd5af7048b2bb01e94f62b4a, type: 3}
     explainText: 9
     icon: {fileID: 0}
-  - item: {fileID: 4206287826073296265, guid: fae8f68d05f60d440899bd615a74071d, type: 3}
+  - item: {fileID: 5699815268335339274, guid: 34e32692f0d3d244b82a3d2d5b2a39b5, type: 3}
     explainText: 10
     icon: {fileID: 0}
-  - item: {fileID: 3045954088982849723, guid: 570c6a54bee1d22469d9fc1274d9683c, type: 3}
+  - item: {fileID: 8524256942303740940, guid: 892faf007aa99e7468a0f28d9179a56c, type: 3}
     explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(11\u53F7\u5BA4) "
     icon: {fileID: 0}
-  - item: {fileID: 2672401053339548956, guid: 62ed57447fe86704f9a4d9a791eb77fd, type: 3}
+  - item: {fileID: 3127098095137900398, guid: c57d8dfe4ff34da41800e97c4e9e466a, type: 3}
     explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(12\u53F7\u5BA4)"
     icon: {fileID: 21300000, guid: 519c3fa74bb9b874b8b2c9dee240cb0f, type: 3}
-  - item: {fileID: 6780873846117332457, guid: 180082b65b80fe842ba62561a9c07372, type: 3}
+  - item: {fileID: 6400570519695934348, guid: 6f4ec2128f6ad674aa447e7b166052f3, type: 3}
     explainText: 13
     icon: {fileID: 0}
-  - item: {fileID: 7490120220397043343, guid: 04fbbb98b27038d468409e433514d314, type: 3}
+  - item: {fileID: 9159944051863111364, guid: 7e89b235bf03db140b995c49f3d317e1, type: 3}
     explainText: 14
     icon: {fileID: 0}
-  - item: {fileID: 8515846740602521159, guid: b3ca3f4d9c024c7498c7e43a55e0cce1, type: 3}
+  - item: {fileID: 2881460552584456472, guid: cd105887fd8b6264f99dc85f9d72a773, type: 3}
     explainText: 15
     icon: {fileID: 0}
-  - item: {fileID: 559388199496411057, guid: 70984f188a753914fada43a75030f6c7, type: 3}
+  - item: {fileID: 4653112075150312976, guid: 70b669015bb633e49b4167e3fcefceb1, type: 3}
     explainText: 16
     icon: {fileID: 0}
-  - item: {fileID: 7171839499467453704, guid: 65d829fb1b30d754c8aaa09392ada91f, type: 3}
+  - item: {fileID: 2839736100500670637, guid: 0c63201504eb9124e89f31908cbdf7d4, type: 3}
     explainText: "\u30B9\u30DD\u30F3\u30B8"
     icon: {fileID: 21300000, guid: 8a526579fd3d29e44b9abe0ff3cf4813, type: 3}
   - item: {fileID: 4552011857134225814, guid: 3159828aed4696e4ebe3022b9090a1db, type: 3}
@@ -69,4 +69,7 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: a5785c0719d12cf48a93bec70a5a459e, type: 3}
   - item: {fileID: 5845324458439467950, guid: 19e4208c53f8e004b98941523c4b110c, type: 3}
     explainText: "\u30A8\u30EC\u30D9\u30FC\u30BF\u30FC\u8D77\u52D5\u53EF\u80FD"
+    icon: {fileID: 0}
+  - item: {fileID: 7198078198150644520, guid: 934aa46ec3996f942b568d94688cd520, type: 3}
+    explainText: "\u5F15\u304D\u51FA\u3057\u3092\u958B\u3051\u308B\u306E\u306B\u4F7F\u3046"
     icon: {fileID: 0}

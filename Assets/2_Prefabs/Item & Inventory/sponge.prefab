@@ -58,10 +58,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5864545679782564797, guid: 5931b2a026be6e14eb76ff253057405a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5931b2a026be6e14eb76ff253057405a,
         type: 3}
       propertyPath: m_Name
       value: sponge
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5931b2a026be6e14eb76ff253057405a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5931b2a026be6e14eb76ff253057405a,
+        type: 3}
+      propertyPath: m_TagString
+      value: Item
       objectReference: {fileID: 0}
     - target: {fileID: 1341388010063755922, guid: 5931b2a026be6e14eb76ff253057405a,
         type: 3}

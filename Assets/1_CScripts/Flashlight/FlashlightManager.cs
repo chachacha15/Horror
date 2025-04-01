@@ -34,7 +34,6 @@ public class FlashlightManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(inventory);
         if (inventory.items.Count > 0)
         {
             // 手にフラッシュライトを持っているとき

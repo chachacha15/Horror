@@ -27,6 +27,10 @@ public class DoorController : MonoBehaviour
     public bool isLockedDoor = true; // ドアがしまっているか
     private string requiredKeyName; // 必要なカギの名前
 
+    public AudioClip openSound; // 開ける音
+    public AudioClip closeSound; // 閉める音
+    
+
     private AudioSource audioSource; // 音を再生するAudioSource
     public AudioClip UnLockSound; // 開錠音
     public AudioClip CardKeySound; // ピッというカードキー認証音
@@ -119,11 +123,13 @@ public class DoorController : MonoBehaviour
                 if (HasRequiredKey())
                 {
                     isLockedDoor = false;
+                    audioSource.pitch = 1;
                     audioSource.PlayOneShot(CardKeySound);
                     StartCoroutine(PlaySoundWithDelay(UnLockSound, 0.35f));
                 }
                 else
                 {
+                    audioSource.pitch = 1;
                     audioSource.PlayOneShot(LockedSound);
                     StartCoroutine(DelayText());
                 }
@@ -149,6 +155,16 @@ public class DoorController : MonoBehaviour
 
         if (doorGUI != null) doorGUI.text = isOpen ? "閉める" : "開ける";
 
+        if (isOpen)
+        {
+            audioSource.pitch = 1.3f;
+            audioSource.PlayOneShot(openSound);
+        }
+        else
+        {
+            audioSource.pitch = 0.85f;
+            StartCoroutine(PlaySoundWithDelay(closeSound, 0.35f));
+        }
     }
 
 

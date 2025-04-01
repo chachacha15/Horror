@@ -306,7 +306,10 @@ public class Inventory : MonoBehaviour
         UpdateInventoryUI(); // アイテム追加時にUIを更新
     }
 
-    // 手に持っているアイテムを削除する処理
+
+    /// <summary>
+    /// 手に持っているアイテムを削除する処理
+    /// </summary>
     public void RemoveHeldItem()
     {
         if (selectedItemObject == null)
@@ -347,7 +350,9 @@ public class Inventory : MonoBehaviour
         Debug.Log("手に持っているアイテムを削除しました。");
     }
 
-    // インベントリのUIを更新
+    /// <summary>
+    /// インベントリのUIを更新
+    /// </summary>
     public void UpdateInventoryUI()
     {
 

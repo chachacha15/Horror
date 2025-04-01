@@ -25,6 +25,7 @@ public class CameraSwitcher : MonoBehaviour
     public Sprite normalCrosshair; // 通常時のスプライト
     public Sprite closetCrosshair; // クローゼット時のスプライト
 
+
     public GameObject interactCanvas;
     public GameObject hideText;       // 隠れるTextオブジェクト
     public GameObject player;
@@ -36,6 +37,10 @@ public class CameraSwitcher : MonoBehaviour
     private bool isLookingAtCloset = false; // クローゼットを見ている状態か
     public bool hasHiddenUnderDesk = false; //一回はクローゼットに隠れたことがあるか
     private Vector3 targetCameraBaseLocalPosition;
+
+    // サウンド
+    [SerializeField] private AudioClip hideSound;
+    private AudioSource audioSource;
 
     // カメラ揺れ用
     [SerializeField] private CurveControlledBob bob = new CurveControlledBob();
@@ -57,6 +62,11 @@ public class CameraSwitcher : MonoBehaviour
 
         mainCamera = Camera.main; // メインカメラを動的に取得
         player = GameObject.FindWithTag("Player");
+
+
+        // サウンド初期設定
+        audioSource = GetComponent<AudioSource>();
+
 
         // 他クラスを取得
         itemChecker = FindObjectOfType<ItemChecker>();
@@ -140,11 +150,6 @@ public class CameraSwitcher : MonoBehaviour
     /// <summary>
     /// クローセットを見たときに、クロスヘアをアニメ－ション
     /// </summary>
-    /// <param name="normalSize"></param>
-    /// <param name="targetSize"></param>
-    /// <param name="animationSpeed"></param>
-    /// <param name="chRectTransform"></param>
-    /// <param name="isLooking"></param>
     public void ClosshairAnimation(float normalSize, float targetSize, float animationSpeed,
         RectTransform chRectTransform, bool isLooking)
     {
@@ -155,10 +160,10 @@ public class CameraSwitcher : MonoBehaviour
         chRectTransform.sizeDelta = new Vector2(currentSize, currentSize);
     }
 
+
     /// <summary>
     /// クローゼットカメラに切り替えるメソッド
     /// </summary>
-    /// <param name="targetCamera"></param>
     void SwitchToClosetCamera(Camera targetCamera)
     {
         isPlayerHiding = true;
@@ -175,6 +180,9 @@ public class CameraSwitcher : MonoBehaviour
 
         // プレイヤーのオブジェクトを無効化
         player.SetActive(false);
+
+        // サウンド
+        audioSource.PlayOneShot(hideSound);
     }
 
     /// <summary>
@@ -198,14 +206,15 @@ public class CameraSwitcher : MonoBehaviour
 
         // プレイヤーオブジェクトを有効化
         player.SetActive(true);
+
+        // サウンド
+        audioSource.PlayOneShot(hideSound);
     }
 
 
     /// <summary>
     /// クローゼットカメラを取得するメソッド
     /// </summary>
-    /// <param name="closetObject"></param>
-    /// <returns></returns>
     Camera FindClosetCamera(GameObject closetObject)
     {
         Transform[] children = closetObject.GetComponentsInChildren<Transform>(true);

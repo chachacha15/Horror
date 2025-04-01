@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 using static UnityEngine.GraphicsBuffer;
 
 // 敵の状態(巡回状態か追跡状態)
@@ -45,9 +46,16 @@ public class GhostAI : MonoBehaviour
     public float shrinkSpeed = 0.3f; // Z軸を 0 にする速さ
 
 
+    // 
+
     // 敵の揺れ
     public float swayAmount = 0.5f; // 揺れの幅
     public float swaySpeed = 2f;    // 揺れの速さ
+
+    // サウンド
+    [SerializeField] private AudioClip enemyVoiceSound;
+    private AudioSource audioSource;
+    private bool isPlayingVoiceSound = false;
 
     // 他クラス
     private CameraSwitcher cameraSwitcher;
@@ -59,7 +67,10 @@ public class GhostAI : MonoBehaviour
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         agent = GetComponent<NavMeshAgent>();
+
+
         playerTarget = GameObject.FindGameObjectWithTag("Player");
         cameraSwitcher = FindObjectOfType<CameraSwitcher>();
         enemyManager = FindObjectOfType<EnemyManager>();
@@ -77,6 +88,9 @@ public class GhostAI : MonoBehaviour
     {
 
         if (isWaiting) return; // 停止中なら処理しない
+
+        // 一定期間でピッチをランダムに調整
+        if (!isPlayingVoiceSound) StartCoroutine(enemyRandomPicthVoice());
 
         AdjustPositionIfNearWall(); // 壁や障害物との距離を保つ
 
@@ -542,8 +556,20 @@ public class GhostAI : MonoBehaviour
     }
 
 
+   private IEnumerator enemyRandomPicthVoice()
+    {
+        isPlayingVoiceSound = true;
+        yield return new WaitForSeconds(1);
 
-   
+        audioSource.pitch = Random.RandomRange(0.1f, 0.5f);
+
+        isPlayingVoiceSound = false;
+
+    }
+
+
+
+
 
 }
 
