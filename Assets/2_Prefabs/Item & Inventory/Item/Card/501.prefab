@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5674017836555049115}
   - component: {fileID: 4834487979195406952}
   - component: {fileID: 2132680181611771167}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ GameObject:
   - component: {fileID: 8950678567325631379}
   - component: {fileID: 8775998774099302280}
   - component: {fileID: 5625633201951776633}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: 501
   m_TagString: Item
   m_Icon: {fileID: 0}
@@ -130,8 +130,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 6.1232336e-17, y: 1, z: -6.1232336e-17, w: -0.00000004371139}
   m_LocalPosition: {x: 3.087271, y: 6.3318834, z: -6.039}
-  m_LocalScale: {x: -0.092595294, y: -0.0017773571, z: -0.14693819}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: -0.09207305, y: -0.0017673327, z: -0.14610945}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5248757961068873176}
   m_Father: {fileID: 0}
@@ -197,7 +197,7 @@ GameObject:
   - component: {fileID: 6777581457311935450}
   - component: {fileID: 6385120972543571749}
   - component: {fileID: 4361775021426162769}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: "\u90E8\u5C4B\u756A\u53F7"
   m_TagString: Untagged
   m_Icon: {fileID: 0}

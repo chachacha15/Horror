@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8074326561452326403}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: "\u30AB\u30FC\u30C9\u30AD\u30FC"
   m_TagString: Blood
   m_Icon: {fileID: 0}
