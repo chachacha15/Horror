@@ -18,6 +18,7 @@ TagManager:
   - Battery
   - Window
   - Wall
+  - Drawer1
   layers:
   - Default
   - TransparentFX
@@ -30,7 +31,7 @@ TagManager:
   - ItemLayer
   - HighLight
   - PostProcess
-  - 
+  - MuseTextureLayer
   - 
   - 
   - 

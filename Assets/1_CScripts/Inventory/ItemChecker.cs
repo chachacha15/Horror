@@ -17,6 +17,11 @@ public class ItemChecker : MonoBehaviour
     public Inventory inventory; // プレイヤーのインベントリを管理するスクリプト
     public ItemDisplay itemDisplay;
 
+    // サウンド
+    public AudioClip pickUpSound; //拾った時に鳴る音
+    private AudioSource pickUpAS; 
+
+
     // 表示するUI用
     private TextMeshProUGUI interactTextComponent; // TextMeshProの参照
     public bool isLookingItem = false;
@@ -47,6 +52,9 @@ public class ItemChecker : MonoBehaviour
             Debug.LogError("interactTextにTextMeshProUGUIコンポーネントが見つかりません！");
         }
 
+        pickUpAS = GetComponent<AudioSource>();
+
+        // 他クラスを取得
         cameraSwitcher = FindObjectOfType<CameraSwitcher>();
 
        
@@ -92,7 +100,11 @@ public class ItemChecker : MonoBehaviour
 
         if (itemData != null)
         {
-            if(inventory.items.Count >= inventory.maxItems)
+
+            // サウンド
+            pickUpAS.PlayOneShot(pickUpSound);
+
+            if (inventory.items.Count >= inventory.maxItems)
             {
                 StartCoroutine(ChangeTakeText());
                 return;

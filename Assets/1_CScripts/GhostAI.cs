@@ -19,7 +19,7 @@ public class GhostAI : MonoBehaviour
 
     private GameObject playerTarget;    // プレイヤーのターゲット
     private NavMeshAgent agent;         // NavMeshAgent
-    private Vector3[] DestPos = new Vector3[27]; // 巡回ポイントのリスト
+    private Vector3[] DestPos = new Vector3[45]; // 巡回ポイントのリスト
     private int patrolIndex = 0;        // 巡回ポイントのインデックス
     private const float doorCheckDistance = 5.0f; // 開閉する障害物を開けようとする距離
     private const float openingTime = 1.0f; // 開けるのにかかる時間 
