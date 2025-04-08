@@ -7,7 +7,7 @@ using TMPro;
 public class Safe_Manager : MonoBehaviour
 {
     // 正しい4桁の番号を定義（例："1234"）
-    public string correctCode = "1234";
+    public string correctCode;
 
     // 入力フィールドのGameObjectを設定（初期状態は非表示にする）
     public GameObject inputFieldObject;

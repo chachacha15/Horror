@@ -103,7 +103,6 @@ public class BathTub : MonoBehaviour
     }
 }
 */
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -115,10 +114,14 @@ public class BathTub : MonoBehaviour
     [SerializeField] private List<DecalProjector> bloodDecals; // フェードアウトする血の Decal 一覧
     [SerializeField] private float fadeDuration = 2f; // フェード時間
     [SerializeField] private TextMeshProUGUI hiddenNumberText; // 浴槽に表示するランダムな数字
+
     private Inventory inventory;
     private bool isCleaning = false;
 
     private ItemChecker itemChecker; // ItemChecker の参照
+
+    // 変更点: Safe_Manager への参照を追加
+    [SerializeField] private Safe_Manager safeManager;
 
     private void Start()
     {
@@ -130,6 +133,12 @@ public class BathTub : MonoBehaviour
         if (hiddenNumberText != null)
         {
             hiddenNumberText.gameObject.SetActive(false);
+        }
+
+        // 変更点: safeManager が未設定の場合は自動取得（必要に応じて）
+        if (safeManager == null)
+        {
+            safeManager = FindObjectOfType<Safe_Manager>();
         }
     }
 
@@ -151,6 +160,12 @@ public class BathTub : MonoBehaviour
             // 数字をランダムに決定
             int randomNumber = Random.Range(1000, 9999); // 4桁のランダムな数字
             hiddenNumberText.text = randomNumber.ToString();
+
+            // 変更点: Safe_Manager の正解番号を更新する
+            if (safeManager != null)
+            {
+                safeManager.correctCode = randomNumber.ToString();
+            }
 
             // 数字を即座に表示
             hiddenNumberText.gameObject.SetActive(true);
