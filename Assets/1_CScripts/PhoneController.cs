@@ -3,8 +3,9 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using System.Collections;
+using Unity.VisualScripting.Antlr3.Runtime;
 
-public class PhoneController : MonoBehaviour
+public class PhoneController : MonoBehaviour, IInteractable
 {
     [SerializeField] private GameObject keypadPanel; // キーパッドの UI
     [SerializeField] private TMP_Text inputText; // 入力表示
@@ -13,7 +14,8 @@ public class PhoneController : MonoBehaviour
     [SerializeField] private AudioSource buttonSound; // ボタン音（オプション）
     [SerializeField] private AudioSource correctSound; // 正解時の音
     [SerializeField] private AudioSource incorrectSound; // 間違い時の音
-    [SerializeField] private bool isLookingTelephone = false; // 電話を見ているかどうか
+    private BoolWrapper isLookingTelephone = new BoolWrapper { Value = false }; // 電話を見ているかどうか
+    private bool isDone = false; // 正解したかどうか
 
 
     private CameraSwitcher cameraSwitcher;
@@ -21,41 +23,47 @@ public class PhoneController : MonoBehaviour
     private string currentInput = "";
     private bool isKeypadActive = false;
 
+    #region Interactable (IInteractable)
+
+    public string GetInteractText()
+    {
+        if (isLookingTelephone.Value) return "開ける";
+        return "";
+    }
+
+    public bool ShowInteractText => !isDone; // テキスト表示するかどうか
+    public bool ActivateCrosshair => !isDone;
+    // クリックしたときの処理
+    public void Interact(GameObject targetObject)
+    {
+        if (!isKeypadActive) ToggleKeypad();
+    }
+
+    #endregion
+
+
     void Start()
     {
         cameraSwitcher = FindObjectOfType<CameraSwitcher>();
+        cameraSwitcher.activeCrosshairBoolList.Add(isLookingTelephone);
 
         keypadPanel.SetActive(false);
         messageText.text = "";
     }
 
-    private void Update()
-    {
-        if (isLookingTelephone)
-        {
-            cameraSwitcher.ClosshairAnimation(10f, 500f, 0.5f, cameraSwitcher.crosshairRectTransform, isLookingTelephone);
-        }
-        else if (!isLookingTelephone)
-        {
-            cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingTelephone);
-        }
-    }
+    
     private void OnMouseEnter()
     {
         // カーソルを合わせたとき
-        isLookingTelephone = true;
+        isLookingTelephone.Value = true;
     }
     private void OnMouseExit()
     {
         // カーソルが外れたときの処理
-        isLookingTelephone = false;
+        isLookingTelephone.Value = false;
     }
 
-    private void OnMouseDown()
-    {
-        // クリックしたときの処理
-        if (!isKeypadActive) ToggleKeypad();
-    }
+
 
     public void ToggleKeypad()
     {

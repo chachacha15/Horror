@@ -24,7 +24,7 @@ public class ItemChecker : MonoBehaviour
 
     // 表示するUI用
     private TextMeshProUGUI interactTextComponent; // TextMeshProの参照
-    public bool isLookingItem = false;
+    public BoolWrapper isLookingItem = new BoolWrapper { Value = false };
     private bool isTakeTextChanged = false;
 
     //その他・他クラス
@@ -56,6 +56,7 @@ public class ItemChecker : MonoBehaviour
 
         // 他クラスを取得
         cameraSwitcher = FindObjectOfType<CameraSwitcher>();
+        cameraSwitcher.activeCrosshairBoolList.Add(isLookingItem);
 
        
     }
@@ -75,8 +76,7 @@ public class ItemChecker : MonoBehaviour
             {
                 interactTextComponent.text = $"取る";
                 takeTextCanvas.SetActive(true);
-                isLookingItem = true;
-                cameraSwitcher.ClosshairAnimation(10f, 500f, 0.5f, cameraSwitcher.crosshairRectTransform, isLookingItem);
+                isLookingItem.Value = true;
 
                 if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
                 {
@@ -88,8 +88,7 @@ public class ItemChecker : MonoBehaviour
         else
         {
             takeTextCanvas.SetActive(false);
-            isLookingItem = false;
-            cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingItem);
+            isLookingItem.Value = false;
         }
 
     }

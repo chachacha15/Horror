@@ -6,23 +6,41 @@ using UnityEngine.SceneManagement; // シーン管理をインポート
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMove : MonoBehaviour
 {
+    #region Variables 
+
+    // 入力方向
     [SerializeField] private string horizontalInputName = "Horizontal";
     [SerializeField] private string verticalInputName = "Vertical";
 
+    // プレイヤー移動詳細値
     [SerializeField] private float movementSpeed = 4f;
     [SerializeField] private float runSpeed = 20f;
-    [SerializeField] private StaminaBar staminaBar;
     [SerializeField] private bool isRunning;
+    [SerializeField] private float runNoiseRadius = 20f;
+
+    [SerializeField] private StaminaBar staminaBar;
 
     private AudioSource audiowalk;
     private AudioSource audiorun;
     private CharacterController charController;
     private Camera MainCamera;
     private Transform cameraTransform;
+
+    // 一人称カメラの揺れについて
     Vector3 HeadBob;
     [SerializeField] private CurveControlledBob bob = new CurveControlledBob();
+    [SerializeField] private float runSwayAmount = 3.0f;
+    [SerializeField] private float walkSwayAmount = 1.8f;
+    [SerializeField] private float stopSwayAmount = 0.15f;
 
     [SerializeField] private GameOverScript gameOverScript; // GameOver用のスクリプト参照
+
+
+    #endregion
+
+
+    #region Methods
+
 
     private void Awake()
     {
@@ -62,16 +80,18 @@ public class PlayerMove : MonoBehaviour
 
         if (isRunning) // 走行中（Spaceキーが押されている場合）
         {
-            bobSpeedMultiplier = 3.0f; // 走行中の揺れ
+            bobSpeedMultiplier = runSwayAmount; // 走行中の揺れ
+
         }
         else if (Input.GetAxis(verticalInputName) != 0 || Input.GetAxis(horizontalInputName) != 0) // 歩行中（移動がある場合）
         {
-            bobSpeedMultiplier = 1.8f; // 歩行中の揺れ
+            bobSpeedMultiplier = walkSwayAmount; // 歩行中の揺れ
         }
         else // 立ち止まっている場合
         {
-            bobSpeedMultiplier = 0.15f; // ちょっとだけ揺れ
+            bobSpeedMultiplier = stopSwayAmount; // ちょっとだけ揺れ
         }
+
         HeadBob = bob.DoHeadBob(bobSpeedMultiplier);
         cameraTransform.localPosition = HeadBob;
     }
@@ -88,8 +108,13 @@ public class PlayerMove : MonoBehaviour
         {
             if (!isRunning && staminaBar.CanStartRunning() && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)) //走っていなくて、スタミナ50以上、wasd入力がある
             {
+                // 状態を更新
                 isRunning = true;
                 staminaBar.SetRunning(true);
+
+                // 範囲内の敵が感知を発火
+                SoundEventManager.Emit(transform.position, runNoiseRadius, "Dash");
+
                 //charController.SimpleMove((forwardMovement + rightMovement) * (runSpeed / movementSpeed)); // ダッシュ時の速度を調整
                 audiorun.Play();
             }
@@ -104,6 +129,8 @@ public class PlayerMove : MonoBehaviour
 
         if (isRunning && staminaBar.CanContinueRunning())　//走っていて走り続けられるとき(スタミナ０になったら走れないように。)
         {
+            // 範囲内の敵が感知を発火
+            SoundEventManager.Emit(transform.position, runNoiseRadius, "Dash");
 
             charController.SimpleMove((forwardMovement + rightMovement) * (runSpeed / movementSpeed)); // ダッシュ時の速度を調整
             // 走る音を再生（再生中でない場合のみ）
@@ -158,4 +185,6 @@ public class PlayerMove : MonoBehaviour
             gameOverScript?.TriggerGameOver(); // GameOverを発動
         }
     }
+
+    #endregion
 }

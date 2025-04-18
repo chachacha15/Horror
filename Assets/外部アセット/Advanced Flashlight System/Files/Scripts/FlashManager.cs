@@ -233,7 +233,7 @@ namespace M4DOOM
                 //Disable Hand Image.
                 HandImage.enabled = false;
                 //Enable Hand Image.
-                NormalImage.enabled = true;
+                NormalImage.enabled = false;
 
                 //Display Empty Text.
                 inGameText.text = string.Empty;

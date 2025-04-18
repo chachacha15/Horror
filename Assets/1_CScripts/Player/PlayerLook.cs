@@ -11,7 +11,13 @@ public class PlayerLook : MonoBehaviour
     [SerializeField] private float mouseSensitivity = 150f;
 
     [SerializeField] private Transform playerBody;
+
+    // メインカメラ用の回転値
     private float xAxisClamp;
+
+    // クローゼットカメラ用の回転値
+    private float closetXAxisRotation = 0f;
+    private float closetYAxisRotation = 0f;
     private bool m_cursorIsLocked = true;
 
     [SerializeField] private Camera mainCamera; // メイン一人称カメラ
@@ -72,44 +78,31 @@ public class PlayerLook : MonoBehaviour
     /// </summary>
     private void CameraRotation()
     {
-        // マウス入力を取得
         float mouseX = Input.GetAxis(mouseXInputName) * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis(mouseYInputName) * mouseSensitivity * Time.deltaTime;
 
-        // X軸の回転量にマウスY入力を加算
-        xAxisClamp += mouseY;
-
-        // プレイヤーの視点が上を向きすぎた場合（90度以上）、制限をかける
-        if (xAxisClamp > 90.0f)
-        {
-            xAxisClamp = 90.0f;
-            mouseY = 0.0f;
-            ClampXAxisRotationToValue(270.0f);
-        }
-        // プレイヤーの視点が下を向きすぎた場合（-90度以下）、制限をかける
-        else if (xAxisClamp < -90.0f)
-        {
-            xAxisClamp = -90.0f;
-            mouseY = 0.0f;
-            ClampXAxisRotationToValue(90.0f);
-        }
-
-        // プレイヤーが隠れているかどうかで分岐
         if (!cameraSwitcher.isPlayerHiding && mainCamera)
         {
-            // 通常操作（カメラとプレイヤー両方回転）
-            mainCamera.transform.Rotate(Vector3.left * mouseY);
+            // 通常時の視点操作
+            xAxisClamp += mouseY;
+            xAxisClamp = Mathf.Clamp(xAxisClamp, -90f, 90f);
+
+            mainCamera.transform.localEulerAngles = new Vector3(-xAxisClamp, 0f, 0f);
             playerBody.Rotate(Vector3.up * mouseX);
         }
-        else if(cameraSwitcher.isPlayerHiding)
+        else if (cameraSwitcher.isPlayerHiding && cameraSwitcher.currentClosetCamera)
         {
-            // クローゼットカメラを操作（プレイヤーは回転させない）
-            cameraSwitcher.currentClosetCamera.transform.Rotate(Vector3.left * mouseY);
-            cameraSwitcher.currentClosetCamera.transform.Rotate(Vector3.up * mouseX, Space.World); // ワールド空間で左右回転
+            // クローゼット時の視点操作（新しく作った回転値を使用）
+            closetXAxisRotation += mouseY;
+            closetYAxisRotation += mouseX;
+
+            // 回転制限
+            closetXAxisRotation = Mathf.Clamp(closetXAxisRotation, -90f, 90f);
+
+            cameraSwitcher.currentClosetCamera.transform.rotation =
+                Quaternion.Euler(-closetXAxisRotation, closetYAxisRotation, 0f);
         }
     }
-
-
     private void ClampXAxisRotationToValue(float value)
     {
         Vector3 eulerRotation = transform.eulerAngles;

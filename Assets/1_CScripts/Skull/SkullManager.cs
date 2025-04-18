@@ -19,14 +19,19 @@ public class SkullManager : MonoBehaviour
 
     private Skull realSkullInstance; // 実際に配置された本物の骸骨
 
-    private bool isConfirmed = false; // UIを一度開いたらtrueになる
+    public bool isConfirmed = false; // UIを一度開いたらtrueになる
+
+
+    CameraSwitcher cameraSwitcher;
 
     #endregion
 
     private void Start()
     {
+        cameraSwitcher = FindObjectOfType<CameraSwitcher>();
 
         SpawnSkulls();
+        
     }
 
     private void SpawnSkulls()

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Drawer1 : MonoBehaviour
+public class Drawer1 : MonoBehaviour, IInteractable
 {
 
     #region Variables
@@ -33,8 +33,27 @@ public class Drawer1 : MonoBehaviour
 
     #endregion
 
+    #region Interactable (IInteractable)
+
+    public string GetInteractText()
+    {
+        if (isOpen) return "閉める";
+        return "開ける";
+    }
+
+    public bool ShowInteractText => true; // テキスト表示するかどうか
+    public bool ActivateCrosshair => true;
+
+    public void Interact(GameObject targetObject)
+    {
+        ToggleDrawer(); // 開閉処理
+    }
+
+    #endregion
+
 
     #region Methods
+
 
     // Start is called before the first frame update
     void Start()
@@ -56,19 +75,8 @@ public class Drawer1 : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !cameraSwitcher.isPlayerHiding && !itemChecker.isLookingItem)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, interactDistance))
-            {
-                if (hit.collider.gameObject == this.gameObject)
-                {
-                    ToggleDrawer();
-                }
-            }
-        }
+        
+       
     }
 
 

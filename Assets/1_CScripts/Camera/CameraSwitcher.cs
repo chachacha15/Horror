@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 using UnityStandardAssets.Utility; // CurveControlledBob を使用
 
-public class CameraSwitcher : MonoBehaviour
+public class CameraSwitcher : MonoBehaviour, IInteractable
 {
 
     #region Variables
@@ -24,9 +24,11 @@ public class CameraSwitcher : MonoBehaviour
     public Image crosshair;   // クロスヘアのImageコンポーネント
     public Sprite normalCrosshair; // 通常時のスプライト
     public Sprite closetCrosshair; // クローゼット時のスプライト
+    public List<BoolWrapper> activeCrosshairBoolList; // クロスヘアに関わるboolを格納
+    public float crosshairDurarion = 8f; // アニメーションスピード
+    public float crosshairNormalSize = 10f; // クロスヘアのノーマルサイズ
+    public float crosshairActiveSize = 30f; // アクティブサイズ
 
-
-    public GameObject interactCanvas;
     public GameObject hideText;       // 隠れるTextオブジェクト
     public GameObject player;
     public bool isPlayerHiding = false;
@@ -34,7 +36,6 @@ public class CameraSwitcher : MonoBehaviour
     public RectTransform crosshairRectTransform; // クロスヘアのRectTransform
 
     private float currentSize; // 現在のサイズ
-    private bool isLookingAtCloset = false; // クローゼットを見ている状態か
     public bool hasHiddenUnderDesk = false; //一回はクローゼットに隠れたことがあるか
     private Vector3 targetCameraBaseLocalPosition;
 
@@ -47,18 +48,74 @@ public class CameraSwitcher : MonoBehaviour
     private Transform closetCameraTransform;
 
     // 他クラス
-    private ItemChecker itemChecker;
 
 
 
     #endregion
 
+    #region Interactable (IInteractable)
+
+    public string GetInteractText()
+    {
+        if (!isPlayerHiding) return "隠れる";
+        return "";
+    }
+
+    public bool ShowInteractText => !isPlayerHiding; // テキスト表示するかどうか
+    public bool ActivateCrosshair => !isPlayerHiding;
+
+    /// <summary>
+    /// クリック時、隠れる
+    /// </summary>
+    public void Interact(GameObject targetObject)
+    {
+
+        // 左クリックでクローゼットカメラに切り替える
+        if (!isClosetCameraActive)
+        {
+
+            // クローゼットカメラに切り替え
+            Camera targetClosetCamera = FindClosetCamera(targetObject);
+
+            if (targetClosetCamera != null)
+            {
+
+                SwitchToClosetCamera(targetClosetCamera);
+                targetClosetCamera.transform.localPosition =
+                    new Vector3(targetClosetCamera.transform.localPosition.x,
+                                    0,
+                                    targetClosetCamera.transform.localPosition.z);
+
+                //カメラ揺れのセットアップ
+                bob.Setup(targetClosetCamera, 1.0f);
+
+
+            }
+            else
+            {
+                Debug.LogWarning("対象のクローゼットにカメラが見つかりません！");
+            }
+
+            hasHiddenUnderDesk = true;
+
+        }
+    }
+
+    #endregion
+
+
+
     #region Methods
+
+    private void Awake()
+    {
+        activeCrosshairBoolList = new List<BoolWrapper>();
+
+    }
 
     private void Start()
     {
-        // 初期状態で非表示に
-        interactCanvas.SetActive(false);
+
 
         mainCamera = Camera.main; // メインカメラを動的に取得
         player = GameObject.FindWithTag("Player");
@@ -69,94 +126,50 @@ public class CameraSwitcher : MonoBehaviour
 
 
         // 他クラスを取得
-        itemChecker = FindObjectOfType<ItemChecker>();
         playerLookScript = mainCamera.GetComponent<PlayerLook>();
 
         targetCameraBaseLocalPosition = this.transform.localPosition;
+
+
+
 
     }
 
     void Update()
     {
-        // クローゼットにカーソルがあるかを判定
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, hideDistance, layerMask))
+
+        // 右クリックでメインカメラに切り替える
+        if (Input.GetMouseButtonDown(1) && isClosetCameraActive)
         {
-            if (hit.collider.CompareTag("Closet"))
-            {
-                isLookingAtCloset = true;
-                interactCanvas.SetActive(true); // 隠れるTextをONに
-
-                // 左クリックでカメラを切り替える
-                if (Input.GetMouseButtonDown(0) && !itemChecker.isLookingItem)
-                {
-                    if (isClosetCameraActive)
-                    {
-                        // クローゼットカメラがアクティブならメインカメラに戻る
-                        SwitchToMainCamera();
-                    }
-                    else
-                    {
-                        // クローゼットカメラに切り替え
-                        Camera targetClosetCamera = FindClosetCamera(hit.collider.gameObject);
-                        if (targetClosetCamera != null)
-                        {
-                            SwitchToClosetCamera(targetClosetCamera);
-                            targetClosetCamera.transform.localPosition = 
-                                new Vector3( targetClosetCamera.transform.localPosition.x,
-                                             0,
-                                             targetClosetCamera.transform.localPosition.z);
-
-                            // カメラ揺れのセットアップ
-                            bob.Setup(targetClosetCamera, 1.0f); 
-
-                        }
-                        else
-                        {
-                            Debug.LogWarning("対象のクローゼットにカメラが見つかりません！");
-                        }
-
-                        hasHiddenUnderDesk = true;
-                    }
-                }
-            }
-            else
-            {
-                // 他のオブジェクトの場合
-                isLookingAtCloset = false;
-                interactCanvas.SetActive(false); // 隠れるTextをOFFに
-            }
-        }
-        else
-        {
-            // 何もヒットしていない場合
-            isLookingAtCloset = false;
-            interactCanvas.SetActive(false); // 隠れるTextをOFFに
+            // クローゼットカメラがアクティブならメインカメラに戻る
+            SwitchToMainCamera();
         }
 
-        ClosshairAnimation(10f, 500f, 0.5f, crosshairRectTransform, isLookingAtCloset);
-
+       
+       
         // 隠れている間のカメラ揺れ
         if (isClosetCameraActive && closetCameraTransform != null)
         {
             Vector3 bobOffset = bob.DoHeadBob(0.15f); // 揺れの計算
             closetCameraTransform.localPosition = bobOffset; // クローゼットカメラを揺らす
         }
+
+        
+
     }
 
 
     /// <summary>
-    /// クローセットを見たときに、クロスヘアをアニメ－ション
+    /// 指定のものを見たときに、クロスヘアをアニメ－ション
     /// </summary>
     public void ClosshairAnimation(float normalSize, float targetSize, float animationSpeed,
-        RectTransform chRectTransform, bool isLooking)
+        RectTransform chRectTransform)
     {
+
         //crosshairRectTransform.sizeDelta = new Vector2(normalSize, normalSize);
         // サイズをアニメーションで変更
-        float target = isLooking ? targetSize : normalSize;
-        currentSize = Mathf.Lerp(currentSize, target, animationSpeed * Time.deltaTime);
+        currentSize = Mathf.Lerp(currentSize, targetSize, animationSpeed * Time.deltaTime);
         chRectTransform.sizeDelta = new Vector2(currentSize, currentSize);
     }
 
@@ -176,7 +189,6 @@ public class CameraSwitcher : MonoBehaviour
 
         // クロスヘアと隠れるテキストを非表示にする
         crosshair.gameObject.SetActive(false);
-        interactCanvas.SetActive(false);
 
         // プレイヤーのオブジェクトを無効化
         player.SetActive(false);
@@ -231,3 +243,10 @@ public class CameraSwitcher : MonoBehaviour
     #endregion
 
 }
+
+// Bool型を包む（ラップする）クラスを作成
+public class BoolWrapper
+{
+    public bool Value; // 状態を管理するプロパティ
+}
+

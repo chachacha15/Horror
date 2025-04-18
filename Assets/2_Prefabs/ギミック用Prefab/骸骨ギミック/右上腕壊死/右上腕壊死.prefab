@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 3609229204812942595}
   - component: {fileID: 2008845959494580261}
   - component: {fileID: 1353623113801092384}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: "\u53F3\u4E0A\u8155\u58CA\u6B7B"
   m_TagString: Bone
   m_Icon: {fileID: 0}
@@ -144,6 +144,8 @@ MonoBehaviour:
   itemSpawnPoint: {fileID: 3448471320392384512}
   itemPrefabs:
   - {fileID: 6387197253528629062, guid: 296464c304b586a4da4d93daf7ea25e2, type: 3}
+  - {fileID: 7198078198150644520, guid: 934aa46ec3996f942b568d94688cd520, type: 3}
+  - {fileID: 4873405674805984531, guid: 32b40640df3a4af4f9562130f7130bb5, type: 3}
 --- !u!1001 &574611697607297237
 PrefabInstance:
   m_ObjectHideFlags: 0

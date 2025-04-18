@@ -1,10 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering;
-using static UnityEngine.GraphicsBuffer;
+using UnityEngine.UI;
 
 // 敵の状態(巡回状態か追跡状態)
 public enum State { Patrol, Chase }; // **他のクラスからもアクセスできる**
@@ -29,7 +26,7 @@ public class GhostAI : MonoBehaviour
     private GameObject currentTargetDoor; // 現在向かっているドア
 
 
-
+    // 巡回・追跡
     private float lostTimer = 0f;       // プレイヤーを見失った時間
     public float lostThreshold = 5f;   // プレイヤーを見失うまでの時間（秒）
     private float visibilityTimer = 0f; // プレイヤーが視界内に留まった時間
@@ -37,16 +34,24 @@ public class GhostAI : MonoBehaviour
     public float patrolSpeed = 2f;      // 巡回時の速度
     public float chaseSpeed = 5f;       // 追跡時の速度
 
-    public float detectionRadius = 20f; // プレイヤー検知の半径
-    public float fieldOfView = 150f;     // 視界角度
+    // 調査 ( プレイヤーやギミックが音を立てると、調査に来る )
+    private Vector3? investigateTarget;　// 調査先座標
+    private float investigateTimer;      // 調査実行時間
+    public float investigateDuration = 3f;  // 調査にかける時間
+    public float investigateSpeed = 3f;  // 調査先移動速度
+    public AudioClip noticeSound; // 発覚音
+    private AudioSource noticeAS; // 発覚音AudioSource
 
+
+    // 感知ステータス
+    public float detectionRadius = 60f; // プレイヤー検知の半径
+    public float fieldOfView = 150f;     // 視界角度
     private bool isPlayerVisible = false; // プレイヤーが視界に入っているか
 
+    // その他
     public bool isWallEnemy = false; // 壁の擬態をする敵か
     public float shrinkSpeed = 0.3f; // Z軸を 0 にする速さ
 
-
-    // 
 
     // 敵の揺れ
     public float swayAmount = 0.5f; // 揺れの幅
@@ -62,24 +67,38 @@ public class GhostAI : MonoBehaviour
     private EnemyManager enemyManager;
     private DoorController doorController;
     private DoorManager doorManager;
+    private SoundEventManager soundEventManager;
 
     #endregion
 
+    void OnDestroy()
+    {
+        if (SoundEventManager.Instance != null)
+            SoundEventManager.Instance.OnSoundEmitted -= OnSoundHeard;
+    }
+
     void Start()
     {
+        // 必要なコンポーネントを取得
         audioSource = GetComponent<AudioSource>();
+        noticeAS = GameObject.Find("EnemyNoticeAS").GetComponent<AudioSource>();
         agent = GetComponent<NavMeshAgent>();
 
 
+        // 他クラスを取得
         playerTarget = GameObject.FindGameObjectWithTag("Player");
         cameraSwitcher = FindObjectOfType<CameraSwitcher>();
         enemyManager = FindObjectOfType<EnemyManager>();
         doorController = FindObjectOfType<DoorController>();
         doorManager = FindObjectOfType<DoorManager>();
+        soundEventManager = FindObjectOfType<SoundEventManager>();
 
         DestinationPosition(); // 巡回ポイントの初期化
         currentState = State.Patrol;    // 初期状態は巡回
         agent.speed = patrolSpeed;      // 初期速度を巡回速度に設定
+
+
+                SoundEventManager.Instance.OnSoundEmitted += OnSoundHeard;
 
         if (isWallEnemy) agent.enabled = false;
     }
@@ -88,6 +107,9 @@ public class GhostAI : MonoBehaviour
     {
 
         if (isWaiting) return; // 停止中なら処理しない
+
+
+
 
         // 一定期間でピッチをランダムに調整
         if (!isPlayingVoiceSound) StartCoroutine(enemyRandomPicthVoice());
@@ -129,6 +151,9 @@ public class GhostAI : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 敵の徘徊アルゴリズム
+    /// </summary>
     void Patrol()
     {
         if (isWallEnemy)
@@ -143,8 +168,27 @@ public class GhostAI : MonoBehaviour
             // 目標地点にある程度近づけば
             if (agent.remainingDistance <= agent.stoppingDistance)
             {
+                // 調査状態 時 、 到着した or タイムアップしたら調査終了
+                if (investigateTarget.HasValue || investigateTimer <= 0f)
+                {
+                    // 元の状態に戻す
+                    investigateTarget = null;
+                    agent.speed = (currentState == State.Chase) ? chaseSpeed : patrolSpeed;
+
+                }
                 patrolIndex = (patrolIndex + 1) % DestPos.Length;
                 agent.SetDestination(DestPos[patrolIndex]);
+            }
+
+            // --- 調査フロー ---
+            if (investigateTarget.HasValue)
+            {
+                // 調査モード中は調査速度で目的地へ移動
+                agent.speed = investigateSpeed;
+                agent.SetDestination(investigateTarget.Value);
+
+                investigateTimer -= Time.deltaTime;            
+                
             }
 
             // 開閉する障害物があるかチェック
@@ -162,6 +206,10 @@ public class GhostAI : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// 敵の追跡アルゴリズム
+    /// </summary>
     void Chase()
     {
         if (isWallEnemy)
@@ -365,6 +413,10 @@ public class GhostAI : MonoBehaviour
     }
 
 
+
+    /// <summary>
+    /// 索敵範囲内にプレイヤーがいるか確認するメソッド
+    /// </summary>
     void CheckPlayerVisibility()
     {
         if (playerTarget == null)
@@ -381,9 +433,7 @@ public class GhostAI : MonoBehaviour
         // プレイヤーが検知範囲にいるかを確認（緑色のレイ範囲に入ると検知可能）
         if(distanceToPlayer <= detectionRadius)
         {
-            // ここに走ると発見されるコードを書く
-
-            //
+           
 
             // 敵とプレイヤーの間にレイを発生させる
             if (Physics.Linecast(transform.position, playerTarget.transform.position, out hit))
@@ -419,9 +469,12 @@ public class GhostAI : MonoBehaviour
         }
 
         // 前方向の長い範囲でのチェック
-        //CheckCustomDetection();
+        CheckCustomDetection();
     }
 
+    /// <summary>
+    /// 敵の前方向の範囲にプレイヤーが入ると追跡状態になる
+    /// </summary>
     void CheckCustomDetection()
     {
         Vector3 forward = transform.forward;
@@ -448,6 +501,30 @@ public class GhostAI : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// SoundEventManager.OnSoundEmitted のハンドラ
+    /// </summary>
+    private void OnSoundHeard(SoundEvent evt)
+    {
+        Debug.Log("音を立てました。");
+        // すでにプレイヤー追跡中なら無視する
+        if (currentState == State.Chase) return;
+
+        // 距離フィルタ（任意）
+        float d = Vector3.Distance(transform.position, evt.Position);
+        if (d > detectionRadius) return;
+
+
+        // evt.Position を調査ターゲットにセットするなどの処理
+        investigateTarget = evt.Position;
+        investigateTimer = investigateDuration;
+
+        // 追跡中でなければ、ここで調査モードに入ります
+        StartCoroutine(LowerPixelsPerUnitMultiplier());
+        Debug.Log("音を立てたら感知されました。");
+
+    }
+
 
     // フィッシャー・イェーツのシャッフルアルゴリズムを利用した配列シャッフル
     void Shuffle(Vector3[] array)
@@ -461,7 +538,9 @@ public class GhostAI : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// 敵の徘徊ポイントを指定した複数ポイントからランダムで決定
+    /// </summary>
     void DestinationPosition()
     {
         
@@ -482,6 +561,40 @@ public class GhostAI : MonoBehaviour
         // フィッシャー・イェーツのアルゴリズムでシャッフル
         Shuffle(DestPos);
 
+    }
+
+
+    /// <summary>
+    /// ノイズをアニメーションする処理
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator LowerPixelsPerUnitMultiplier()
+    {
+        // 重複して発動しないように
+        if (soundEventManager.noiseImage == null || soundEventManager.isPlayingNoise) yield break;
+
+        // ノイズオン
+        soundEventManager.isPlayingNoise = true;
+        soundEventManager.noiseImage.gameObject.SetActive(true);
+        soundEventManager.noiseImage.pixelsPerUnitMultiplier = soundEventManager.normalPixelAmount;
+        noticeAS.Play();
+
+        // ノイズアニメーション
+        float currentValue = soundEventManager.noiseImage.pixelsPerUnitMultiplier;
+        while (currentValue > soundEventManager.targetPixelsAmount)
+        {
+            currentValue -= soundEventManager.lowerPixelsSpeed * Time.deltaTime;
+            soundEventManager.noiseImage.pixelsPerUnitMultiplier = Mathf.Max(currentValue, soundEventManager.targetPixelsAmount);
+            yield return null;
+        }
+
+
+        // ノイズオフ
+        soundEventManager.noiseImage.gameObject.SetActive(false);
+        
+        // 向こう１０秒間はノイズ演出を発動しないようにする
+        yield return new WaitForSeconds(10.0f);
+        soundEventManager.isPlayingNoise = false;
     }
 
     // レイで索敵範囲を可視化

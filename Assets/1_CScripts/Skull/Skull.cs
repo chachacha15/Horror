@@ -2,8 +2,9 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Rendering;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime;
 
-public class Skull : MonoBehaviour
+public class Skull : MonoBehaviour, IInteractable
 {
     #region Variables
     //本物かどうか
@@ -19,55 +20,49 @@ public class Skull : MonoBehaviour
     public List<GameObject> itemPrefabs; // 口から出るアイテムのリスト
 
     // その他・他クラス
-    private bool isLookingSkull = false;
 
     private SkullManager manager;
-    private CameraSwitcher cameraSwitcher;
 
     #endregion
 
+
+    #region Interactable (IInteractable)
+
+    public string GetInteractText()
+    {
+        return "";
+    }
+
+    public bool ShowInteractText => false; // テキスト表示するかどうか
+    public bool ActivateCrosshair => !manager.isConfirmed;
+
+    /// <summary>
+    /// 骸骨をクリックしたら選択画面UIを表示
+    /// </summary>
+    public void Interact(GameObject targetObject)
+    {
+
+        manager.ShowConfirmationUI(this);
+
+    }
+
+    #endregion
+
+
+
     private void Start()
     {
-        cameraSwitcher = FindObjectOfType<CameraSwitcher>();
         manager = FindObjectOfType<SkullManager>();
     }
 
-    private void Update()
-    {
-        if (isLookingSkull)
-        {
-            cameraSwitcher.ClosshairAnimation(10f, 500f, 0.5f, cameraSwitcher.crosshairRectTransform, isLookingSkull);
-        }
-        else if(!isLookingSkull)
-        {
-            cameraSwitcher.ClosshairAnimation(10f, 35f, 5f, cameraSwitcher.crosshairRectTransform, isLookingSkull);
-        }
-    }
 
     public void SetReal(bool real)
     {
         isReal = real;
     }
 
-    private void OnMouseEnter()
-    {
-        // カーソルを合わせたとき
-        isLookingSkull = true;
-        Debug.Log($"{gameObject.name} にカーソルを合わせた");
-    }
+ 
 
-    private void OnMouseExit()
-    {
-        // カーソルが外れたときの処理
-        isLookingSkull=false;
-
-    }
-
-    private void OnMouseDown()
-    {
-        // 骸骨をクリックしたら管理スクリプトに通知
-        manager.ShowConfirmationUI(this);
-    }
 
     public void RevealReal()
     {
