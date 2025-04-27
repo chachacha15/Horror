@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: "\u30B7\u30FC\u30F3"
+  m_Title: "\u30D2\u30A8\u30E9\u30EB\u30AD\u30FC"
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 49657
+  controlID: 87
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 49658
+  controlID: 88
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 49659
+  controlID: 89
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -193,7 +193,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 49660
+  controlID: 90
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -213,8 +213,8 @@ MonoBehaviour:
     y: 0
     width: 382
     height: 624
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -296,8 +296,8 @@ MonoBehaviour:
     y: 0
     width: 464
     height: 939
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 276, y: 71}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 22}
   m_Panes:
   - {fileID: 22}
@@ -379,10 +379,10 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 858}
-      m_SelectedIDs: 1c9a0500
-      m_LastClickedID: 367132
-      m_ExpandedIDs: 50f2f6ffa699f8ff56b3f8ff44cef8ff149df9ff3a9ff9ff1aa1f9fff0a2f9ff46a5f9ff38a8f9ff4aadf9ff54baf9ff3e09fcfffe99fcff54a3fcff140afdff3e20fdffe694feff6ad2feff14e9feff92f0feffd602ffff2003ffff4003ffff2004ffff7c13ffffae13ffff242affff402dffff7272ffff98f4ffff988d0000689000001c400100304001006a400100c6400100444101004c410100a4410100b0410100fc410100ba440100b26e0500bc6e050054700500e2840500b0860500668f050012900500029905001699050050990500b4990500349a05003c9a0500949a0500a09a0500f2a10500e0a205004eed0600cef8060080000700fa2f0700
+      scrollPos: {x: 0, y: 1210}
+      m_SelectedIDs: 2c920000
+      m_LastClickedID: 37420
+      m_ExpandedIDs: acf4ffffb2f4ffff8cf6ffff6cf7ffffdafaffff2e8c0000708c0000848c0000be8c00001a8d0000a48d0000048e00005c8e00000a8f00001a9100002c920000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -821,16 +821,16 @@ MonoBehaviour:
   m_WindowGUID: cc27987af1a868c49b0894db9c0f5429
   m_Gizmos: 0
   m_OverrideSceneCullingMask: 6917529027641081856
-  m_SceneIsLit: 0
+  m_SceneIsLit: 1
   m_SceneLighting: 1
   m_2DMode: 0
   m_isRotationLocked: 0
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 24.530556, y: 1.9877892, z: 38.253994}
+    m_Target: {x: 1.6680412, y: 3.9851189, z: 61.858494}
     speed: 2
-    m_Value: {x: 24.530556, y: 1.9877892, z: 38.253994}
+    m_Value: {x: 1.6680412, y: 3.9851189, z: 61.858494}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -876,13 +876,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.13384397, y: 0.69858396, z: -0.13813625, w: -0.6895946}
+    m_Target: {x: 0.08248782, y: 0.20832486, z: -0.015527157, w: 0.9747403}
     speed: 2
-    m_Value: {x: -0.1358631, y: 0.6879705, z: -0.13607527, w: -0.6998008}
+    m_Value: {x: 0.08100288, y: 0.2082893, z: -0.015210032, w: 0.9745885}
   m_Size:
-    m_Target: 3.1647236
+    m_Target: 2.4780226
     speed: 2
-    m_Value: 3.1647236
+    m_Value: 2.4780226
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1491,7 +1491,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/ARTnGAME/Oceanis/Oceanis URP/DEMO ASSETS/Materials/DEMOS
+    - "Assets/2_Prefabs/\u30AE\u30DF\u30C3\u30AF\u7528Prefab/\u82B1"
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1499,16 +1499,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 61
   m_LastFolders:
-  - Assets/ARTnGAME/Oceanis/Oceanis URP/DEMO ASSETS/Materials/DEMOS
+  - "Assets/2_Prefabs/\u30AE\u30DF\u30C3\u30AF\u7528Prefab/\u82B1"
   m_LastFoldersGridSize: 61
   m_LastProjectPath: C:\git\Horror
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 782}
-    m_SelectedIDs: 643c0400
-    m_LastClickedID: 277604
-    m_ExpandedIDs: 00000000cc7f0000f4c40000f8c40000fac40000fcc40000fec4000000c500000cc500000ec5000010c5000012c5000014c5000016c5000018c500001ac500007cc50000c6c500006ec90000184b0100284b0100325901003459010042b70300feb70300b43a0400bc3a0400c03a0400d03a0400d83a0400e83a0400ec3a0400f03a0400083b04000c3b0400143b04002c3b0400303b0400343b04003c3b0400403b04007c3b0400883b0400903b0400a83b0400d43b0400f83b0400103c04006c3c0400843c0400ac3c040000ca9a3b
+    scrollPos: {x: 0, y: 480}
+    m_SelectedIDs: 1ec90000
+    m_LastClickedID: 51486
+    m_ExpandedIDs: 000000000ec8000010c8000012c8000014c8000016c8000018c800001ac800001cc800001ec8000020c8000022c8000024c8000026c8000028c800002ac800002cc8000030c8000032c8000034c8000036c8000038c800003ac800003cc800003ec8000040c8000046c8000048c800004ac800004cc800004ec8000050c8000052c8000054c8000056c8000058c800005ac800005cc800005ec8000060c8000062c8000064c8000066c8000068c800006ac800006cc800006ec800004ac9000094c9000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1536,7 +1536,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000cc7f0000f4c40000f8c40000fac40000fcc40000fec4000000c500000cc500000ec5000010c5000012c5000014c5000016c5000018c500001ac50000c6c500006ec90000184b0100284b0100325901003459010042b70300feb70300b43a0400bc3a0400c03a0400d03a0400d83a0400e83a0400f03a0400083b04000c3b0400143b04002c3b0400303b0400343b04003c3b0400403b04007c3b0400903b0400a83b0400d43b0400f83b0400103c04006c3c0400843c0400ac3c040000ca9a3b
+    m_ExpandedIDs: 000000000ec8000010c8000012c8000014c8000016c8000018c800001ac800001cc800001ec8000020c8000022c8000024c8000026c8000028c800002ac800002cc800002ec8000030c8000032c8000034c8000036c8000038c800003ac800003cc800003ec8000040c8000042c8000044c8000046c8000048c800004ac800004cc800004ec8000050c8000052c8000054c8000056c8000058c800005ac800005cc800005ec8000060c8000062c8000064c8000066c8000068c800006ac800006cc800006ec80000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1817,7 +1817,7 @@ MonoBehaviour:
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectInstanceID: -1
-  m_LastVerticalScrollValue: 645
+  m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:

@@ -25,10 +25,11 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _EMISSION
   - _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
   - _SPECULAR_SETUP
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 1994
@@ -132,6 +133,6 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0, g: 0.8329468, b: 1, a: 1}
     - _Color: {r: 0, g: 0.83294684, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionColor: {r: 0.3526625, g: 0.3526625, b: 0.3526625, a: 0}
     - _SpecColor: {r: 0.21239765, g: 0.37630326, b: 0.4056604, a: 1}
   m_BuildTextureStacks: []
