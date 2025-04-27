@@ -1,0 +1,26 @@
+Universal Rendering Pipeline (URP). 
+
+--------
+
+Bouquet with Lilies it's a lowpoly game ready model with unwrapped UVs and PBR textures.
+
+This asset includes 3 separate objects: vase with flowers, doily and flower branch.
+
+Normal map was baked from a high poly model.
+
+--------
+
+Number of Unique Meshes: 3
+Number of Prefabs: 3
+Collision: Yes, automatically generated
+LODs: No
+Number of Materials: 2
+Number of Textures: 8
+Textures resolution: 2048x2048 (Albedo, MetallicSmoothness, Normal, AO).
+Textures format: TGA.
+UVs: channel 0: overlapping; channel 1: non-overlapping (for baking lightmaps).
+
+--------
+
+If you have any questions, please write me on e-mail.
+My e-mail: gladkaya.3d@gmail.com

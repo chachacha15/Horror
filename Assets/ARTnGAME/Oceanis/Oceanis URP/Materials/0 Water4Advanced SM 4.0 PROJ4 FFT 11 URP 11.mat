@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 0 Water4Advanced SM 4.0 PROJ4 FFT 11 URP 11
+  m_Shader: {fileID: 4800000, guid: 5dbcea0e500f5fb4fa6c539e9a1a9b1a, type: 3}
+  m_Parent: {fileID: 2100000, guid: c1910b853a31dc24b809623f70cdc635, type: 2}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - FRACTAL
+  - SNOISE
+  - THREED
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _NormalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normals_T3D:
+        m_Texture: {fileID: 11700000, guid: cc09f49b7c344a5448cf2e7fbb110c0b, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - FresnelFactor: 0.4
+    - _FoamBiasLOD0: 1.04
+    - _FoamBiasLOD1: 1.56
+    - _FoamBiasLOD2: 2.61
+    - _FoamScale: 20
+    - _FresnelScale: 2.9
+    - _MultiplyEffect: -27.56
+    - _Roughness: 0.99
+    - _SSSScale: 0.1
+    - _Shininess: 317
+    - _WorldScale: 7.146853
+    - depthFade: 2
+    - depthFadePower: -1
+    - fogThres: 283.9998
+    - waterHeight: 3.000001
+    m_Colors:
+    - _BaseColor: {r: 0.09625311, g: 0.76186264, b: 0.9716981, a: 1}
+    - _BumpDirection: {r: 57.999977, g: 28.000011, b: 28.000011, a: 1}
+    - _BumpTiling: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0, g: 0.28906292, b: 0.4339623, a: 1}
+    - _DepthCameraPos: {r: -3287.6846, g: 1000, b: -2130.7698, a: 1}
+    - _DistortParams: {r: -1.61, g: -1.83, b: -6, a: 1.01}
+    - _Foam: {r: 211, g: -10.4, b: 1, a: 1}
+    - _FoamColor: {r: 0.41176468, g: 0.41176468, b: 0.4117647, a: 1}
+    - _GAmplitude: {r: 4.991537e-14, g: 4.991537e-14, b: 4.991537e-14, a: 4.991537e-14}
+    - _GerstnerIntensities: {r: 0.4, g: -2, b: 12, a: -0.5}
+    - _InteractAmpFreqRad: {r: -0.1, g: 21, b: 0.8, a: 109.7}
+    - _InvFadeParemeter: {r: -0.04, g: -0.05, b: 0.043, a: -0.002}
+    - _NormalsOffset3DControls: {r: 0, g: 0, b: -0.6, a: 1}
+    - _SpecularColor: {r: 0.09109115, g: 0.5974858, b: 0.8396226, a: 0.23529412}
+    - _TerrainScale: {r: 590.5, g: 286.5, b: 0, a: 0}
+    - _WorldLightDir: {r: 0.39014384, g: -0.08889421, b: -0.91645277, a: 0}
+    - _controlReflect: {r: 311, g: 5, b: 1, a: 1}
+    - _controlSkyColor: {r: 0.6784314, g: 0.35957313, b: 0.07450979, a: 0}
+    - _controlSkyRadiance: {r: 0.04, g: 1, b: 231150, a: 0.1}
+    - _controlSkyRadianceA: {r: 1, g: 462.52, b: 65, a: 1}
+    - _localLightAPos: {r: 119.2, g: -2.6, b: 11.9, a: 20022}
+    - _localLightAProps: {r: 1, g: 0.15076348, b: 0, a: 4}
+    - cameraNearControl: {r: 0, g: 0, b: 0, a: 215}
+    - fogColor: {r: 0.60245764, g: 0.6961331, b: 0.71273375, a: 1}
+    - shoreGlow: {r: 0.75, g: 1.15, b: 1, a: 1}
+    - shoreWaveControl: {r: 1.06, g: -34.02, b: 3, a: 1.63}
+    - shoreWaveControlB: {r: -3.22, g: 0.68, b: 0.36, a: 1}
+    - shoreWaves: {r: -0.07, g: -0.01, b: 4.08, a: 1.006}
+    - vortexPosScale: {r: -4245.1, g: 17, b: 64.34, a: 111.9}
+  m_BuildTextureStacks: []
+--- !u!1002 &2100001
+EditorExtensionImpl:
+  serializedVersion: 6
