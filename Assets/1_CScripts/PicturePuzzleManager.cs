@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class PicturePuzzleManager : MonoBehaviour
 {
-    public GameObject keyPrefab;                // 鍵のPrefab
-    public Transform keySpawnPoint;            // 鍵の出現位置
+    public GameObject keyPrefab;
+    public Transform keySpawnPoint;
+
+    public PictureRotator leftPicture;
+    public PictureRotator rightPicture;
 
     private List<string> inputSequence = new List<string>();
     private readonly string[] correctSequence = { "L", "L", "L", "R", "L", "L", "R", "R" };
@@ -30,28 +33,34 @@ public class PicturePuzzleManager : MonoBehaviour
 
     private void CheckSequence()
     {
-        // 入力数オーバーしたらリセット
+        // 入力数が超えたらミスとみなす
         if (inputSequence.Count > correctSequence.Length)
         {
-            inputSequence.Clear();
+            ResetAll();
             return;
         }
 
-        // 現在までの入力と正解を順次チェック
         for (int i = 0; i < inputSequence.Count; i++)
         {
             if (inputSequence[i] != correctSequence[i])
             {
-                inputSequence.Clear();  // 間違えたらリセット
+                ResetAll();
                 return;
             }
         }
 
-        // 完全一致したらクリア！
         if (inputSequence.Count == correctSequence.Length)
         {
             PuzzleClear();
         }
+    }
+
+    private void ResetAll()
+    {
+        Debug.Log("間違った操作。回転をリセット。");
+        inputSequence.Clear();
+        leftPicture.ResetRotation();
+        rightPicture.ResetRotation();
     }
 
     private void PuzzleClear()
