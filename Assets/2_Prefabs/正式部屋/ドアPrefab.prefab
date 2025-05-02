@@ -69,16 +69,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 1
   animator: {fileID: 981977776242522175}
   player: {fileID: 7247795016101697177, guid: c9811cbd2012606438ebfe10ab2bdba2, type: 3}
-  interactCanvas: {fileID: 0}
-  doortext: {fileID: 5817023962472842189, guid: d6b3e5d24c317f94ea76c71bbb504824,
-    type: 3}
-  crosshair: {fileID: 5058454362225812111, guid: 12ac2c15813bd8e4791eb8923aca00c3,
-    type: 3}
+  isOpen: 0
+  lockedText: {fileID: 0}
+  isLockedDoor: 1
+  openSound: {fileID: 0}
+  closeSound: {fileID: 0}
   UnLockSound: {fileID: 0}
   CardKeySound: {fileID: 0}
   LockedSound: {fileID: 0}
@@ -146,7 +143,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4746839530139082986}
-  m_Mesh: {fileID: 8604493922093517169, guid: 62c7fa59124ef794986c52b34deafa67, type: 3}
+  m_Mesh: {fileID: 8604493922093517169, guid: f1455c6edd5f5834495f22b1505293f5, type: 3}
 --- !u!23 &438804006394016901
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -507,7 +504,7 @@ SpriteRenderer:
   m_Size: {x: 3.84, y: 1.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!222 &1771387133243768995

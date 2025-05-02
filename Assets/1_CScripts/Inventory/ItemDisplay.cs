@@ -41,6 +41,7 @@ public class ItemDisplay : MonoBehaviour
 
             // 少しずつ横回転
             float rotationSpeed = 20f; // 回転速度（度/秒）
+
             Vector3 currentRotation = currentDisplayedItem.transform.localEulerAngles;
             currentRotation.y += rotationSpeed * Time.unscaledDeltaTime; // Y軸のみ回転
             currentDisplayedItem.transform.localEulerAngles = currentRotation;
@@ -84,6 +85,7 @@ public class ItemDisplay : MonoBehaviour
 
         // 最新のアイテムを取得
         var item = inventory.items[inventory.items.Count - 1];
+        Debug.Log(item.item.transform.rotation.x);
 
         // スロットを生成
         slot = Instantiate(itemSlotPrefab, itemListParent);
@@ -126,19 +128,21 @@ public class ItemDisplay : MonoBehaviour
         }
 
         PocketItem currentItem = item; // クロージャ問題を防ぐため
-        DisplayItemIn3D(currentItem.item);
+        DisplayItemIn3D(item);
             
             
     }
 
-    private void DisplayItemIn3D(GameObject item)
+    private void DisplayItemIn3D(PocketItem item)
     {
         // 既に表示中のアイテムがあれば削除
         ClearDisplayedItem();
 
         // アイテムを表示位置に配置 (X軸を-90度回転)
-        currentDisplayedItem = Instantiate(item, itemDisplayPosition.position, Quaternion.Euler(-80f, 34f, 0f));
+        currentDisplayedItem = Instantiate(item.item, itemDisplayPosition.position, item.displayRotation);
         currentDisplayedItem.transform.SetParent(itemDisplayPosition); // 親を設定して移動を簡単に
+        currentDisplayedItem.transform.localPosition = item.displayPosition;
+        currentDisplayedItem.transform.localScale = item.displayScale;
 
         // 不要なコンポーネントを無効化（物理やインタラクションなど）
         Collider collider = currentDisplayedItem.GetComponent<Collider>();

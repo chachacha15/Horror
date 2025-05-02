@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime;
 
 public class ItemChecker : MonoBehaviour
 {
     #region Variables
+    public static ItemChecker Instance { get; private set; }
+
     public float interactDistance = 3f; // インタラクト可能な距離
 
     // アイテム用
     public LayerMask itemLayer; // アイテムに使用するレイヤー
-    public GameObject takeTextCanvas;
-    public GameObject interactText; // UI テキスト (拾うメッセージを表示)
     public ItemDataBase itemDataBase; // アイテムデータベースを参照
     public Inventory inventory; // プレイヤーのインベントリを管理するスクリプト
     public ItemDisplay itemDisplay;
@@ -25,10 +26,10 @@ public class ItemChecker : MonoBehaviour
     // 表示するUI用
     private TextMeshProUGUI interactTextComponent; // TextMeshProの参照
     public BoolWrapper isLookingItem = new BoolWrapper { Value = false };
-    private bool isTakeTextChanged = false;
+    public bool isTakeTextChanged = false;
 
     //その他・他クラス
-    private CameraSwitcher cameraSwitcher;
+
 
     Ray ray;
  
@@ -41,59 +42,29 @@ public class ItemChecker : MonoBehaviour
 
     #endregion
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
 
 
     private void Start()
     {
-        interactTextComponent = interactText.GetComponent<TextMeshProUGUI>();
-
-        if (interactTextComponent == null)
-        {
-            Debug.LogError("interactTextにTextMeshProUGUIコンポーネントが見つかりません！");
-        }
-
         pickUpAS = GetComponent<AudioSource>();
-
-        // 他クラスを取得
-        cameraSwitcher = FindObjectOfType<CameraSwitcher>();
-        cameraSwitcher.activeCrosshairBoolList.Add(isLookingItem);
-
        
     }
 
-    private void Update()
-    {
-        // レイキャストでアイテムを検出
-        if (!cameraSwitcher.isPlayerHiding) ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        else if (cameraSwitcher.isPlayerHiding) ray = cameraSwitcher.currentClosetCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+    
 
-        if (Physics.Raycast(ray, out hit, interactDistance, itemLayer))
-        {
-            GameObject hitItem = hit.collider.gameObject;
-
-            if (hitItem.CompareTag("Item") && !isTakeTextChanged)
-            {
-                interactTextComponent.text = $"取る";
-                takeTextCanvas.SetActive(true);
-                isLookingItem.Value = true;
-
-                if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
-                {
-                    PickupItem(hitItem);
-                   
-                }
-            }
-        }
-        else
-        {
-            takeTextCanvas.SetActive(false);
-            isLookingItem.Value = false;
-        }
-
-    }
-
-    private void PickupItem(GameObject item)
+    public void PickupItem(GameObject item)
     {
         PocketItem itemData = itemDataBase.itemList.Find(i => i.item.name == item.name);
 
@@ -111,7 +82,7 @@ public class ItemChecker : MonoBehaviour
 
             bool haveGotThisItem = inventory.haveGotItems.Contains(item.name);
             inventory.AddItem(itemData);
-
+            Debug.Log(itemData.item.transform.name +" : "+itemData.item.transform.rotation.x);
 
             // 初ゲットならディスプレイに表示
             if (!haveGotThisItem)
@@ -133,15 +104,9 @@ public class ItemChecker : MonoBehaviour
    
     private IEnumerator ChangeTakeText()
     {
-        interactTextComponent.text = $"アイテムがいっぱいです";
-        takeTextCanvas.SetActive(true);
         isTakeTextChanged = true;
         yield return new WaitForSeconds(2f);
-        takeTextCanvas.SetActive(false);
-        interactTextComponent.text = $"取る";
         isTakeTextChanged = false;
-
-
     }
 }
 

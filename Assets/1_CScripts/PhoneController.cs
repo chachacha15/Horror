@@ -27,11 +27,11 @@ public class PhoneController : MonoBehaviour, IInteractable
 
     public string GetInteractText()
     {
-        if (isLookingTelephone.Value) return "開ける";
+        if (isLookingTelephone.Value) return "";
         return "";
     }
 
-    public bool ShowInteractText => !isDone; // テキスト表示するかどうか
+    public bool ShowInteractText => false; // テキスト表示するかどうか
     public bool ActivateCrosshair => !isDone;
     // クリックしたときの処理
     public void Interact(GameObject targetObject)

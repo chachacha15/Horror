@@ -1,7 +1,31 @@
 ﻿using UnityEngine;
 
-public class PictureRotator : MonoBehaviour
+public class PictureRotator : MonoBehaviour, IInteractable
 {
+
+    #region Interactable (IInteractable)
+
+    public string GetInteractText()
+    {
+        return "";
+    }
+
+    public bool ShowInteractText => false; // テキスト表示するかどうか
+    public bool ActivateCrosshair => true;
+
+    /// <summary>
+    /// クリック時、開閉
+    /// </summary>
+    public void Interact(GameObject targetObject)
+    {
+        transform.Rotate(0f, rotateAngle, 0f);
+        OnPictureRotated?.Invoke(pictureID);
+
+    }
+
+    #endregion
+
+
     [SerializeField] private float rotateAngle = 15f;
     public string pictureID; // "L" または "R"
 
@@ -17,8 +41,7 @@ public class PictureRotator : MonoBehaviour
 
     private void OnMouseDown()
     {
-        transform.Rotate(0f, rotateAngle, 0f);
-        OnPictureRotated?.Invoke(pictureID);
+
     }
 
     public void ResetRotation()

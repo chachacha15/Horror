@@ -396,9 +396,12 @@ public class Inventory : MonoBehaviour
                 Debug.LogWarning($"アイコンが見つからないか、スプライトが設定されていません: {items[i].item.name}");
             }
             // アイテムをスロット内に表示
-            displayObjects[i] = Instantiate(items[i].item, displayCameraTransform[i].position, Quaternion.Euler(-80f, 34f, 0f));
+            displayObjects[i] = Instantiate(items[i].item);
             displayObjects[i].transform.SetParent(displayCameraTransform[i]); // 親を設定して移動を簡単に
-            displayCameraTransform[i].transform.localScale = new Vector3(displayCameraTransform[i].transform.localScale.x * 3f, displayCameraTransform[i].transform.localScale.y * 3f, displayCameraTransform[i].transform.localScale.z * 3f);
+            displayObjects[i].transform.localPosition = items[i].iconPosition;
+            displayObjects[i].transform.localRotation = items[i].iconRotation;
+            displayObjects[i].transform.localScale = items[i].iconScale;
+            //displayCameraTransform[i].transform.localScale = new Vector3(displayCameraTransform[i].transform.localScale.x * 3f, displayCameraTransform[i].transform.localScale.y * 3f, displayCameraTransform[i].transform.localScale.z * 3f);
 
             // 不要なコンポーネントを無効化（物理やインタラクションなど）
             Collider collider = displayObjects[i].GetComponent<Collider>();

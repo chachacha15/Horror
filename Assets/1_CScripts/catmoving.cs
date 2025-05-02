@@ -2,8 +2,30 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class CatWander : MonoBehaviour
+public class CatWander : MonoBehaviour, IInteractable
 {
+    #region Interactable (IInteractable)
+
+    public string GetInteractText()
+    {
+        
+        return "捕まえる";
+    }
+
+    public bool ShowInteractText => true; // テキスト表示するかどうか
+    public bool ActivateCrosshair => true;
+
+    /// <summary>
+    /// クリック時、開閉
+    /// </summary>
+    public void Interact(GameObject targetObject)
+    {
+        
+
+    }
+
+    #endregion
+
     [Header("徘徊範囲設定")]
     public float wanderRadius = 10f; // 徘徊する範囲の半径
     public float wanderInterval = 5f; // 移動間隔（秒）

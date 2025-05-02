@@ -1,19 +1,34 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class NearbyItemHighlighter : MonoBehaviour
 {
+    public static NearbyItemHighlighter Instance;
     public float interactDistance = 3f;       // 強調する最大距離
-    private GameObject currentHighlightedItem; // 現在強調されているアイテム
+    public GameObject currentHighlightedItem; // 現在強調されているアイテム
     private int defaultLayer;                 // 元のレイヤーを保存
 
     public string highlightLayer = "HighLight"; // 強調用レイヤー名
 
-    private void Update()
+
+    private void Awake()
     {
-        HighlightNearbyItems();
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
-    private void HighlightNearbyItems()
+    private void Update()
+    {
+        //HighlightNearbyItems();
+    }
+
+    public void HighlightNearbyItems()
     {
         Collider[] nearbyColliders = Physics.OverlapSphere(transform.position, interactDistance);
 
@@ -21,7 +36,7 @@ public class NearbyItemHighlighter : MonoBehaviour
         {
             GameObject item = collider.gameObject;
 
-            if (item.CompareTag("Item") || item.CompareTag("Battery")) // Itemタグを持つオブジェクトを検出
+            if (item.CompareTag("Interactable") || item.CompareTag("Battery")) // Itemタグを持つオブジェクトを検出
             {
                 if (currentHighlightedItem != item)
                 {
@@ -36,10 +51,14 @@ public class NearbyItemHighlighter : MonoBehaviour
         ClearHighlight(); // 何も見つからなかった場合は強調を解除
     }
 
-    private void ApplyHighlight(GameObject item)
+    public void ApplyHighlight(GameObject item)
     {
-        currentHighlightedItem = item;
-        defaultLayer = item.layer; // 元のレイヤーを保存
+        // このオブジェクトがメッシュを持っている場合、そのままハイライト
+        // 持っていなかった場合、子供のオブジェクトをハイライトするようにする
+        if (item.GetComponent<MeshFilter>()) currentHighlightedItem = item;
+        else currentHighlightedItem = item.transform.GetChild(0).gameObject;
+
+        defaultLayer = currentHighlightedItem.layer; // 元のレイヤーを保存
 
         // 強調用レイヤーを取得
         int highlightLayerIndex = LayerMask.NameToLayer(highlightLayer);
@@ -51,10 +70,10 @@ public class NearbyItemHighlighter : MonoBehaviour
         }
 
         // 強調用レイヤーに変更
-        item.layer = highlightLayerIndex;
+         currentHighlightedItem.layer = highlightLayerIndex;
     }
 
-    private void ClearHighlight()
+    public void ClearHighlight()
     {
         if (currentHighlightedItem != null)
         {
