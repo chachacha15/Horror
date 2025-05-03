@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7791777675647367244
 Transform:
@@ -110,11 +110,43 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flashlight
       objectReference: {fileID: 0}
+    - target: {fileID: 7071841098048563497, guid: f9b95df5957945b4aa4be396d353fdc7,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8576464399047933738, guid: f9b95df5957945b4aa4be396d353fdc7,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7071841098048563497, guid: f9b95df5957945b4aa4be396d353fdc7,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2662012779389796779}
   m_SourcePrefab: {fileID: 100100000, guid: f9b95df5957945b4aa4be396d353fdc7, type: 3}
+--- !u!1 &6093504501596372203 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7071841098048563497, guid: f9b95df5957945b4aa4be396d353fdc7,
+    type: 3}
+  m_PrefabInstance: {fileID: 3941846001049163202}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2662012779389796779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6093504501596372203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eeb4bc41fd20274998a0f253a7715d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8448838670295253535 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4896554140103874525, guid: f9b95df5957945b4aa4be396d353fdc7,

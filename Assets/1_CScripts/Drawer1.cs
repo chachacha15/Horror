@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class Drawer1 : MonoBehaviour, IInteractable
 {
@@ -12,6 +13,7 @@ public class Drawer1 : MonoBehaviour, IInteractable
     [SerializeField] private float openDuration = 0.5f; // 開閉時間
 
     [SerializeField] private bool isLocked = false; // 鍵付きかどうか
+    private bool isDisplayingLockedText = false; // 開かないテキストを表示中か
 
 
     // サウンド
@@ -37,7 +39,8 @@ public class Drawer1 : MonoBehaviour, IInteractable
 
     public string GetInteractText()
     {
-        if (isOpen) return "閉める";
+        if (isDisplayingLockedText) return "鍵がかかっている";
+        else if (isOpen) return "閉める";
         return "開ける";
     }
 
@@ -70,16 +73,15 @@ public class Drawer1 : MonoBehaviour, IInteractable
         closedPosition = transform.localPosition;
         openedPosition = closedPosition + openOffset;
 
+        // スポーン位置に自分を登録
+        DroppedItemManager.Instance.spawnPoints.Add(transform);
+
     }
 
-
-    private void Update()
-    {
-        
-       
-    }
-
-
+    /// <summary>
+    /// 引き出しにインタラクトしたときに呼ばれる
+    /// 引き出し開け閉め（鍵付きなども）に関するメソッド
+    /// </summary>
     private void ToggleDrawer()
     {
         // 鍵がかかっていないとき
@@ -115,6 +117,7 @@ public class Drawer1 : MonoBehaviour, IInteractable
             // 開けられないとき
             else
             {
+                StartCoroutine(LockedTextDisplay());
                 drawerAS.PlayOneShot(lockedSound);
             }
         }
@@ -137,6 +140,13 @@ public class Drawer1 : MonoBehaviour, IInteractable
         }
         transform.localPosition = to;
         isMoving = false;
+    }
+
+    private IEnumerator LockedTextDisplay()
+    {
+        isDisplayingLockedText = true;
+        yield return new WaitForSeconds(3);
+        isDisplayingLockedText = false;
     }
 
     #endregion

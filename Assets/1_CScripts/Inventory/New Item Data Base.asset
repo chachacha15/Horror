@@ -13,162 +13,20 @@ MonoBehaviour:
   m_Name: New Item Data Base
   m_EditorClassIdentifier: 
   itemList:
-  - item: {fileID: 4873405674805984531, guid: 32b40640df3a4af4f9562130f7130bb5, type: 3}
-    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(1\u53F7\u5BA4)"
-    icon: {fileID: 21300000, guid: 868a2d0cc84ae37478b3dc1b1d664e7c, type: 3}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 7595292998625853993, guid: f92e3045547f2114caee31a6ec855e12, type: 3}
-    explainText: 2
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 8993290392035506406, guid: f51dca2ac6e2d674a8fdbc34248db6db, type: 3}
-    explainText: 3
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 3781996991015358552, guid: 3ecd7d7daadf6c94c8a4ae302a99ed09, type: 3}
-    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(4\u53F7\u5BA4)"
-    icon: {fileID: 21300000, guid: 9651e9cdb4321a74a9aa9b229aaac2f7, type: 3}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 322115876639743377, guid: e639e1645412c224a9171a8a322703a8, type: 3}
-    explainText: 5
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 4916761520433326964, guid: ab2d50271cb1b1f4aa4c09fde6fc8135, type: 3}
-    explainText: 6
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 2605767343011699014, guid: 7a575babac75a1d479995be7a3826245, type: 3}
-    explainText: 7
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 4272556656842868613, guid: faa1726196d5b04458f403316fc7829e, type: 3}
-    explainText: 8
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 2699762784413746974, guid: cdd8e0bafd5af7048b2bb01e94f62b4a, type: 3}
-    explainText: 9
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 5699815268335339274, guid: 34e32692f0d3d244b82a3d2d5b2a39b5, type: 3}
-    explainText: 10
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 8524256942303740940, guid: 892faf007aa99e7468a0f28d9179a56c, type: 3}
-    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(11\u53F7\u5BA4) "
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 3127098095137900398, guid: c57d8dfe4ff34da41800e97c4e9e466a, type: 3}
-    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(12\u53F7\u5BA4)"
-    icon: {fileID: 21300000, guid: 519c3fa74bb9b874b8b2c9dee240cb0f, type: 3}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 6400570519695934348, guid: 6f4ec2128f6ad674aa447e7b166052f3, type: 3}
-    explainText: 13
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 9159944051863111364, guid: 7e89b235bf03db140b995c49f3d317e1, type: 3}
-    explainText: 14
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 2881460552584456472, guid: cd105887fd8b6264f99dc85f9d72a773, type: 3}
-    explainText: 15
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
-  - item: {fileID: 4653112075150312976, guid: 70b669015bb633e49b4167e3fcefceb1, type: 3}
-    explainText: 16
-    icon: {fileID: 0}
-    displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
   - item: {fileID: 5456526189553002757, guid: 80a1821fdd06b9a4fa090b29964ec0d8, type: 3}
     explainText: "\u30B9\u30DD\u30F3\u30B8"
-    icon: {fileID: 21300000, guid: 8a526579fd3d29e44b9abe0ff3cf4813, type: 3}
+    weight: 1
+    isImportant: 1
     displayPosition: {x: 0, y: 0, z: 0}
     displayRotation: {x: 0, y: 0, z: 0, w: 0}
     displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
-    iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
+    iconPosition: {x: 0, y: -0.3, z: 0}
+    iconRotation: {x: -0.05601872, y: -0.9430295, z: -0.20906472, w: 0.252684}
+    iconScale: {x: 2.5, y: 2.5, z: 2.5}
   - item: {fileID: 4552011857134225814, guid: 3159828aed4696e4ebe3022b9090a1db, type: 3}
     explainText: "\u61D0\u4E2D\u96FB\u706F"
-    icon: {fileID: 21300000, guid: a5785c0719d12cf48a93bec70a5a459e, type: 3}
+    weight: 0
+    isImportant: 0
     displayPosition: {x: 0, y: 0, z: 0}
     displayRotation: {x: 0, y: 0, z: 0, w: 0}
     displayScale: {x: 1, y: 1, z: 1}
@@ -177,7 +35,8 @@ MonoBehaviour:
     iconScale: {x: 1.8, y: 1.8, z: 1.8}
   - item: {fileID: 5845324458439467950, guid: 19e4208c53f8e004b98941523c4b110c, type: 3}
     explainText: "\u30A8\u30EC\u30D9\u30FC\u30BF\u30FC\u8D77\u52D5\u53EF\u80FD"
-    icon: {fileID: 0}
+    weight: 1
+    isImportant: 1
     displayPosition: {x: 0, y: 0, z: 0}
     displayRotation: {x: 0, y: 0, z: 0, w: 0}
     displayScale: {x: 1, y: 1, z: 1}
@@ -186,19 +45,181 @@ MonoBehaviour:
     iconScale: {x: 1, y: 1, z: 1}
   - item: {fileID: 3332858975086692790, guid: 4291f22d64ed79c4a865040605fb3040, type: 3}
     explainText: "\u5F15\u304D\u51FA\u3057\u3092\u958B\u3051\u308B\u306E\u306B\u4F7F\u3046"
-    icon: {fileID: 0}
+    weight: 3
+    isImportant: 0
     displayPosition: {x: 0, y: 0, z: 0}
     displayRotation: {x: 0, y: 0, z: 0, w: 0}
-    displayScale: {x: 1, y: 1, z: 1}
-    iconPosition: {x: 0, y: 0, z: 0}
+    displayScale: {x: 2, y: 2, z: 2}
+    iconPosition: {x: 0, y: -0.2, z: 0}
     iconRotation: {x: 0, y: 0, z: 0, w: 0}
-    iconScale: {x: 1, y: 1, z: 1}
+    iconScale: {x: 5, y: 5, z: 5}
   - item: {fileID: 6462728804892413919, guid: 277cb82dd19b2874ba580f5f8abfba37, type: 3}
     explainText: "\u767D\u3044\u30E6\u30EA\u3060"
-    icon: {fileID: 0}
+    weight: 0
+    isImportant: 0
     displayPosition: {x: 0, y: 0, z: 0}
     displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
     displayScale: {x: 0.8, y: 0.8, z: 0.8}
     iconPosition: {x: 0, y: 0, z: 0}
     iconRotation: {x: 0.70710677, y: 0, z: 0, w: -0.70710677}
     iconScale: {x: 2, y: 2, z: 2}
+  - item: {fileID: 4873405674805984531, guid: 32b40640df3a4af4f9562130f7130bb5, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(501\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: e30f17a8d8e374e40bd4439b7c9817b6, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(502\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: e0e8f3e4e096fb541b5456e1a077fbe3, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(503\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: 4201f37ec90f0414ab8a537527328ab9, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(504\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: e93a0c8e802182a43906e75fe6137950, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(505\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: 27ee08e78b737084aab9626b165cefce, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(506\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: ab3f06d2c40cc14498160545e0397472, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(507\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: 4125a5f7dd59e1a4a9cf06fc9f5ec6e3, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(508\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: 0f48d781803853d4daa1573323d9282d, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(509\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: d3e725bbc2be6084ba9af3229cdd15a1, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(510\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: 61b523758ce95cd4aafca5ecc92b9bb3, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(511\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: da0a9bdb13107f24bba5ead89c00d330, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(512\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: e5982e6b8c26a0342ab7c0346a1fdf4d, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(513\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: 8113a4506687bce42a439b58a983d5a6, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(514\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: 80628f494e0398141a88fe221cd79424, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(515\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 4873405674805984531, guid: f82014f821278b14ea62e3d5f2c9ae1c, type: 3}
+    explainText: "\u30AB\u30FC\u30C9\u30AD\u30FC(516\u53F7\u5BA4)"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
