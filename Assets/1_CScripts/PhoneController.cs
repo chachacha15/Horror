@@ -10,7 +10,7 @@ public class PhoneController : MonoBehaviour, IInteractable
     [SerializeField] private GameObject keypadPanel; // キーパッドの UI
     [SerializeField] private TMP_Text inputText; // 入力表示
     [SerializeField] private TMP_Text messageText; // メッセージ表示
-    [SerializeField] private string[] correctNumbers = { "1234", "5678" }; // 正解番号
+    [SerializeField] private string[] correctNumbers = { "1919", "0721" }; // 正解番号
     [SerializeField] private AudioSource buttonSound; // ボタン音（オプション）
     [SerializeField] private AudioSource correctSound; // 正解時の音
     [SerializeField] private AudioSource incorrectSound; // 間違い時の音
@@ -121,7 +121,7 @@ public class PhoneController : MonoBehaviour, IInteractable
 
         if (isCorrect)
         {
-            messageText.text = "正しい番号です。";
+            messageText.text = "激シコ大正解";
             if (correctSound != null) correctSound.Play();
 
         }

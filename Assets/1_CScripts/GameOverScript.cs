@@ -68,7 +68,7 @@ public class GameOverScript : MonoBehaviour
             audioSource.PlayOneShot(gameOverSound); // ゲームオーバーサウンドを再生
             gameOverUI.SetActive(true); // GameOver UIを表示
             StartCoroutine(FadeTextAlpha()); // ガンマ値（アルファ値）をフェード
-            StartCoroutine(fadeManager.FadeOut(image));
+            //StartCoroutine(fadeManager.FadeOut(image));
 
         }
         else

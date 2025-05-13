@@ -223,3 +223,13 @@ MonoBehaviour:
     iconPosition: {x: 0, y: -0.1, z: 0}
     iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
     iconScale: {x: 0.24, y: 0.0048, z: 0.338}
+  - item: {fileID: 919132149155446097, guid: 628ff747a5e68e145ae84c49b78ec2a2, type: 3}
+    explainText: "\u304A\u3055\u304B\u306A\u3055\u3093"
+    weight: 1
+    isImportant: 1
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayScale: {x: 0.2, y: 0.004, z: 0.28}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    iconScale: {x: 0.24, y: 0.0048, z: 0.338}
