@@ -8,7 +8,7 @@ public class CatWander : MonoBehaviour, IInteractable
 
     public string GetInteractText()
     {
-        
+
         return "捕まえる";
     }
 
@@ -20,7 +20,7 @@ public class CatWander : MonoBehaviour, IInteractable
     /// </summary>
     public void Interact(GameObject targetObject)
     {
-        
+
 
     }
 

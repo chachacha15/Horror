@@ -13,6 +13,6 @@ public class WaterScrol : MonoBehaviour
     {
         float offsetX = Time.time * speedX;
         float offsetY = Time.time * speedY;
-        waterMaterial.SetTextureOffset("_NormalMap", new Vector2(offsetX, offsetY));
+        //waterMaterial.SetTextureOffset("_NormalMap", new Vector2(offsetX, offsetY));
     }
 }
