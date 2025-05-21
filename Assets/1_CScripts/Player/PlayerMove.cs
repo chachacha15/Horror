@@ -35,6 +35,9 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField] private GameOverScript gameOverScript; // GameOver用のスクリプト参照
 
+    // 他クラス
+    ShakeCamera shakeCamera;
+
 
     #endregion
 
@@ -44,6 +47,8 @@ public class PlayerMove : MonoBehaviour
 
     private void Awake()
     {
+        shakeCamera = ShakeCamera.Instance;
+
         charController = GetComponent<CharacterController>();
     }
 
@@ -74,6 +79,8 @@ public class PlayerMove : MonoBehaviour
     private void Update()
     {
         PlayerMovement();
+
+        if (shakeCamera.isShaking) return;
 
         // 状態に応じた揺れ倍率を設定
         float bobSpeedMultiplier;

@@ -48,7 +48,7 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
     private Transform closetCameraTransform;
 
     // ‘¼ƒNƒ‰ƒX
-
+    ShakeCamera shakeCamera;
 
 
     #endregion
@@ -111,6 +111,8 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
     {
         activeCrosshairBoolList = new List<BoolWrapper>();
 
+        shakeCamera = ShakeCamera.Instance;
+
     }
 
     private void Start()
@@ -149,7 +151,7 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
        
        
         // ‰B‚ê‚Ä‚¢‚éŠÔ‚ÌƒJƒƒ‰—h‚ê
-        if (isClosetCameraActive && closetCameraTransform != null)
+        if (isClosetCameraActive && closetCameraTransform != null && !shakeCamera.isShaking)
         {
             Vector3 bobOffset = bob.DoHeadBob(0.15f); // —h‚ê‚ÌŒvZ
             closetCameraTransform.localPosition = bobOffset; // ƒNƒ[ƒ[ƒbƒgƒJƒƒ‰‚ğ—h‚ç‚·

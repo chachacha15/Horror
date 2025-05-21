@@ -201,6 +201,8 @@ public class GhostAI : MonoBehaviour
         {
             currentState = State.Chase;
             agent.speed = chaseSpeed; // 追跡速度に設定
+            ShakeCamera.Instance.Shake(0.5f, 1f);
+
             enemyManager.FindChasingEnemy();
 
         }
