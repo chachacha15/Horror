@@ -1,53 +1,77 @@
-﻿using UnityEngine;
+﻿using Mono.Cecil;
+using System;
+using UnityEngine;
 
-public class PictureRotator : MonoBehaviour, IInteractable
+
+/*
+public class PictureRotator : MonoBehaviour
 {
+    public ArrowType arrowType;
 
-    #region Interactable (IInteractable)
+    [Header("左側の絵かどうか")]
+    public bool isLeft;  // true: 左, false: 右
 
-    public string GetInteractText()
-    {
-        return "";
-    }
+    private float currentRotation = 0f;
 
-    public bool ShowInteractText => false; // テキスト表示するかどうか
-    public bool ActivateCrosshair => true;
+    public static event Action<string> OnPictureRotated; // "L" または "R" を送信
 
     /// <summary>
-    /// クリック時、開閉
+    /// プレイヤーがクリックなどでこの関数を呼ぶと15度回転
     /// </summary>
-    public void Interact(GameObject targetObject)
+    public void Rotate()
     {
-        transform.Rotate(0f, rotateAngle, 0f);
-        OnPictureRotated?.Invoke(pictureID);
+        transform.Rotate(0f, 15f, 0f);
+        currentRotation += 15f;
 
+        if (currentRotation >= 360f) currentRotation -= 360f;
+
+        // PuzzleManagerに通知
+        OnPictureRotated?.Invoke(isLeft ? "L" : "R");
     }
 
-    #endregion
-
-
-    [SerializeField] private float rotateAngle = 15f;
-    public string pictureID; // "L" または "R"
-
-    public delegate void PictureRotated(string pictureID);
-    public static event PictureRotated OnPictureRotated;
-
-    private Quaternion initialRotation;
-
-    private void Start()
+    /// <summary>
+    /// 間違えたときにリセット用
+    /// </summary>
+    public void ResetRotation()
     {
-        initialRotation = transform.rotation;
+        transform.localRotation = Quaternion.identity;
+        currentRotation = 0f;
     }
+}
+*/
 
+
+public class PictureRotator : MonoBehaviour
+{
+    public ArrowType arrowType;
+
+    [Header("左側の絵かどうか")]
+    public bool isLeft = true; // true: 左, false: 右
+
+    private float currentRotation = 0f;
+
+    public static event Action<string> OnPictureRotated;
+
+    // ✅ マウスクリック時に自動で呼ばれる
     private void OnMouseDown()
     {
+        Rotate();
+    }
 
+    public void Rotate()
+    {
+        transform.Rotate(0f, 10f, 0f);
+        currentRotation += 10f;
+        if (currentRotation >= 360f) currentRotation -= 360f;
+
+        OnPictureRotated?.Invoke(isLeft ? "L" : "R");
+
+        Debug.Log($"[{gameObject.name}] を回転！現在角度: {currentRotation}");
     }
 
     public void ResetRotation()
     {
-        transform.rotation = initialRotation;
+        transform.localRotation = Quaternion.identity;
+        currentRotation = 0f;
     }
 }
-
-

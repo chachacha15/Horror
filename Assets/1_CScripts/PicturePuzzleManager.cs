@@ -2,73 +2,89 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ArrowType { Left, Right }
+
 public class PicturePuzzleManager : MonoBehaviour
 {
-    public GameObject keyPrefab;
-    public Transform keySpawnPoint;
-
+    [Header("操作する2枚の絵")]
     public PictureRotator leftPicture;
     public PictureRotator rightPicture;
 
-    private List<string> inputSequence = new List<string>();
-    private readonly string[] correctSequence = { "L", "L", "L", "R", "L", "L", "R", "R" };
+    [Header("ヒント生成元")]
+    public ArrowHintSpawner hintSpawner;
+
+    [Header("落下対象")]
+    public Rigidbody fallingPicture; // 右の絵画（倒れる対象）
+
+    private List<string> correctSequence = new List<string>();
+    private List<string> currentInputSequence = new List<string>();
     private bool puzzleSolved = false;
+
+    void Start()
+    {
+        correctSequence = new List<string>(hintSpawner.generatedAnswerSequence);
+        if (fallingPicture != null) fallingPicture.isKinematic = true; // 初期状態で固定
+    }
 
     private void OnEnable()
     {
-        PictureRotator.OnPictureRotated += RecordRotation;
+        PictureRotator.OnPictureRotated += OnPictureRotated;
     }
 
     private void OnDisable()
     {
-        PictureRotator.OnPictureRotated -= RecordRotation;
+        PictureRotator.OnPictureRotated -= OnPictureRotated;
     }
 
-    private void RecordRotation(string pictureID)
+    private void OnPictureRotated(string arrow)
     {
         if (puzzleSolved) return;
 
-        inputSequence.Add(pictureID);
-        CheckSequence();
-    }
+        currentInputSequence.Add(arrow);
+        Debug.Log("入力: " + string.Join(" ", currentInputSequence));
 
-    private void CheckSequence()
-    {
-        // 入力数が超えたらミスとみなす
-        if (inputSequence.Count > correctSequence.Length)
+        if (currentInputSequence.Count == correctSequence.Count)
         {
-            ResetAll();
-            return;
-        }
-
-        for (int i = 0; i < inputSequence.Count; i++)
-        {
-            if (inputSequence[i] != correctSequence[i])
+            if (IsSequenceCorrect())
             {
-                ResetAll();
-                return;
+                Debug.Log("\uD83C\uDF1F 正解！Puzzle Clear！");
+                PuzzleClear();
+            }
+            else
+            {
+                Debug.Log("❌ 間違い！回転リセット");
+                ResetAllPictures();
             }
         }
-
-        if (inputSequence.Count == correctSequence.Length)
-        {
-            PuzzleClear();
-        }
     }
 
-    private void ResetAll()
+    private bool IsSequenceCorrect()
     {
-        Debug.Log("間違った操作。回転をリセット。");
-        inputSequence.Clear();
+        for (int i = 0; i < correctSequence.Count; i++)
+        {
+            if (currentInputSequence[i] != correctSequence[i])
+                return false;
+        }
+        return true;
+    }
+
+    private void ResetAllPictures()
+    {
         leftPicture.ResetRotation();
         rightPicture.ResetRotation();
+        currentInputSequence.Clear();
     }
 
     private void PuzzleClear()
     {
         puzzleSolved = true;
-        Debug.Log("ギミッククリア！ 鍵が出現！");
-        Instantiate(keyPrefab, keySpawnPoint.position, Quaternion.identity);
+
+        if (fallingPicture != null)
+        {
+            fallingPicture.isKinematic = false; // 落下させる
+        }
+
+        Debug.Log("絵が落下！");
     }
 }
 */
@@ -76,115 +92,87 @@ public class PicturePuzzleManager : MonoBehaviour
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ArrowType { Left, Right }
+
 public class PicturePuzzleManager : MonoBehaviour
 {
-    [Header("絵の情報")]
+    [Header("操作する2枚の絵")]
     public PictureRotator leftPicture;
     public PictureRotator rightPicture;
-    /*
-    [Header("鍵出現")]
-    public GameObject keyPrefab;
-    public Transform keySpawnPoint;
-    */
-    [Header("絵落下 & 音")]
-    public Rigidbody fallingPicture;         // 落とす絵の Rigidbody（isKinematic = true で初期化）
-    public AudioSource dropSoundSource;      // 割れる音など
-    public Transform soundSourcePosition;    // 音が発生した位置（敵が向かう座標）
 
-    private List<string> inputSequence = new List<string>();
-    private readonly string[] correctSequence = { "L", "L", "L", "R", "L", "L", "R", "R" };
+    [Header("ヒント生成元")]
+    public ArrowHintSpawner hintSpawner;
 
+    [Header("落下対象")]
+    public Rigidbody fallingPicture; // 右の絵画（倒れる対象）
+
+    private List<string> correctSequence = new List<string>();
+    private List<string> currentInputSequence = new List<string>();
     private bool puzzleSolved = false;
+
+    void Start()
+    {
+        correctSequence = new List<string>(hintSpawner.generatedAnswerSequence);
+        if (fallingPicture != null) fallingPicture.isKinematic = true; // 初期状態で固定
+    }
 
     private void OnEnable()
     {
-        PictureRotator.OnPictureRotated += RecordRotation;
+        PictureRotator.OnPictureRotated += OnPictureRotated;
     }
 
     private void OnDisable()
     {
-        PictureRotator.OnPictureRotated -= RecordRotation;
+        PictureRotator.OnPictureRotated -= OnPictureRotated;
     }
 
-    private void RecordRotation(string pictureID)
+    private void OnPictureRotated(string arrow)
     {
         if (puzzleSolved) return;
 
-        inputSequence.Add(pictureID);
-        CheckSequence();
-    }
+        currentInputSequence.Add(arrow);
+        Debug.Log("入力: " + string.Join(" ", currentInputSequence));
 
-    private void CheckSequence()
-    {
-        if (inputSequence.Count > correctSequence.Length)
+        if (currentInputSequence.Count > correctSequence.Count)
         {
-            ResetAll();
+            Debug.Log("❌ 入力数超過。回転リセット");
+            ResetAllPictures();
             return;
         }
 
-        for (int i = 0; i < inputSequence.Count; i++)
+        for (int i = 0; i < currentInputSequence.Count; i++)
         {
-            if (inputSequence[i] != correctSequence[i])
+            if (currentInputSequence[i] != correctSequence[i])
             {
-                ResetAll();
+                Debug.Log("❌ 間違い！回転リセット");
+                ResetAllPictures();
                 return;
             }
         }
 
-        if (inputSequence.Count == correctSequence.Length)
+        if (currentInputSequence.Count == correctSequence.Count)
         {
+            Debug.Log("\uD83C\uDF1F 正解！Puzzle Clear！");
             PuzzleClear();
         }
     }
 
-    private void ResetAll()
+    private void ResetAllPictures()
     {
-        Debug.Log("間違い。絵をリセット。");
-        inputSequence.Clear();
         leftPicture.ResetRotation();
         rightPicture.ResetRotation();
+        currentInputSequence.Clear();
     }
 
     private void PuzzleClear()
     {
-        if (puzzleSolved) return;
         puzzleSolved = true;
 
-        Debug.Log("正解！ギミック開始：絵落下→音→敵を誘導");
-
-        // 鍵を出す
-        //Instantiate(keyPrefab,keySpawnPoint.position,Quaternion.Euler(0f, 90f, 0f));  // ← Y軸に90度回転させて出現！);
-
-
-
-        // 絵を落とす
         if (fallingPicture != null)
         {
-            fallingPicture.isKinematic = false;
+            fallingPicture.isKinematic = false; // 落下させる
         }
 
-        // 落下音を鳴らす
-        if (dropSoundSource != null)
-        {
-            dropSoundSource.Play();
-        }
-
-        // ===== 🔥 敵に音の発生を知らせる（これが一番重要） =====
-        if (soundSourcePosition != null)
-        {
-            // radius は detectionRadius に合わせて広めに（20以上推奨）
-            SoundEventManager.Emit(soundSourcePosition.position, 25f, "PictureDrop");
-            Debug.Log("SoundEvent 発火（位置：" + soundSourcePosition.position + "）");
-        }
-
-        if (fallingPicture != null)
-        {
-            fallingPicture.isKinematic = false;
-
-            // 壁に対して前方向に回転させる（絵の向きによって調整）
-            Vector3 forwardTilt = transform.right * -10; // ← transform.forwardでもOK。方向は調整
-            fallingPicture.AddTorque(forwardTilt, ForceMode.Impulse);
-        }
-
+        Debug.Log("絵が落下！");
     }
 }
