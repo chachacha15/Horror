@@ -224,7 +224,7 @@ MonoBehaviour:
     iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
     iconScale: {x: 0.24, y: 0.0048, z: 0.338}
   - item: {fileID: 5367161972318017973, guid: 2346c9e501170594abcbf4646ea9d855, type: 3}
-    explainText: "\u304A\u3055\u304B\u306A\u3055\u3093"
+    explainText: "\u4FB5\u3059"
     weight: 1
     isImportant: 1
     displayPosition: {x: 0, y: 0, z: 0}
