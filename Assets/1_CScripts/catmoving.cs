@@ -6,6 +6,17 @@ public class CatWander : MonoBehaviour, IInteractable
 {
     #region Interactable (IInteractable)
 
+    // 追加すべき変数（catmoving.cs のクラス内、Start()やUpdate()の外に記述）
+    private float wanderTimer;
+
+    private float meowTimer;
+    private float nextMeowTime;
+
+    [SerializeField] private float meowIntervalMin = 10f;
+    [SerializeField] private float meowIntervalMax = 20f;
+    [SerializeField] private Transform player;
+
+
     public string GetInteractText()
     {
 
@@ -37,6 +48,23 @@ public class CatWander : MonoBehaviour, IInteractable
     {
         agent = GetComponent<NavMeshAgent>();
         timer = wanderInterval;
+        wanderTimer = wanderInterval;
+
+        meowTimer = 0f;
+        nextMeowTime = UnityEngine.Random.Range(meowIntervalMin, meowIntervalMax);
+
+        if (player == null)
+        {
+            GameObject foundPlayer = GameObject.FindWithTag("Player");
+            if (foundPlayer != null)
+            {
+                player = foundPlayer.transform;
+            }
+            else
+            {
+                Debug.LogError("catmoving.cs：Playerが見つかりません。タグ 'Player' を付けてください。");
+            }
+        }
     }
 
     private void Update()

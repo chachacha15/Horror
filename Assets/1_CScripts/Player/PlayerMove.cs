@@ -1,18 +1,18 @@
 using System.Collections;
 using UnityEngine;
 using UnityStandardAssets.Utility;
-using UnityEngine.SceneManagement; // ƒV[ƒ“ŠÇ—‚ğƒCƒ“ƒ|[ƒg
+using UnityEngine.SceneManagement; // ã‚·ãƒ¼ãƒ³ç®¡ç†ã‚’ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMove : MonoBehaviour
 {
     #region Variables 
 
-    // “ü—Í•ûŒü
+    // å…¥åŠ›æ–¹å‘
     [SerializeField] private string horizontalInputName = "Horizontal";
     [SerializeField] private string verticalInputName = "Vertical";
 
-    // ƒvƒŒƒCƒ„[ˆÚ“®Ú×’l
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç§»å‹•è©³ç´°å€¤
     [SerializeField] private float movementSpeed = 4f;
     [SerializeField] private float runSpeed = 20f;
     [SerializeField] private bool isRunning;
@@ -26,16 +26,16 @@ public class PlayerMove : MonoBehaviour
     private Camera MainCamera;
     private Transform cameraTransform;
 
-    // ˆêlÌƒJƒƒ‰‚Ì—h‚ê‚É‚Â‚¢‚Ä
+    // ä¸€äººç§°ã‚«ãƒ¡ãƒ©ã®æºã‚Œã«ã¤ã„ã¦
     Vector3 HeadBob;
     [SerializeField] private CurveControlledBob bob = new CurveControlledBob();
     [SerializeField] private float runSwayAmount = 3.0f;
     [SerializeField] private float walkSwayAmount = 1.8f;
     [SerializeField] private float stopSwayAmount = 0.15f;
 
-    [SerializeField] private GameOverScript gameOverScript; // GameOver—p‚ÌƒXƒNƒŠƒvƒgQÆ
+    [SerializeField] private GameOverScript gameOverScript; // GameOverç”¨ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆå‚ç…§
 
-    // ‘¼ƒNƒ‰ƒX
+    // ä»–ã‚¯ãƒ©ã‚¹
     ShakeCamera shakeCamera;
 
 
@@ -43,6 +43,8 @@ public class PlayerMove : MonoBehaviour
 
 
     #region Methods
+
+
 
 
     private void Awake()
@@ -54,6 +56,7 @@ public class PlayerMove : MonoBehaviour
 
     private void Start()
     {
+       
         staminaBar = FindObjectOfType<StaminaBar>();
         GameObject player = GameObject.Find("Player");
 
@@ -63,16 +66,16 @@ public class PlayerMove : MonoBehaviour
         audiowalk = walk.GetComponent<AudioSource>();
         audiorun = run.GetComponent<AudioSource>();
 
-        // ƒJƒƒ‰‚Ì—h‚ê
+        // ã‚«ãƒ¡ãƒ©ã®æºã‚Œ
         MainCamera = Camera.main;
         cameraTransform = MainCamera.transform;
         bob.Setup(MainCamera, 1.0f);
 
-        // GameOverScript‚ğæ“¾
+        // GameOverScriptã‚’å–å¾—
         gameOverScript = FindObjectOfType<GameOverScript>();
         if (gameOverScript == null)
         {
-            Debug.LogError("GameOverScript‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñI");
+            Debug.LogError("GameOverScriptãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼");
         }
     }
 
@@ -82,21 +85,21 @@ public class PlayerMove : MonoBehaviour
 
         if (shakeCamera.isShaking) return;
 
-        // ó‘Ô‚É‰‚¶‚½—h‚ê”{—¦‚ğİ’è
+        // çŠ¶æ…‹ã«å¿œã˜ãŸæºã‚Œå€ç‡ã‚’è¨­å®š
         float bobSpeedMultiplier;
 
-        if (isRunning) // ‘–s’†iSpaceƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚éê‡j
+        if (isRunning) // èµ°è¡Œä¸­ï¼ˆSpaceã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹å ´åˆï¼‰
         {
-            bobSpeedMultiplier = runSwayAmount; // ‘–s’†‚Ì—h‚ê
+            bobSpeedMultiplier = runSwayAmount; // èµ°è¡Œä¸­ã®æºã‚Œ
 
         }
-        else if (Input.GetAxis(verticalInputName) != 0 || Input.GetAxis(horizontalInputName) != 0) // •às’†iˆÚ“®‚ª‚ ‚éê‡j
+        else if (Input.GetAxis(verticalInputName) != 0 || Input.GetAxis(horizontalInputName) != 0) // æ­©è¡Œä¸­ï¼ˆç§»å‹•ãŒã‚ã‚‹å ´åˆï¼‰
         {
-            bobSpeedMultiplier = walkSwayAmount; // •às’†‚Ì—h‚ê
+            bobSpeedMultiplier = walkSwayAmount; // æ­©è¡Œä¸­ã®æºã‚Œ
         }
-        else // —§‚¿~‚Ü‚Á‚Ä‚¢‚éê‡
+        else // ç«‹ã¡æ­¢ã¾ã£ã¦ã„ã‚‹å ´åˆ
         {
-            bobSpeedMultiplier = stopSwayAmount; // ‚¿‚å‚Á‚Æ‚¾‚¯—h‚ê
+            bobSpeedMultiplier = stopSwayAmount; // ã¡ã‚‡ã£ã¨ã ã‘æºã‚Œ
         }
 
         HeadBob = bob.DoHeadBob(bobSpeedMultiplier);
@@ -111,22 +114,22 @@ public class PlayerMove : MonoBehaviour
         Vector3 forwardMovement = transform.forward * vertInput;
         Vector3 rightMovement = transform.right * horizInput;
 
-        if (Input.GetKey(KeyCode.Space)) //ƒXƒy[ƒXƒL[‰Ÿ‚µ‚Ä‚¢‚é‚Æ‚«
+        if (Input.GetKey(KeyCode.Space)) //ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼æŠ¼ã—ã¦ã„ã‚‹ã¨ã
         {
-            if (!isRunning && staminaBar.CanStartRunning() && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)) //‘–‚Á‚Ä‚¢‚È‚­‚ÄAƒXƒ^ƒ~ƒi50ˆÈãAwasd“ü—Í‚ª‚ ‚é
+            if (!isRunning && staminaBar.CanStartRunning() && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)) //èµ°ã£ã¦ã„ãªãã¦ã€ã‚¹ã‚¿ãƒŸãƒŠ50ä»¥ä¸Šã€wasdå…¥åŠ›ãŒã‚ã‚‹
             {
-                // ó‘Ô‚ğXV
+                // çŠ¶æ…‹ã‚’æ›´æ–°
                 isRunning = true;
                 staminaBar.SetRunning(true);
 
-                // ”ÍˆÍ“à‚Ì“G‚ªŠ´’m‚ğ”­‰Î
+                // ç¯„å›²å†…ã®æ•µãŒæ„ŸçŸ¥ã‚’ç™ºç«
                 SoundEventManager.Emit(transform.position, runNoiseRadius, "Dash");
 
-                //charController.SimpleMove((forwardMovement + rightMovement) * (runSpeed / movementSpeed)); // ƒ_ƒbƒVƒ…‚Ì‘¬“x‚ğ’²®
+                //charController.SimpleMove((forwardMovement + rightMovement) * (runSpeed / movementSpeed)); // ãƒ€ãƒƒã‚·ãƒ¥æ™‚ã®é€Ÿåº¦ã‚’èª¿æ•´
                 audiorun.Play();
             }
         }
-        else //‘–‚Á‚Ä‚¢‚é‚Æ‚«‚ÉAƒXƒy[ƒXƒL[‚ğ—£‚µ‚½‚ç‘–‚é‚Ì‚ğ‚â‚ß‚é‚æ‚¤‚ÉB
+        else //èµ°ã£ã¦ã„ã‚‹ã¨ãã«ã€ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼ã‚’é›¢ã—ãŸã‚‰èµ°ã‚‹ã®ã‚’ã‚„ã‚ã‚‹ã‚ˆã†ã«ã€‚
         {
             isRunning = false;
             staminaBar.SetRunning(false);
@@ -134,19 +137,19 @@ public class PlayerMove : MonoBehaviour
         }
 
 
-        if (isRunning && staminaBar.CanContinueRunning())@//‘–‚Á‚Ä‚¢‚Ä‘–‚è‘±‚¯‚ç‚ê‚é‚Æ‚«(ƒXƒ^ƒ~ƒi‚O‚É‚È‚Á‚½‚ç‘–‚ê‚È‚¢‚æ‚¤‚ÉB)
+        if (isRunning && staminaBar.CanContinueRunning())ã€€//èµ°ã£ã¦ã„ã¦èµ°ã‚Šç¶šã‘ã‚‰ã‚Œã‚‹ã¨ã(ã‚¹ã‚¿ãƒŸãƒŠï¼ã«ãªã£ãŸã‚‰èµ°ã‚Œãªã„ã‚ˆã†ã«ã€‚)
         {
-            // ”ÍˆÍ“à‚Ì“G‚ªŠ´’m‚ğ”­‰Î
+            // ç¯„å›²å†…ã®æ•µãŒæ„ŸçŸ¥ã‚’ç™ºç«
             SoundEventManager.Emit(transform.position, runNoiseRadius, "Dash");
 
-            charController.SimpleMove((forwardMovement + rightMovement) * (runSpeed / movementSpeed)); // ƒ_ƒbƒVƒ…‚Ì‘¬“x‚ğ’²®
-            // ‘–‚é‰¹‚ğÄ¶iÄ¶’†‚Å‚È‚¢ê‡‚Ì‚İj
+            charController.SimpleMove((forwardMovement + rightMovement) * (runSpeed / movementSpeed)); // ãƒ€ãƒƒã‚·ãƒ¥æ™‚ã®é€Ÿåº¦ã‚’èª¿æ•´
+            // èµ°ã‚‹éŸ³ã‚’å†ç”Ÿï¼ˆå†ç”Ÿä¸­ã§ãªã„å ´åˆã®ã¿ï¼‰
             if (!audiorun.isPlaying)
             {
                 audiorun.Play();
             }
 
-            // •à‚­‰¹‚ğ~‚ß‚é
+            // æ­©ãéŸ³ã‚’æ­¢ã‚ã‚‹
             if (audiowalk.isPlaying)
             {
                 audiowalk.Stop();
@@ -157,13 +160,13 @@ public class PlayerMove : MonoBehaviour
             charController.SimpleMove(forwardMovement + rightMovement);
             isRunning = false;
             staminaBar.SetRunning(false);
-            // •à‚­‰¹‚ğÄ¶iÄ¶’†‚Å‚È‚¢ê‡‚Ì‚İj
+            // æ­©ãéŸ³ã‚’å†ç”Ÿï¼ˆå†ç”Ÿä¸­ã§ãªã„å ´åˆã®ã¿ï¼‰
             if (!audiowalk.isPlaying && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
             {
                 audiowalk.Play();
             }
 
-            // ‘–‚é‰¹‚ğ~‚ß‚é
+            // èµ°ã‚‹éŸ³ã‚’æ­¢ã‚ã‚‹
             if (audiorun.isPlaying)
             {
                 audiorun.Stop();
@@ -181,7 +184,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            gameOverScript?.TriggerGameOver(); // GameOver‚ğ”­“®
+            gameOverScript?.TriggerGameOver(); // GameOverã‚’ç™ºå‹•
         }
     }
 
@@ -189,7 +192,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            gameOverScript?.TriggerGameOver(); // GameOver‚ğ”­“®
+            gameOverScript?.TriggerGameOver(); // GameOverã‚’ç™ºå‹•
         }
     }
 
