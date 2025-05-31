@@ -74,12 +74,17 @@ MonoBehaviour:
   isOpen: 0
   lockedText: {fileID: 0}
   isLockedDoor: 1
+  isEnemyDoor: 1
+  isRoomDoor: 1
   openSound: {fileID: 0}
   closeSound: {fileID: 0}
   UnLockSound: {fileID: 0}
   CardKeySound: {fileID: 0}
   LockedSound: {fileID: 0}
+  playerMove: {fileID: 0}
   inventory: {fileID: 0}
+  objectPrefab: {fileID: 941146453867524459, guid: 657c550069030a1478eff41b59fc504c,
+    type: 3}
 --- !u!65 &4461301774028029777
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -187,18 +187,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 1
   animator: {fileID: 6344494741213286726}
   player: {fileID: 0}
-  interactCanvas: {fileID: 0}
-  doortext: {fileID: 0}
-  crosshair: {fileID: 0}
+  isOpen: 0
+  lockedText: {fileID: 0}
+  isLockedDoor: 1
+  isEnemyDoor: 1
+  isRoomDoor: 1
+  openSound: {fileID: 0}
+  closeSound: {fileID: 0}
   UnLockSound: {fileID: 0}
   CardKeySound: {fileID: 0}
   LockedSound: {fileID: 0}
+  playerMove: {fileID: 0}
   inventory: {fileID: 0}
+  objectPrefab: {fileID: 0}
 --- !u!65 &5678815768687565596
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -431,7 +434,7 @@ SpriteRenderer:
   m_Size: {x: 3.84, y: 1.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!222 &313401915174954497

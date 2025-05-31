@@ -8,6 +8,8 @@ public class PlayerMove : MonoBehaviour
 {
     #region Variables 
 
+    public static PlayerMove Instance { get; private set; }
+
     // 入力方向
     [SerializeField] private string horizontalInputName = "Horizontal";
     [SerializeField] private string verticalInputName = "Vertical";
@@ -49,7 +51,7 @@ public class PlayerMove : MonoBehaviour
 
     private void Awake()
     {
-        shakeCamera = ShakeCamera.Instance;
+        Instance = this;
 
         charController = GetComponent<CharacterController>();
     }
@@ -58,6 +60,9 @@ public class PlayerMove : MonoBehaviour
     {
        
         staminaBar = FindObjectOfType<StaminaBar>();
+        shakeCamera = ShakeCamera.Instance;
+
+
         GameObject player = GameObject.Find("Player");
 
         Transform walk = player.transform.Find("walk sound");

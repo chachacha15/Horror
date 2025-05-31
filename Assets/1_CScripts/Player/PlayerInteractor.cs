@@ -34,7 +34,7 @@ public class PlayerInteractor : MonoBehaviour
         if (Physics.Raycast(ray, out hit, interactDistance, obstacleLayer))
         {
 
-            Debug.Log("見ているモノ　：　"+hit.collider.gameObject);
+            //Debug.Log("見ているモノ　：　"+hit.collider.gameObject);
 
             if (((1 << hit.collider.gameObject.layer) & interactLayer) != 0)
             {

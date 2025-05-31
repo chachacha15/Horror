@@ -9,6 +9,8 @@ public class DoorController : MonoBehaviour, IInteractable
 {
     #region Variables
 
+    public static DoorController Instance;
+
     public Camera mainCamera;
 
     public Animator animator; // ドアのAnimator
@@ -20,6 +22,9 @@ public class DoorController : MonoBehaviour, IInteractable
     public bool isLockedDoor = true; // ドアがしまっているか
     private string requiredKeyName; // 必要なカギの名前
 
+    public bool isEnemyDoor;        // 敵が潜む場合があるドアかどうか
+    public bool isRoomDoor = true;  // 部屋にあるドアかどうか（トイレなどはオフ）
+
     // サウンド
     public AudioClip openSound; // 開ける音
     public AudioClip closeSound; // 閉める音
@@ -28,7 +33,13 @@ public class DoorController : MonoBehaviour, IInteractable
     public AudioClip CardKeySound; // ピッというカードキー認証音
     public AudioClip LockedSound; // ガチャガチャという開けられない音
 
+
+    // 他クラス
+    public PlayerMove playerMove;
     public Inventory inventory; // プレイヤーのインベントリ
+
+
+    public GameObject objectPrefab;
 
 
     #endregion
@@ -77,17 +88,20 @@ public class DoorController : MonoBehaviour, IInteractable
 
 
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        // 必要なコンポーネント・クラスを取得
+        playerMove = PlayerMove.Instance;
         inventory = FindObjectOfType<Inventory>();
-
-
-       
-       
-
-        // TextMeshProUGUIへの参照
+        audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
+        
 
         // AnimatorのisOpenパラメータを初期状態に同期
         if (animator != null)  animator.SetBool("isOpen", isOpen);
@@ -100,8 +114,14 @@ public class DoorController : MonoBehaviour, IInteractable
         requiredKeyName = GetRequiredKeyNameFromObjectName(gameObject.name);
         if(requiredKeyName == null) isLockedDoor= false;
 
+
+        
+
     }
 
+    /// <summary>
+    /// ドアを開閉するメソッド
+    /// </summary>
     public void ToggleDoor()
     {
 
@@ -121,10 +141,67 @@ public class DoorController : MonoBehaviour, IInteractable
             audioSource.pitch = 0.85f;
             StartCoroutine(PlaySoundWithDelay(closeSound, 0.35f));
         }
+
+
+
+        if (isOpen)
+        {
+            CheckWhichSide();
+
+        }
+
+    }
+
+    void CheckWhichSide()
+    {
+        // ドアのローカル空間でプレイヤー位置を取得
+        Vector3 localPos = transform.parent.InverseTransformPoint(playerMove.transform.localPosition);
+
+        // ローカルZ座標を使って前後判定（Z+が前、Z-が後ろ）
+        if (localPos.z >= 0)
+        {
+            if (isRoomDoor)
+            {
+                Debug.Log("表側から開けた");
+
+                // 前側に生成
+                Vector3 frontPosition = transform.parent.position - transform.parent.forward * 2.5f;
+                Instantiate(objectPrefab, frontPosition, Quaternion.identity);
+            }
+            else
+            {
+                Debug.Log("裏側から開けた");
+
+            }
+        }
+        else
+        {
+
+            if (isRoomDoor)
+            {
+                Debug.Log("裏側から開けた");
+            }
+            else
+            {
+                Debug.Log("表側から開けた");
+
+                // 前側に生成
+                Vector3 frontPosition = transform.parent.position + transform.parent.forward * 2.5f;
+                Instantiate(objectPrefab, frontPosition, Quaternion.identity);
+            }
+
+            
+
+        }
     }
 
 
-    // 指定した音を指定した遅延時間後に再生
+    /// <summary>
+    /// 指定した音を指定した遅延時間後に再生
+    /// </summary>
+    /// <param name="clip"></param>
+    /// <param name="delay"></param>
+    /// <returns></returns>
     private IEnumerator PlaySoundWithDelay(AudioClip clip, float delay)
     {
         yield return new WaitForSeconds(delay); // 指定した秒数だけ待つ
@@ -134,7 +211,11 @@ public class DoorController : MonoBehaviour, IInteractable
         }
     }
 
-    // オブジェクト名から必要なカギの名前を取得
+    /// <summary>
+    /// オブジェクト名から必要なカギの名前を取得
+    /// </summary>
+    /// <param name="objectName"></param>
+    /// <returns></returns>
     private string GetRequiredKeyNameFromObjectName(string objectName)
     {
         System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(objectName, @"\d+");
@@ -149,7 +230,10 @@ public class DoorController : MonoBehaviour, IInteractable
         }
     }
 
-    // 必要なカギを持っているか確認
+    /// <summary>
+    /// 必要なカギを持っているか確認
+    /// </summary>
+    /// <returns></returns>
     private bool HasRequiredKey()
     {
         if (inventory.selectedItem != null && inventory.selectedItem.item.name == requiredKeyName)
@@ -160,6 +244,10 @@ public class DoorController : MonoBehaviour, IInteractable
         return false; // カギがない
     }
 
+    /// <summary>
+    /// 鍵が無いときに一定の間特別なテキストを表示するコルーチン
+    /// </summary>
+    /// <returns></returns>
     IEnumerator DelayText()
     {
         lockedText.text = "開かない";
