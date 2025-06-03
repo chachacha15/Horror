@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,9 +7,7 @@ public class CatWander : MonoBehaviour, IInteractable
 {
     #region Interactable (IInteractable)
 
-    // 追加すべき変数（catmoving.cs のクラス内、Start()やUpdate()の外に記述）
     private float wanderTimer;
-
     private float meowTimer;
     private float nextMeowTime;
 
@@ -16,33 +15,32 @@ public class CatWander : MonoBehaviour, IInteractable
     [SerializeField] private float meowIntervalMax = 20f;
     [SerializeField] private Transform player;
 
-
-    public string GetInteractText()
-    {
-
-        return "捕まえる";
-    }
-
-    public bool ShowInteractText => true; // テキスト表示するかどうか
+    public string GetInteractText() => "捕まえる";
+    public bool ShowInteractText => true;
     public bool ActivateCrosshair => true;
 
-    /// <summary>
-    /// クリック時、開閉
-    /// </summary>
     public void Interact(GameObject targetObject)
     {
-
-
+        // 今回は未使用
     }
 
     #endregion
 
-    [Header("徘徊範囲設定")]
-    public float wanderRadius = 10f; // 徘徊する範囲の半径
-    public float wanderInterval = 5f; // 移動間隔（秒）
+    [Header("徘徊設定")]
+    public float wanderRadius = 10f;
+    public float wanderInterval = 5f;
+    private float timer;
+
+    [Header("プレイヤー検知設定")]
+    public float detectionRadius = 8f;
+    public float escapeDistance = 12f;
+
+    [Header("鳴き声設定")]
+    public AudioClip normalMeow;
+    public AudioClip alertMeow;
+    private AudioSource audioSource;
 
     private NavMeshAgent agent;
-    private float timer;
 
     private void Start()
     {
@@ -52,6 +50,7 @@ public class CatWander : MonoBehaviour, IInteractable
 
         meowTimer = 0f;
         nextMeowTime = UnityEngine.Random.Range(meowIntervalMin, meowIntervalMax);
+        audioSource = GetComponent<AudioSource>();
 
         if (player == null)
         {
@@ -62,12 +61,45 @@ public class CatWander : MonoBehaviour, IInteractable
             }
             else
             {
-                Debug.LogError("catmoving.cs：Playerが見つかりません。タグ 'Player' を付けてください。");
+                //Debug.LogError("CatWander：Playerが見つかりません。タグ 'Player' を付けてください。");
             }
         }
     }
 
     private void Update()
+    {
+        // プレイヤー検知
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        bool playerDetected = distanceToPlayer <= detectionRadius;
+
+        // 鳴き声処理
+        meowTimer += Time.deltaTime;
+        if (meowTimer >= nextMeowTime)
+        {
+            if (playerDetected && alertMeow != null)
+            {
+                audioSource.PlayOneShot(alertMeow);
+            }
+            else if (normalMeow != null)
+            {
+                audioSource.PlayOneShot(normalMeow);
+            }
+            meowTimer = 0f;
+            nextMeowTime = UnityEngine.Random.Range(meowIntervalMin, meowIntervalMax);
+        }
+
+        // 行動切り替え
+        if (playerDetected)
+        {
+            EscapeFromPlayer();
+        }
+        else
+        {
+            Wander();
+        }
+    }
+
+    private void Wander()
     {
         timer += Time.deltaTime;
 
@@ -76,6 +108,17 @@ public class CatWander : MonoBehaviour, IInteractable
             Vector3 newPos = RandomNavSphere(transform.position, wanderRadius);
             agent.SetDestination(newPos);
             timer = 0;
+        }
+    }
+
+    private void EscapeFromPlayer()
+    {
+        Vector3 dirFromPlayer = (transform.position - player.position).normalized;
+        Vector3 escapePos = transform.position + dirFromPlayer * escapeDistance;
+
+        if (NavMesh.SamplePosition(escapePos, out NavMeshHit navHit, wanderRadius, NavMesh.AllAreas))
+        {
+            agent.SetDestination(navHit.position);
         }
     }
 
@@ -94,5 +137,4 @@ public class CatWander : MonoBehaviour, IInteractable
 
         return origin;
     }
-
 }
