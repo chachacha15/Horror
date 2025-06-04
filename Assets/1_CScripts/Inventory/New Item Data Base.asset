@@ -224,14 +224,14 @@ MonoBehaviour:
     iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
     iconScale: {x: 0.24, y: 0.0048, z: 0.338}
   - item: {fileID: 5367161972318017973, guid: 2346c9e501170594abcbf4646ea9d855, type: 3}
-    explainText: "\u4FB5\u3059"
+    explainText: "\u3055\u304B\u306A"
     weight: 1
     isImportant: 1
     displayPosition: {x: 0, y: 0, z: 0}
-    displayRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
+    displayRotation: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
     displayScale: {x: 7, y: 7, z: 7}
-    iconPosition: {x: 0, y: -0.1, z: 0}
-    iconRotation: {x: 0.45922908, y: -0.5376882, z: -0.5376882, w: -0.45922908}
+    iconPosition: {x: -0.075, y: -0.1, z: 0}
+    iconRotation: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
     iconScale: {x: 10, y: 10, z: 10}
   - item: {fileID: 3019568617730713240, guid: 5dd5a1ab6047d4848b7668734815016f, type: 3}
     explainText: "\u3069\u3063\u304B\u306E\u90E8\u5C4B\u306E\u9375"

@@ -1,136 +1,205 @@
-using System;
 using System.Collections;
-//using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityStandardAssets.Utility;
+using UnityEngine.SceneManagement; // シーン管理をインポート
 
-public class CatMoving : MonoBehaviour, IInteractable
+[RequireComponent(typeof(CharacterController))]
+public class PlayerMove : MonoBehaviour
 {
-    #region IInteractable 実装
-    public string GetInteractText() => "捕まえる";
-    public bool ShowInteractText => true;
-    public bool ActivateCrosshair => true;
-    public void Interact(GameObject targetObject) { /* 捕獲処理など */ }
+    #region Variables 
+
+    public static PlayerMove Instance { get; private set; }
+
+    // 入力方向
+    [SerializeField] private string horizontalInputName = "Horizontal";
+    [SerializeField] private string verticalInputName = "Vertical";
+
+    // プレイヤー移動詳細値
+    [SerializeField] private float movementSpeed = 4f;
+    [SerializeField] private float runSpeed = 20f;
+    [SerializeField] private bool isRunning;
+    [SerializeField] private float runNoiseRadius = 20f;
+
+    [SerializeField] private StaminaBar staminaBar;
+
+    private AudioSource audiowalk;
+    private AudioSource audiorun;
+    private CharacterController charController;
+    private Camera MainCamera;
+    private Transform cameraTransform;
+
+    // 一人称カメラの揺れについて
+    Vector3 HeadBob;
+    [SerializeField] private CurveControlledBob bob = new CurveControlledBob();
+    [SerializeField] private float runSwayAmount = 3.0f;
+    [SerializeField] private float walkSwayAmount = 1.8f;
+    [SerializeField] private float stopSwayAmount = 0.15f;
+
+    [SerializeField] private GameOverScript gameOverScript; // GameOver用のスクリプト参照
+
+    // 他クラス
+    ShakeCamera shakeCamera;
+
+
     #endregion
 
-    [Header("基本設定")]
-    public float wanderRadius = 10f;
-    public float wanderInterval = 5f;
-    private float timer;
 
-    [Header("プレイヤー検知")]
-    public float detectionRadius = 8f;   // 視覚的発見距離
-    public float escapeDistance = 12f;   // 逃走距離
-    private bool isEscaping = false;
+    #region Methods
 
-    [Header("鳴き声")]
-    public AudioClip normalMeow;
-    public AudioClip alertMeow;
-    private AudioSource audioSource;
-    private float meowTimer;
-    private float nextMeowTime;
-    [SerializeField] private float meowIntervalMin = 10f;
-    [SerializeField] private float meowIntervalMax = 20f;
 
-    private NavMeshAgent agent;
-    private Transform player;
+
+
+    private void Awake()
+    {
+        Instance = this;
+
+        charController = GetComponent<CharacterController>();
+    }
 
     private void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        audioSource = GetComponent<AudioSource>();
 
-        timer = wanderInterval;
-        meowTimer = 0f;
-        nextMeowTime = Random.Range(meowIntervalMin, meowIntervalMax);
+        staminaBar = FindObjectOfType<StaminaBar>();
+        shakeCamera = ShakeCamera.Instance;
 
-        // プレイヤー取得
-        player = PlayerMove.Instance.transform;
 
-        // SoundEventManagerに登録（プレイヤーのダッシュ音も拾う用）
-        SoundEventManager.OnSoundEmitted += OnSoundHeard;
-    }
+        GameObject player = GameObject.Find("Player");
 
-    private void OnDestroy()
-    {
-        SoundEventManager.OnSoundEmitted -= OnSoundHeard;
+        Transform walk = player.transform.Find("walk sound");
+        Transform run = player.transform.Find("run sound");
+
+        audiowalk = walk.GetComponent<AudioSource>();
+        audiorun = run.GetComponent<AudioSource>();
+
+        // カメラの揺れ
+        MainCamera = Camera.main;
+        cameraTransform = MainCamera.transform;
+        bob.Setup(MainCamera, 1.0f);
+
+        // GameOverScriptを取得
+        gameOverScript = FindObjectOfType<GameOverScript>();
+        if (gameOverScript == null)
+        {
+            Debug.LogError("GameOverScriptが見つかりません！");
+        }
     }
 
     private void Update()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-        bool playerDetected = distanceToPlayer <= detectionRadius || isEscaping;
+        PlayerMovement();
 
-        // 鳴き声処理
-        meowTimer += Time.deltaTime;
-        if (meowTimer >= nextMeowTime)
+        if (shakeCamera.isShaking) return;
+
+        // 状態に応じた揺れ倍率を設定
+        float bobSpeedMultiplier;
+
+        if (isRunning) // 走行中（Spaceキーが押されている場合）
         {
-            if (playerDetected && alertMeow != null)
-                audioSource.PlayOneShot(alertMeow);
-            else if (normalMeow != null)
-                audioSource.PlayOneShot(normalMeow);
+            bobSpeedMultiplier = runSwayAmount; // 走行中の揺れ
 
-            meowTimer = 0f;
-            nextMeowTime = Random.Range(meowIntervalMin, meowIntervalMax);
+        }
+        else if (Input.GetAxis(verticalInputName) != 0 || Input.GetAxis(horizontalInputName) != 0) // 歩行中（移動がある場合）
+        {
+            bobSpeedMultiplier = walkSwayAmount; // 歩行中の揺れ
+        }
+        else // 立ち止まっている場合
+        {
+            bobSpeedMultiplier = stopSwayAmount; // ちょっとだけ揺れ
         }
 
-        // 動作切り替え
-        if (playerDetected)
-            EscapeFromPlayer();
+        HeadBob = bob.DoHeadBob(bobSpeedMultiplier);
+        cameraTransform.localPosition = HeadBob;
+    }
+
+    private void PlayerMovement()
+    {
+        float vertInput = Input.GetAxis(verticalInputName) * movementSpeed;     //CharacterController.SimpleMove() applies deltaTime
+        float horizInput = Input.GetAxis(horizontalInputName) * movementSpeed;
+
+        Vector3 forwardMovement = transform.forward * vertInput;
+        Vector3 rightMovement = transform.right * horizInput;
+
+        if (Input.GetKey(KeyCode.Space)) //スペースキー押しているとき
+        {
+            if (!isRunning && staminaBar.CanStartRunning() && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)) //走っていなくて、スタミナ50以上、wasd入力がある
+            {
+                // 状態を更新
+                isRunning = true;
+                staminaBar.SetRunning(true);
+
+                // 範囲内の敵が感知を発火
+                SoundEventManager.Emit(transform.position, runNoiseRadius, "Dash");
+
+                //charController.SimpleMove((forwardMovement + rightMovement) * (runSpeed / movementSpeed)); // ダッシュ時の速度を調整
+                audiorun.Play();
+            }
+        }
+        else //走っているときに、スペースキーを離したら走るのをやめるように。
+        {
+            isRunning = false;
+            staminaBar.SetRunning(false);
+
+        }
+
+
+        if (isRunning && staminaBar.CanContinueRunning())　//走っていて走り続けられるとき(スタミナ０になったら走れないように。)
+        {
+            // 範囲内の敵が感知を発火
+            SoundEventManager.Emit(transform.position, runNoiseRadius, "Dash");
+
+            charController.SimpleMove((forwardMovement + rightMovement) * (runSpeed / movementSpeed)); // ダッシュ時の速度を調整
+            // 走る音を再生（再生中でない場合のみ）
+            if (!audiorun.isPlaying)
+            {
+                audiorun.Play();
+            }
+
+            // 歩く音を止める
+            if (audiowalk.isPlaying)
+            {
+                audiowalk.Stop();
+            }
+        }
         else
-            Wander();
+        {
+            charController.SimpleMove(forwardMovement + rightMovement);
+            isRunning = false;
+            staminaBar.SetRunning(false);
+            // 歩く音を再生（再生中でない場合のみ）
+            if (!audiowalk.isPlaying && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
+            {
+                audiowalk.Play();
+            }
+
+            // 走る音を止める
+            if (audiorun.isPlaying)
+            {
+                audiorun.Stop();
+            }
+        }
+
+        if (audiowalk.isPlaying && !(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
+        {
+            audiowalk.Stop();
+        }
+
     }
 
-    private void Wander()
+    private void OnCollisionEnter(Collision collision)
     {
-        if (isEscaping) return; // 逃走中は徘徊しない
-
-        timer += Time.deltaTime;
-        if (timer >= wanderInterval)
+        if (collision.gameObject.CompareTag("Enemy"))
         {
-            Vector3 newPos = RandomNavSphere(transform.position, wanderRadius);
-            agent.SetDestination(newPos);
-            timer = 0f;
+            gameOverScript?.TriggerGameOver(); // GameOverを発動
         }
     }
 
-    private void EscapeFromPlayer()
+    private void OnTriggerEnter(Collider other)
     {
-        if (!isEscaping)
+        if (other.CompareTag("Enemy"))
         {
-            isEscaping = true;
-            StartCoroutine(EscapeCooldown());
-        }
-
-        Vector3 dirFromPlayer = (transform.position - player.position).normalized;
-        Vector3 escapePos = transform.position + dirFromPlayer * escapeDistance;
-
-        if (NavMesh.SamplePosition(escapePos, out NavMeshHit navHit, wanderRadius, NavMesh.AllAreas))
-            agent.SetDestination(navHit.position);
-    }
-
-    IEnumerator EscapeCooldown()
-    {
-        yield return new WaitForSeconds(5f);  // 5秒間は逃げ続ける
-        isEscaping = false;
-    }
-
-    // ダッシュ音などの音イベントから反応する
-    private void OnSoundHeard(Vector3 soundPosition, float range, string tag)
-    {
-        if (Vector3.Distance(transform.position, soundPosition) <= range)
-        {
-            isEscaping = true;
-            Debug.Log("猫が音に反応して逃げ始めました！");
+            gameOverScript?.TriggerGameOver(); // GameOverを発動
         }
     }
 
-    // ランダム移動用
-    public static Vector3 RandomNavSphere(Vector3 origin, float dist)
-    {
-        Vector3 randomDirection = Random.insideUnitSphere * dist + origin;
-        if (NavMesh.SamplePosition(randomDirection, out NavMeshHit navHit, dist, NavMesh.AllAreas))
-            return navHit.position;
-        return origin;
-    }
+    #endregion
 }
