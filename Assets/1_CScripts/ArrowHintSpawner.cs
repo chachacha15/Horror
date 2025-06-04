@@ -86,6 +86,8 @@ public class ArrowHintSpawner : MonoBehaviour
         {
             GameObject prefab = (arrows[i] == "L") ? leftArrowPrefab : rightArrowPrefab;
             GameObject obj = Instantiate(prefab, spawnPoints[i].position, spawnPoints[i].rotation);
+            GameObject obj = Instantiate(prefab, spawnPoints[i].position, spawnPoints[i].rotation);
+            obj.transform.localScale = new Vector3(3f, 3f, 3f); // ← 好きなサイズに
 
             // 必要ならここで補正
             // obj.transform.Rotate(0f, 180f, 0f);
