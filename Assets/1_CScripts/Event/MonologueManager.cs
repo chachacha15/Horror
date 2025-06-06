@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using UnityEditor.Rendering.PostProcessing;
+using UnityEngine.Playables;
 
 public class MonologueManager : MonoBehaviour
 {
@@ -21,9 +22,23 @@ public class MonologueManager : MonoBehaviour
     private bool isTyping = false; // 文字を表示中かどうか
     private bool isDisplaying = false; // セリフを表示中かどうか
 
+
+    public Animator playerAnimator;
+    public PlayableDirector playerPD;
+
+    // 他クラス
+    public PlayerMove playerMove;
+    public PlayerLook playerLook;
+
     private void Start()
     {
+        // 他クラスを取得
+        playerMove = PlayerMove.Instance;
+        playerLook = PlayerLook.Instance;
+
         monologuePanel.SetActive(false); // 最初は非表示
+
+
     }
 
     /// <summary>
@@ -72,6 +87,10 @@ public class MonologueManager : MonoBehaviour
             monologuePanel.SetActive(false);
             isDisplaying = false;
             Time.timeScale = 1.0f;
+
+            playerPD.Play();
+
+
             return;
         }
 
@@ -103,6 +122,37 @@ public class MonologueManager : MonoBehaviour
         }
         isTyping = false;
     }
+
+
+
+
+
+
+
+
+
+
+    public void DisablePlayerControl()
+    {
+        playerMove.enabled = false;
+        playerLook.enabled = false;
+        EmissionLooper[] allEmissionLoopers = FindObjectsOfType<EmissionLooper>();
+        foreach (EmissionLooper emissionLooper in allEmissionLoopers) emissionLooper.enabled = false;
+    }
+
+    public void EnablePlayerControl()
+    {
+        playerAnimator.enabled = false;
+
+        playerMove.enabled = true;
+        playerLook.enabled = true;
+
+        EmissionLooper[] allEmissionLoopers = FindObjectsOfType<EmissionLooper>();
+        foreach (EmissionLooper emissionLooper in allEmissionLoopers) emissionLooper.enabled = true;
+    }
+
+
+
 
 
 

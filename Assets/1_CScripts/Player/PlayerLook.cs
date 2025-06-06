@@ -6,6 +6,8 @@ public class PlayerLook : MonoBehaviour
 {
     #region Variables
 
+    public static PlayerLook Instance;
+
     [SerializeField] private string mouseXInputName = "Mouse X";
     [SerializeField] private string mouseYInputName = "Mouse Y";
     [SerializeField] private float mouseSensitivity = 150f;
@@ -32,6 +34,7 @@ public class PlayerLook : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
         LockCursor();
         xAxisClamp = 0.0f;
     }

@@ -6,25 +6,34 @@ using UnityEngine;
 
 public class GameStart : MonoBehaviour
 {
+    public static GameStart instance;
 
     public TextMeshProUGUI startLogText; // UIテキスト
-    public GameObject startLogCanvas; // ログを表示するパネル
+    public GameObject startLogCanvas;    // ログを表示するパネル
 
     public float textSpeed = 0.05f;  // 文字を1つずつ表示する速度
 
     private Queue<string> monologueQueue = new Queue<string>(); // 会話キュー
-    private Coroutine currentCoroutine;  // 現在のコルーチン
+    private Coroutine currentCoroutine;                         // 現在のコルーチン
 
-    private bool isTyping = false; // 文字を表示中かどうか
+    private bool isTyping = false;     // 文字を表示中かどうか
     private bool isDisplaying = false; // セリフを表示中かどうか
 
-    public MonologueData startMonologue; // ゲーム開始時の状況説明
+    public MonologueData startMonologue;     // ゲーム開始時の状況説明
     public bool hasFinishedStartTex = false; // ゲーム開始前の文章が表示し終えたか
-    public bool hasStartedGame = false; // 状況説明をしゃべり終え、操作可能になったか
+    public bool hasStartedGame = false;      // 状況説明をしゃべり終え、操作可能になったか
 
+    public Animator playerStartAnimator;   
 
 
     private MonologueManager monologueManager;
+
+    #region Methods↓
+    private void Awake()
+    {
+        instance = this;
+    }
+
 
     void Start()
     {
@@ -135,5 +144,6 @@ public class GameStart : MonoBehaviour
         isTyping = false;
     }
 
+    #endregion↑
 
 }

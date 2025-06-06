@@ -146,16 +146,23 @@ public class DoorController : MonoBehaviour, IInteractable
 
         if (isOpen)
         {
-            CheckWhichSide();
+            InstantiateEnemyAtDoorFront();
 
         }
 
     }
 
-    void CheckWhichSide()
+    /// <summary>
+    /// ドアにとっての表側から開けたときに確率で敵を生成する
+    /// </summary>
+    void InstantiateEnemyAtDoorFront()
     {
         // ドアのローカル空間でプレイヤー位置を取得
         Vector3 localPos = transform.parent.InverseTransformPoint(playerMove.transform.localPosition);
+
+        // 20%の確率で敵を生成する
+        int Ra = Random.Range(0, 101);
+        if (Ra >= 21) return;
 
         // ローカルZ座標を使って前後判定（Z+が前、Z-が後ろ）
         if (localPos.z >= 0)
@@ -164,14 +171,13 @@ public class DoorController : MonoBehaviour, IInteractable
             {
                 Debug.Log("表側から開けた");
 
-                // 前側に生成
+                // 表側に生成
                 Vector3 frontPosition = transform.parent.position - transform.parent.forward * 2.5f;
                 Instantiate(objectPrefab, frontPosition, Quaternion.identity);
             }
             else
             {
                 Debug.Log("裏側から開けた");
-
             }
         }
         else
@@ -185,12 +191,10 @@ public class DoorController : MonoBehaviour, IInteractable
             {
                 Debug.Log("表側から開けた");
 
-                // 前側に生成
+                // 表側に生成
                 Vector3 frontPosition = transform.parent.position + transform.parent.forward * 2.5f;
                 Instantiate(objectPrefab, frontPosition, Quaternion.identity);
             }
-
-            
 
         }
     }

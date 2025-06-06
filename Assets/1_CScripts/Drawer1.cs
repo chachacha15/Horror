@@ -129,7 +129,6 @@ public class Drawer1 : MonoBehaviour, IInteractable
     /// </summary>
     private IEnumerator MoveDrawer(Vector3 from, Vector3 to)
     {
-        Debug.Log(isOpen);
         isMoving = true;
         float elapsed = 0f;
         while (elapsed < openDuration)

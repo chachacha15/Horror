@@ -160,12 +160,17 @@ MonoBehaviour:
   isOpen: 0
   lockedText: {fileID: 0}
   isLockedDoor: 0
+  isEnemyDoor: 0
+  isRoomDoor: 1
   openSound: {fileID: 8300000, guid: a7fdbe240df7eaa4cb312449c4319d6d, type: 3}
   closeSound: {fileID: 8300000, guid: eaba9b231208c0f439a40c78a43261c3, type: 3}
   UnLockSound: {fileID: 8300000, guid: 03325b69b00ef6c408dd547463b97750, type: 3}
   CardKeySound: {fileID: 8300000, guid: 25a00020177a11b4b909fc2a8976a267, type: 3}
   LockedSound: {fileID: 8300000, guid: 7190cfbcce3358b4b82cc6208a6404e7, type: 3}
+  playerMove: {fileID: 0}
   inventory: {fileID: 0}
+  objectPrefab: {fileID: 3186091731049956782, guid: 91ee6119b5a07c44c91be086c58f9c33,
+    type: 3}
 --- !u!82 &5475526572628606802
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1136,12 +1141,16 @@ MonoBehaviour:
   isOpen: 0
   lockedText: {fileID: 0}
   isLockedDoor: 0
+  isEnemyDoor: 0
+  isRoomDoor: 1
   openSound: {fileID: 8300000, guid: a7fdbe240df7eaa4cb312449c4319d6d, type: 3}
   closeSound: {fileID: 8300000, guid: eaba9b231208c0f439a40c78a43261c3, type: 3}
   UnLockSound: {fileID: 8300000, guid: 03325b69b00ef6c408dd547463b97750, type: 3}
   CardKeySound: {fileID: 8300000, guid: 25a00020177a11b4b909fc2a8976a267, type: 3}
   LockedSound: {fileID: 8300000, guid: 7190cfbcce3358b4b82cc6208a6404e7, type: 3}
+  playerMove: {fileID: 0}
   inventory: {fileID: 0}
+  objectPrefab: {fileID: 0}
 --- !u!65 &1354519715544877904
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1417,12 +1426,17 @@ MonoBehaviour:
   isOpen: 0
   lockedText: {fileID: 0}
   isLockedDoor: 0
+  isEnemyDoor: 0
+  isRoomDoor: 1
   openSound: {fileID: 8300000, guid: a7fdbe240df7eaa4cb312449c4319d6d, type: 3}
   closeSound: {fileID: 8300000, guid: eaba9b231208c0f439a40c78a43261c3, type: 3}
   UnLockSound: {fileID: 8300000, guid: 03325b69b00ef6c408dd547463b97750, type: 3}
   CardKeySound: {fileID: 8300000, guid: 25a00020177a11b4b909fc2a8976a267, type: 3}
   LockedSound: {fileID: 8300000, guid: 7190cfbcce3358b4b82cc6208a6404e7, type: 3}
+  playerMove: {fileID: 0}
   inventory: {fileID: 0}
+  objectPrefab: {fileID: 3186091731049956782, guid: 91ee6119b5a07c44c91be086c58f9c33,
+    type: 3}
 --- !u!82 &2409840935849000665
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7384,12 +7398,16 @@ MonoBehaviour:
   isOpen: 0
   lockedText: {fileID: 0}
   isLockedDoor: 1
+  isEnemyDoor: 0
+  isRoomDoor: 1
   openSound: {fileID: 8300000, guid: a7fdbe240df7eaa4cb312449c4319d6d, type: 3}
   closeSound: {fileID: 8300000, guid: eaba9b231208c0f439a40c78a43261c3, type: 3}
   UnLockSound: {fileID: 8300000, guid: 03325b69b00ef6c408dd547463b97750, type: 3}
   CardKeySound: {fileID: 8300000, guid: 25a00020177a11b4b909fc2a8976a267, type: 3}
   LockedSound: {fileID: 8300000, guid: 7190cfbcce3358b4b82cc6208a6404e7, type: 3}
+  playerMove: {fileID: 0}
   inventory: {fileID: 0}
+  objectPrefab: {fileID: 0}
 --- !u!65 &5764570893084895784
 BoxCollider:
   m_ObjectHideFlags: 0
