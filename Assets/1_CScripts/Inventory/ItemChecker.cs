@@ -63,7 +63,10 @@ public class ItemChecker : MonoBehaviour
     }
 
     
-
+    /// <summary>
+    /// アイテムをインベントリに格納するメソッド
+    /// </summary>
+    /// <param name="item"></param>
     public void PickupItem(GameObject item)
     {
         PocketItem itemData = itemDataBase.itemList.Find(i => i.item.name == item.name);
@@ -101,7 +104,10 @@ public class ItemChecker : MonoBehaviour
 
     }
 
-   
+   /// <summary>
+   /// アイテムが拾えないときのテキストを一時変更するコルーチン
+   /// </summary>
+   /// <returns></returns>
     private IEnumerator ChangeTakeText()
     {
         isTakeTextChanged = true;

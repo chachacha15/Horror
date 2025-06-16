@@ -34,6 +34,7 @@ public class FlashlightManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (inventory.items.Count > 0)
         {
             // 手にフラッシュライトを持っているとき
@@ -58,12 +59,16 @@ public class FlashlightManager : MonoBehaviour
             {
                 if (flashLightSystem != null)
                 {
-                    flashLightSystem.SetActive(false); // フラッシュライトオブジェクトをONにする
+                    flashLightSystem.SetActive(false); // フラッシュライトオブジェクトをOFFにする
 
                 }
             }
         }
-        
+        else
+        {
+            if (flashLightSystem != null) flashLightSystem.SetActive(false); // フラッシュライトオブジェクトをOFFにする
+        }
+
     }
 
     #endregion

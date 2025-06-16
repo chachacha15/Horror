@@ -286,13 +286,23 @@ public class Inventory : MonoBehaviour
     // アイテムを追加
     public void AddItem(PocketItem item)
     {
+        // インベントリがいっぱいのときは拾えない
         if (items.Count >= maxItems)
         {
             Debug.Log("インベントリが満杯です！");
             return;
         }
-
-        items.Add(item);
+        // インベントリが無かったときは、そのアイテムを持つ
+        else if (items.Count == 0) 
+        {
+            items.Add(item);
+            EquipItem(0);
+        }
+        // その他は、そのまま拾う
+        else 
+        { 
+            items.Add(item); 
+        }
         Debug.Log($"アイテムを追加: {item.item.name}");
 
         // 初めて取得したアイテムならリストに追加
@@ -301,6 +311,8 @@ public class Inventory : MonoBehaviour
             haveGotItems.Add(item.item.name);
             Debug.Log($"初めて入手したアイテム: {item.item.name}");
         }
+
+
 
 
         UpdateInventoryUI(); // アイテム追加時にUIを更新
@@ -317,11 +329,14 @@ public class Inventory : MonoBehaviour
             Debug.Log("手に持っているアイテムがありません！");
             return;
         }
+        
 
         // 現在手に持っているアイテムを削除
         Destroy(selectedItemObject);
         selectedItemObject = null;
-        selectedItem = null;
+        selectedItem= null;
+
+
 
 
 
