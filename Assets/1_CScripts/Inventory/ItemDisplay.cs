@@ -8,6 +8,8 @@ public class ItemDisplay : MonoBehaviour
 {
     #region Variables
 
+    public static ItemDisplay Instance;
+
     public GameObject ItemDisplayUI; // インベントリ画面の親オブジェクト
     public Transform itemListParent; // アイテムリストを表示する親オブジェクト
     public GameObject itemSlotPrefab; // アイテムスロットのプレハブ
@@ -16,14 +18,25 @@ public class ItemDisplay : MonoBehaviour
     public Transform itemDisplayPosition; // アイテムを配置する位置
 
     private GameObject currentDisplayedItem; // 表示中のアイテムを追跡
-    private bool isItemDisplayON  = false; // インベントリの開閉状態
+    public bool isItemDisplayON  = false; // インベントリの開閉状態
 
-    private bool isPausedByDisplayItem = false; // 一時停止状態を追跡
     private GameObject slot; //現在表示しているアイテムを格納
+
+    // 他クラス
+    private MonologueManager monologueManager;
     #endregion
+
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
+        // 他クラスを取得
+        monologueManager = MonologueManager.Instance;
+
         if (ItemDisplayUI != null)
         {
             ItemDisplayUI.SetActive(false); // 初期状態で非表示
@@ -49,11 +62,10 @@ public class ItemDisplay : MonoBehaviour
     
 
         //　ディスプレイ画面を閉じる時
-        if (isPausedByDisplayItem && Input.GetMouseButtonDown(0)) // 0は左クリック
+        if (isItemDisplayON && Input.GetMouseButtonDown(0)) // 0は左クリック
         {
-            ResumeGame();
-            isItemDisplayON = !isItemDisplayON;
-            ItemDisplayUI.SetActive(isItemDisplayON);
+            Debug.Log(isItemDisplayON);
+            StartCoroutine(ResumeGame());
 
             Cursor.lockState = CursorLockMode.Locked; // マウスを非表示
             Cursor.visible = false;                  // マウスカーソルを非表示
@@ -64,7 +76,10 @@ public class ItemDisplay : MonoBehaviour
 
     public void ToggleItemDisplay()
     {
-        isItemDisplayON = !isItemDisplayON;
+
+        // ゲームを一時停止
+        isItemDisplayON = true;
+        Time.timeScale = 0f;
 
         if (ItemDisplayUI != null)
         {
@@ -151,9 +166,11 @@ public class ItemDisplay : MonoBehaviour
         Rigidbody rigidbody = currentDisplayedItem.GetComponent<Rigidbody>();
         if (rigidbody != null) rigidbody.isKinematic = true;
 
-        // ゲームを一時停止
-        Time.timeScale = 0f;
-        isPausedByDisplayItem = true; // 一時停止フラグを有効化
+
+        if (monologueManager.isWaitingGetFlashlight && item.item.name == "Flashlight")
+        {
+            monologueManager.GotFlashLight = true;
+        }
 
     }
 
@@ -167,9 +184,15 @@ public class ItemDisplay : MonoBehaviour
         }
     }
 
-    private void ResumeGame()
+    private IEnumerator ResumeGame()
     {
         Time.timeScale = 1f; // ゲームを再開
-        isPausedByDisplayItem = false; // フラグをリセット
+        isItemDisplayON = false; // フラグをリセット
+        ItemDisplayUI.SetActive(isItemDisplayON);
+
+        yield return new WaitForSecondsRealtime(1);
+
+        if (monologueManager.GotFlashLight) monologueManager.ActivateWaitingReachElevator();
+
     }
 }

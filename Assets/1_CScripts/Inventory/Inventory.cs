@@ -51,6 +51,7 @@ public class Inventory : MonoBehaviour
 
     // 他クラス
     private CameraSwitcher cameraSwitcher;
+    private MonologueManager monologueManager;
     
 
 
@@ -64,6 +65,7 @@ public class Inventory : MonoBehaviour
 
         // 他クラスを取得
         cameraSwitcher = FindObjectOfType<CameraSwitcher>();
+        monologueManager = MonologueManager.Instance;
 
         UpdateInventoryUI(); // 初期状態でUIを更新
     }
@@ -145,7 +147,7 @@ public class Inventory : MonoBehaviour
 
         if (index < 0 || index >= items.Count)
         {
-            Debug.Log("このスロットにはアイテムがありません！");
+            // Debug.Log("このスロットにはアイテムがありません！");
             return;
         }
 
@@ -310,6 +312,7 @@ public class Inventory : MonoBehaviour
         {
             haveGotItems.Add(item.item.name);
             Debug.Log($"初めて入手したアイテム: {item.item.name}");
+            
         }
 
 

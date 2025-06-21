@@ -14,7 +14,8 @@ public class GameStart : MonoBehaviour
     public float textSpeed = 0.05f;  // 文字を1つずつ表示する速度
 
     private Queue<string> monologueQueue = new Queue<string>(); // 会話キュー
-    private Coroutine currentCoroutine;                         // 現在のコルーチン
+    private string currentMonologueSentence; // 現在表示中のセリフを保持
+    private Coroutine currentCoroutine;      // 現在のコルーチン
 
     private bool isTyping = false;     // 文字を表示中かどうか
     private bool isDisplaying = false; // セリフを表示中かどうか
@@ -68,13 +69,12 @@ public class GameStart : MonoBehaviour
             {
                 // 文字表示中にクリックしたら、全表示
                 StopCoroutine(currentCoroutine);
-                if (monologueQueue.Count > 0) startLogText.text = monologueQueue.Peek(); // 今のセリフを全部表示
+                startLogText.text = currentMonologueSentence; // 今のセリフを全部表示
                 isTyping = false;
             }
             else
             {
-                // 次のセリフへ
-                ShowNextStartSentence();
+                StartCoroutine(WaitSecondsShowNextSentence(0.1f));
             }
         }
     }
@@ -120,11 +120,11 @@ public class GameStart : MonoBehaviour
 
         if (monologueQueue.Count > 0) // 連打時のエラー回避
         {
-            string nextMonologue = monologueQueue.Dequeue();
+            currentMonologueSentence = monologueQueue.Dequeue();
 
             // 文字を1つずつ表示
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
-            currentCoroutine = StartCoroutine(TypeStartSentence(nextMonologue));
+            currentCoroutine = StartCoroutine(TypeStartSentence(currentMonologueSentence));
         }
     }
 
@@ -142,6 +142,19 @@ public class GameStart : MonoBehaviour
             yield return new WaitForSecondsRealtime(textSpeed);
         }
         isTyping = false;
+    }
+
+
+    /// <summary>
+    /// 次のセリフへ移る際に、少し猶予時間を作る
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
+    private IEnumerator WaitSecondsShowNextSentence(float time)
+    {
+        yield return new WaitForSecondsRealtime(time);
+        // 次のセリフへ
+        ShowNextStartSentence();
     }
 
     #endregion↑
