@@ -805,7 +805,7 @@ public class GhostAI : MonoBehaviour
         // イベント購読
         if (SoundEventManager.Instance != null) // nullチェックを追加
             SoundEventManager.Instance.OnSoundEmitted += OnSoundHeard;
-        PicturePuzzleManager.OnPuzzleFailedTooManyTimes += OnAlarmSounded; // ★追加: アラームイベントを購読
+        //PicturePuzzleManager.OnPuzzleFailedTooManyTimes += OnAlarmSounded; // ★追加: アラームイベントを購読
 
         if (isWallEnemy) agent.enabled = false;
     }
@@ -1311,12 +1311,13 @@ public class GhostAI : MonoBehaviour
             // investigateTarget = FindObjectOfType<FireAlarmManager>().transform.position;
             // currentState = State.Investigate;
         }
-
+        /*
         // 発覚音を鳴らす
         if (noticeAS != null && noticeSound != null)
         {
             noticeAS.PlayOneShot(noticeSound);
         }
+        */
         enemyManager.FindChasingEnemy(); // EnemyManagerに追跡が開始されたことを通知
     }
 

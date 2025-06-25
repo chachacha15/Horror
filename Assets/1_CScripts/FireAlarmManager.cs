@@ -49,6 +49,9 @@ public class FireAlarmManager : MonoBehaviour
         audioSource.Play();
         StartCoroutine(StopAlarmAfterDuration(alarmDuration));
 
+        // 範囲内の敵が感知を発火
+        SoundEventManager.Emit(fireAlarmObject.transform.position, 100f, "Alarm");
+
         // ここで敵に通知する（今回はGhostAIに直接通知する方式をGhostAI側で実装します）
         // もしEnemyManager経由で通知したい場合は、ここでEnemyManagerのメソッドを呼び出す
         // if (enemyManager == null) enemyManager = FindObjectOfType<EnemyManager>();
