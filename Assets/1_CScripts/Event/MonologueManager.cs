@@ -47,7 +47,7 @@ public class MonologueManager : MonoBehaviour
     public Animator playerAnimator;
     public PlayableDirector playerPD;
 
-
+    
 
     // 他クラス
     public PlayerMove playerMove;
@@ -114,10 +114,41 @@ public class MonologueManager : MonoBehaviour
 
             
         }
+
+        // アイテム表示中ではない、かつセリフが表示中の場合のみ処理を行う
+        if (isDisplaying && !itemDisplay.isItemDisplayON)
+        {
+            
+            // Lキーの処理（会話全体をスキップ）
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                SkipAllMonologue();
+            }
+        }
+
+
+    }
+    /// <summary>
+    /// Lキーによる会話全体スキップのロジック
+    /// </summary>
+    private void SkipAllMonologue()
+    {
+        // 現在のモノローグキューをクリア
+        monologueQueue.Clear();
+
+        // 実行中の文字表示コルーチンがあれば停止
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine);
+            currentCoroutine = null;
+        }
+
+        // 終了処理を呼び出す
+        // ShowNextMonologue() はキューが空だと終了処理を実行するため、これを呼び出す
+        ShowNextMonologue();
     }
 
 
-    
     /// <summary>
     /// 会話リストを設定
     /// </summary>

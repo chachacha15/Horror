@@ -24,9 +24,9 @@ public class GameStart : MonoBehaviour
     public bool hasFinishedStartTex = false; // ゲーム開始前の文章が表示し終えたか
     public bool hasStartedGame = false;      // 状況説明をしゃべり終え、操作可能になったか
 
-    public Animator playerStartAnimator;   
+    public Animator playerStartAnimator;
 
-
+    private ItemDisplay itemDisplay;
     private MonologueManager monologueManager;
 
     #region Methods↓
@@ -38,6 +38,8 @@ public class GameStart : MonoBehaviour
 
     void Start()
     {
+        itemDisplay = ItemDisplay.Instance;
+
         monologueManager = FindObjectOfType<MonologueManager>();
         StartGameMonologue(startMonologue);
         Time.timeScale = 0f;
@@ -77,8 +79,36 @@ public class GameStart : MonoBehaviour
                 StartCoroutine(WaitSecondsShowNextSentence(0.1f));
             }
         }
+        // アイテム表示中ではない、かつセリフが表示中の場合のみ処理を行う
+        if (isDisplaying && !itemDisplay.isItemDisplayON)
+        {
+            
+            // Lキーの処理（会話全体をスキップ）
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                SkipStartMonologue();
+            }
+        }
     }
+    /// <summary>
+    /// Lキーによるゲーム開始時モノローグ全体スキップのロジック
+    /// </summary>
+    private void SkipStartMonologue()
+    {
+        // 現在のモノローグキューをクリア
+        monologueQueue.Clear();
 
+        // 実行中の文字表示コルーチンがあれば停止
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine);
+            currentCoroutine = null;
+        }
+
+        // 終了処理を呼び出す
+        // ShowNextStartSentence() はキューが空だと終了処理を実行するため、これを呼び出す
+        ShowNextStartSentence();
+    }
 
 
     /// <summary>
