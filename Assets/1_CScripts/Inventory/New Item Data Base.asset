@@ -253,10 +253,10 @@ MonoBehaviour:
     iconPosition: {x: 0, y: -0.1, z: 0}
     iconRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
     iconScale: {x: 0.24, y: 0.0048, z: 0.338}
-  - item: {fileID: 8100932369685233361, guid: b9448f98038d8bf48ae2de8203e101fd, type: 3}
-    explainText: "\u30C7\u30D0\u30C3\u30B0\u7528\u30A2\u30A4\u30C6\u30E0"
+  - item: {fileID: 5273428692463862187, guid: a143d117837699e44b9f67fd3b1dd439, type: 3}
+    explainText: a dick
     weight: 0
-    isImportant: 0
+    isImportant: 1
     displayPosition: {x: 0, y: 0, z: 0}
     displayRotation: {x: 0, y: 0, z: 0, w: 1}
     displayScale: {x: 0, y: 0, z: 0}
