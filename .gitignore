@@ -56,3 +56,9 @@ sysinfo.txt
 crashlytics-build.properties
 ~*
 .DS_Store
+
+# Unity Lighting Data
+# ライトベイク（照明）関連のデータを除外
+/[Ll]ighting/
+/[Ll]ightmap*/
+*LightingData.asset
