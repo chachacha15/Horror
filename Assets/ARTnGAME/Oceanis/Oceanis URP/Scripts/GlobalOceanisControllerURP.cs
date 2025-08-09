@@ -3354,7 +3354,7 @@ namespace Artngame.Oceanis
         public void setupUnderwaterFogFeatureFunc(bool disable)
         {
 #if (UNITY_EDITOR)
-            UniversalRenderPipelineAsset pipeline = ((UniversalRenderPipelineAsset)GraphicsSettings.renderPipelineAsset);
+            UniversalRenderPipelineAsset pipeline = ((UniversalRenderPipelineAsset)GraphicsSettings.defaultRenderPipeline);
 
             FieldInfo propertyInfoA = pipeline.GetType().GetField("m_DefaultRendererIndex", BindingFlags.Instance | BindingFlags.NonPublic);//REFLECTION
             int rendererDefaultIndex = ((int)propertyInfoA?.GetValue(pipeline));
@@ -3420,7 +3420,7 @@ namespace Artngame.Oceanis
         public void setupUnderwaterVolumeLightsFeatureFunc(bool disable)
         {
 #if (UNITY_EDITOR)
-            UniversalRenderPipelineAsset pipeline = ((UniversalRenderPipelineAsset)GraphicsSettings.renderPipelineAsset);
+            UniversalRenderPipelineAsset pipeline = ((UniversalRenderPipelineAsset)GraphicsSettings.defaultRenderPipeline);
 
             FieldInfo propertyInfoA = pipeline.GetType().GetField("m_DefaultRendererIndex", BindingFlags.Instance | BindingFlags.NonPublic);//REFLECTION
             int rendererDefaultIndex = ((int)propertyInfoA?.GetValue(pipeline));
@@ -3486,7 +3486,7 @@ namespace Artngame.Oceanis
         public void setupUnderwaterDistortFeatureFunc(bool disable)
         {
 #if (UNITY_EDITOR)
-            UniversalRenderPipelineAsset pipeline = ((UniversalRenderPipelineAsset)GraphicsSettings.renderPipelineAsset);
+            UniversalRenderPipelineAsset pipeline = ((UniversalRenderPipelineAsset)GraphicsSettings.defaultRenderPipeline);
 
             FieldInfo propertyInfoA = pipeline.GetType().GetField("m_DefaultRendererIndex", BindingFlags.Instance | BindingFlags.NonPublic);//REFLECTION
             int rendererDefaultIndex = ((int)propertyInfoA?.GetValue(pipeline));

@@ -393,7 +393,7 @@ namespace Artngame.Oceanis {
             if (_isDead) {
                 //Stop ship movement if dead
                 _currentSpeed = 0;
-                _rb.velocity = Vector3.zero;
+                _rb.linearVelocity = Vector3.zero;
                 GetComponent<HoverShip> ().enabled = false;
                 //GetComponentInChildren<MeshRenderer>().enabled = false;
                 transform.gameObject.isStatic = true;
@@ -422,7 +422,7 @@ namespace Artngame.Oceanis {
                 }
                 //set velocity to zero if not moving and if not dropping of
                 if (_currentSpeed <= 0f && _isGrounded) {
-                    _rb.velocity = Vector3.zero;
+                    _rb.linearVelocity = Vector3.zero;
                 }
                 //get current up dir for fixedUpdate calculations
                 previousUpDir = transform.up;
@@ -432,7 +432,7 @@ namespace Artngame.Oceanis {
 
                 //add little force to velocity once we take off
                 if (!_dropOffForceAdded) {
-                    _rb.velocity += new Vector3 (0, 250, 0);
+                    _rb.linearVelocity += new Vector3 (0, 250, 0);
                     _dropOffForceAdded = true;
                 }
                 //start brake, so we can't lfy in the air
@@ -619,7 +619,7 @@ namespace Artngame.Oceanis {
 
         private void MoveShip (float speed) {
             //move ship forward with current speed
-            _rb.velocity = transform.forward * speed * Time.fixedDeltaTime;
+            _rb.linearVelocity = transform.forward * speed * Time.fixedDeltaTime;
 
         }
 

@@ -271,7 +271,7 @@ public class Inventory : MonoBehaviour
         {
             Rigidbody rb = droppedItem.AddComponent<Rigidbody>();
             rb.mass = 1.0f;
-            rb.angularDrag = 0.05f;
+            rb.angularDamping = 0.05f;
             rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // すり抜け防止
         }
 
