@@ -862,9 +862,9 @@ public class GhostAI : MonoBehaviour
     private EnemyManager enemyManager;
     private SoundEventManager soundEventManager;
 
-    // ★修正: パズル追跡関連の公開変数
-    [SerializeField] private Transform puzzlePointTransform;
-    private bool puzzleFailed = false;
+    // ★修正: パズル追跡の目標地点をInspectorで設定可能に
+    [SerializeField] private Transform puzzleInvestigateTarget;
+    private bool isInvestigatingPuzzle = false;
 
     #endregion
 
@@ -937,6 +937,33 @@ public class GhostAI : MonoBehaviour
             }
         }
 
+        // ★修正: 調査モードとChaseモードを明確に分ける
+        if (isInvestigatingPuzzle)
+        {
+            InvestigatePuzzlePoint();
+            // 調査中にプレイヤーを見つけたらChaseへ移行
+            if (isPlayerVisible)
+            {
+                currentState = State.Chase;
+                agent.speed = chaseSpeed;
+                isInvestigatingPuzzle = false;
+                if (ShakeCamera.Instance != null)
+                    ShakeCamera.Instance.Shake(0.5f, 1f);
+                enemyManager.FindChasingEnemy();
+                if (noticeAS != null && noticeSound != null)
+                {
+                    noticeAS.PlayOneShot(noticeSound);
+                }
+            }
+            return;
+        }
+
+
+        if (playerTarget != null && playerTarget.activeInHierarchy)
+        {
+            CheckPlayerVisibility();
+        }
+
         switch (currentState)
         {
             case State.Patrol:
@@ -948,11 +975,6 @@ public class GhostAI : MonoBehaviour
             case State.Investigate:
                 Investigate();
                 break;
-        }
-
-        if (playerTarget != null && playerTarget.activeInHierarchy)
-        {
-            CheckPlayerVisibility();
         }
     }
 
@@ -1011,35 +1033,7 @@ public class GhostAI : MonoBehaviour
 
         if (playerTarget != null && playerTarget.activeInHierarchy)
         {
-            if (puzzleFailed)
-            {
-                if (puzzlePointTransform != null && Vector3.Distance(transform.position, puzzlePointTransform.position) <= agent.stoppingDistance)
-                {
-                    Debug.Log("GhostAI: 絵画の座標に到達しました。巡回に戻ります。");
-                    puzzleFailed = false;
-                    currentState = State.Patrol;
-                    agent.speed = patrolSpeed;
-                    agent.ResetPath();
-                }
-                else if (puzzlePointTransform != null)
-                {
-                    // 絵画の座標に向かう
-                    agent.SetDestination(puzzlePointTransform.position);
-                }
-                else
-                {
-                    // 座標が設定されていない場合は、追跡を諦めて巡回に戻る
-                    Debug.LogWarning("GhostAI: パズルポイントが設定されていません。巡回に戻ります。");
-                    puzzleFailed = false;
-                    currentState = State.Patrol;
-                    agent.speed = patrolSpeed;
-                    agent.ResetPath();
-                }
-            }
-            else
-            {
-                agent.SetDestination(playerTarget.transform.position);
-            }
+            agent.SetDestination(playerTarget.transform.position);
         }
         else
         {
@@ -1108,6 +1102,35 @@ public class GhostAI : MonoBehaviour
             {
                 noticeAS.PlayOneShot(noticeSound);
             }
+        }
+    }
+
+    // ★追加: パズル失敗時の調査モード
+    private void InvestigatePuzzlePoint()
+    {
+        if (puzzleInvestigateTarget == null)
+        {
+            Debug.LogWarning("GhostAI: パズルポイントが設定されていません。巡回に戻ります。");
+            isInvestigatingPuzzle = false;
+            currentState = State.Patrol;
+            agent.speed = patrolSpeed;
+            return;
+        }
+
+        // 絵画の座標に到達したら巡回に戻る
+        if (Vector3.Distance(transform.position, puzzleInvestigateTarget.position) <= agent.stoppingDistance)
+        {
+            Debug.Log("GhostAI: 絵画の座標に到達しました。巡回に戻ります。");
+            isInvestigatingPuzzle = false;
+            currentState = State.Patrol;
+            agent.speed = patrolSpeed;
+            agent.ResetPath();
+            patrolIndex = (patrolIndex + 1) % DestPos.Length;
+            agent.SetDestination(DestPos[patrolIndex]);
+        }
+        else
+        {
+            agent.SetDestination(puzzleInvestigateTarget.position);
         }
     }
 
@@ -1350,23 +1373,24 @@ public class GhostAI : MonoBehaviour
     {
         Debug.Log("GhostAI: パズル失敗を検知！絵画の座標へ向かいます。");
 
-        if (currentState != State.Chase)
+        if (currentState == State.Chase)
         {
-            currentState = State.Chase;
-            agent.speed = chaseSpeed;
+            return;
+        }
 
-            // パズル失敗時にPicturePuzzleManagerの座標を取得して設定
-            if (puzzlePointTransform != null)
-            {
-                agent.SetDestination(puzzlePointTransform.position);
-                puzzleFailed = true;
-            }
-            else
-            {
-                Debug.LogError("GhostAI: パズルポイントが設定されていません。巡回に戻ります。");
-                currentState = State.Patrol;
-                agent.speed = patrolSpeed;
-            }
+        currentState = State.Investigate;
+        agent.speed = investigateSpeed;
+
+        if (puzzleInvestigateTarget != null)
+        {
+            agent.SetDestination(puzzleInvestigateTarget.position);
+            isInvestigatingPuzzle = true;
+        }
+        else
+        {
+            Debug.LogError("GhostAI: パズルポイントが設定されていません。巡回に戻ります。");
+            currentState = State.Patrol;
+            agent.speed = patrolSpeed;
         }
 
         if (noticeAS != null && noticeSound != null)
