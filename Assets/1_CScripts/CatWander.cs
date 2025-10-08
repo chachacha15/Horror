@@ -82,8 +82,8 @@ public class CatWander : MonoBehaviour, IInteractable
                 // 既に警戒音が鳴っていなければ再生
                 if (audioSource.clip != alertMeow || !audioSource.isPlaying)
                 {
-                    audioSource.clip = alertMeow;
-                    audioSource.Play();
+                    //audioSource.clip = alertMeow;
+                    audioSource.PlayOneShot(alertMeow);
                 }
             }
             // プレイヤーが検知されていない場合
@@ -92,8 +92,8 @@ public class CatWander : MonoBehaviour, IInteractable
                 // 既に通常音が鳴っていなければ再生
                 if (audioSource.clip != normalMeow || !audioSource.isPlaying)
                 {
-                    audioSource.clip = normalMeow;
-                    audioSource.Play();
+                    //audioSource.clip = normalMeow;
+                    audioSource.PlayOneShot(normalMeow);
                 }
             }
 
