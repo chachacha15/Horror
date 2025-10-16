@@ -25,7 +25,7 @@ public class PlayerMove : MonoBehaviour
     private AudioSource audiowalk;
     private AudioSource audiorun;
     private CharacterController charController;
-    private Camera MainCamera;
+    public Camera MainCamera;
     private Transform cameraTransform;
 
     // 一人称カメラの揺れについて
@@ -39,6 +39,7 @@ public class PlayerMove : MonoBehaviour
 
     // 他クラス
     ShakeCamera shakeCamera;
+    private PrologueManager prologueManager;
 
 
     #endregion
@@ -61,6 +62,7 @@ public class PlayerMove : MonoBehaviour
 
         staminaBar = FindObjectOfType<StaminaBar>();
         shakeCamera = ShakeCamera.Instance;
+        prologueManager = PrologueManager.Instance;
 
 
         GameObject player = GameObject.Find("Player");
@@ -78,10 +80,7 @@ public class PlayerMove : MonoBehaviour
 
         // GameOverScriptを取得
         gameOverScript = FindObjectOfType<GameOverScript>();
-        if (gameOverScript == null)
-        {
-            Debug.LogError("GameOverScriptが見つかりません！");
-        }
+        
     }
 
     private void Update()
@@ -108,7 +107,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         HeadBob = bob.DoHeadBob(bobSpeedMultiplier);
-        cameraTransform.localPosition = HeadBob;
+        SetCameraLocalPosition(HeadBob);
     }
 
     private void PlayerMovement()
@@ -119,13 +118,14 @@ public class PlayerMove : MonoBehaviour
         Vector3 forwardMovement = transform.forward * vertInput;
         Vector3 rightMovement = transform.right * horizInput;
 
+
         if (Input.GetKey(KeyCode.Space)) //スペースキー押しているとき
         {
             if (!isRunning && staminaBar.CanStartRunning() && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)) //走っていなくて、スタミナ50以上、wasd入力がある
             {
                 // 状態を更新
                 isRunning = true;
-                staminaBar.SetRunning(true);
+                if (staminaBar) staminaBar.SetRunning(true);
 
                 // 範囲内の敵が感知を発火
                 SoundEventManager.Emit(transform.position, runNoiseRadius, "Dash");
@@ -137,7 +137,7 @@ public class PlayerMove : MonoBehaviour
         else //走っているときに、スペースキーを離したら走るのをやめるように。
         {
             isRunning = false;
-            staminaBar.SetRunning(false);
+            if (staminaBar) staminaBar.SetRunning(false);
 
         }
 
@@ -164,7 +164,7 @@ public class PlayerMove : MonoBehaviour
         {
             charController.SimpleMove(forwardMovement + rightMovement);
             isRunning = false;
-            staminaBar.SetRunning(false);
+            if (staminaBar) staminaBar.SetRunning(false);
             // 歩く音を再生（再生中でない場合のみ）
             if (!audiowalk.isPlaying && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
             {
@@ -185,6 +185,11 @@ public class PlayerMove : MonoBehaviour
 
     }
 
+
+    public void SetCameraLocalPosition(Vector3 position)
+    {
+        cameraTransform.localPosition = position;
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))

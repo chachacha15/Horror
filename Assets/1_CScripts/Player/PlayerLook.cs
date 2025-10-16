@@ -84,16 +84,8 @@ public class PlayerLook : MonoBehaviour
         float mouseX = Input.GetAxis(mouseXInputName) * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis(mouseYInputName) * mouseSensitivity * Time.deltaTime;
 
-        if (!cameraSwitcher.isPlayerHiding && mainCamera)
-        {
-            // 通常時の視点操作
-            xAxisClamp += mouseY;
-            xAxisClamp = Mathf.Clamp(xAxisClamp, -90f, 90f);
-
-            mainCamera.transform.localEulerAngles = new Vector3(-xAxisClamp, 0f, 0f);
-            playerBody.Rotate(Vector3.up * mouseX);
-        }
-        else if (cameraSwitcher.isPlayerHiding && cameraSwitcher.currentClosetCamera)
+        
+        if (cameraSwitcher && cameraSwitcher.isPlayerHiding && cameraSwitcher.currentClosetCamera)
         {
             // クローゼット時の視点操作（新しく作った回転値を使用）
             closetXAxisRotation += mouseY;
@@ -105,6 +97,16 @@ public class PlayerLook : MonoBehaviour
             cameraSwitcher.currentClosetCamera.transform.rotation =
                 Quaternion.Euler(-closetXAxisRotation, closetYAxisRotation, 0f);
         }
+        else if(mainCamera)
+        {
+            // 通常時の視点操作
+            xAxisClamp += mouseY;
+            xAxisClamp = Mathf.Clamp(xAxisClamp, -90f, 90f);
+
+            mainCamera.transform.localEulerAngles = new Vector3(-xAxisClamp, 0f, 0f);
+            playerBody.Rotate(Vector3.up * mouseX);
+        }
+
     }
     private void ClampXAxisRotationToValue(float value)
     {

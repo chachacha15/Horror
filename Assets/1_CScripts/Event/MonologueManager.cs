@@ -1,9 +1,11 @@
 using System.Collections;
-using UnityEngine;
-using TMPro;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VectorGraphics;
 using UnityEditor.Rendering.PostProcessing;
+using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MonologueManager : MonoBehaviour
@@ -21,6 +23,7 @@ public class MonologueManager : MonoBehaviour
     public GameObject nextIndicator;       // 続きを促すマーク
     public TextMeshProUGUI objectiveText;  // 目標を表示するテキストUI
     public float textSpeed = 0.05f;        // 文字を1つずつ表示する速度
+    [SerializeField] private string mainSceneName = "demoScene";
 
 
 
@@ -41,6 +44,7 @@ public class MonologueManager : MonoBehaviour
     public bool GotFlashLight = false;          // フラッシュライトを入手 済みでディスプレイがアクティブのときON
     public bool isWaitingReachElevator = false; // エレベーターに初到着 待ちのときON
     public bool isWaitingGetElevatorKey = false; // エレベーター起動アイテムを入手 待ちのときON
+    [SerializeField] private bool isStartElevator = false; // プロローグのエレベーター内かどうか
 
 
 
@@ -53,6 +57,8 @@ public class MonologueManager : MonoBehaviour
     public PlayerMove playerMove;
     public PlayerLook playerLook;
     private ItemDisplay itemDisplay;
+    private FadeManager fadeManager;
+    private PrologueManager prologueManager;
 
     #endregion Variables
 
@@ -74,9 +80,16 @@ public class MonologueManager : MonoBehaviour
         playerMove = PlayerMove.Instance;
         playerLook = PlayerLook.Instance;
         itemDisplay = ItemDisplay.Instance;
+        fadeManager = FadeManager.Instance;
+        prologueManager = PrologueManager.Instance;
 
         monologuePanel.SetActive(false); // 最初は非表示
 
+        if (!isStartElevator)
+        {
+            SetMonologues(monologue[0]);
+            ShowNextMonologue();
+        }
 
     }
 
@@ -174,14 +187,17 @@ public class MonologueManager : MonoBehaviour
             isDisplaying = false;
             Time.timeScale = 1.0f;
 
-
-            // currentActiveMonologueData が monologue[1] と同じオブジェクトの場合にのみ実行
-            if (currentActiveMonologueData == monologue[1])
+            if (isStartElevator)
             {
-                objectiveText.text = "〇 周囲を探索する";
+                StartCoroutine(fadeManager.FadeOutAndSceneChange(mainSceneName));
             }
+            // currentActiveMonologueData が monologue[1] と同じオブジェクトの場合にのみ実行
+            //if (currentActiveMonologueData == monologue[1])
+            //{
+            //    objectiveText.text = "〇 周囲を探索する";
+            //}
 
-            if (!isPlayedStartTimeLine)
+            if (!isPlayedStartTimeLine && !prologueManager)
             {
                 isPlayedStartTimeLine = true;
                 playerPD.Play();

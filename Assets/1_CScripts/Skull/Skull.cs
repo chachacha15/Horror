@@ -21,7 +21,7 @@ public class Skull : MonoBehaviour, IInteractable
 
     // その他・他クラス
 
-    private SkullManager manager;
+    private SkullManager skullManager;
 
     #endregion
 
@@ -34,7 +34,7 @@ public class Skull : MonoBehaviour, IInteractable
     }
 
     public bool ShowInteractText => false; // テキスト表示するかどうか
-    public bool ActivateCrosshair => !manager.isConfirmed;
+    public bool ActivateCrosshair => !skullManager.isConfirmed;
 
     /// <summary>
     /// 骸骨をクリックしたら選択画面UIを表示
@@ -42,7 +42,7 @@ public class Skull : MonoBehaviour, IInteractable
     public void Interact(GameObject targetObject)
     {
 
-        manager.ShowConfirmationUI(this);
+        skullManager.ShowConfirmationUI(this);
 
     }
 
@@ -52,7 +52,7 @@ public class Skull : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        manager = FindObjectOfType<SkullManager>();
+        skullManager = FindObjectOfType<SkullManager>();
     }
 
 

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6550209775349d842a57900a9a76a358, type: 3}
+  m_Name: Log_StartInElevator
+  m_EditorClassIdentifier: 
+  monologueLines:
+  - "\u4F55\u5E74\u3076\u308A\u306B\u3053\u3053\u306B\u6765\u305F\u3093\u3060\u308D\u3046"
+  - "\u61D0\u304B\u3057\u3044\u306A\u3042"
+  - "\u3057\u304B\u3082\u3001\u524D\u306B\u6CCA\u3063\u305F\u3053\u3068\u306E\u3042\u308B\u90E8\u5C4B\u3092\u4E88\u7D04\u3067\u304D\u305F\u3093\u3060\u3088\u306A\u3041"
+  - "\u305F\u306E\u3057\u307F\u3060"
+  - "\u3046\u3001\u3046\u3045..."
+  - "\u3042\u308C\u610F\u8B58\u304C..."

@@ -62,12 +62,14 @@ public class PlayerInteractor : MonoBehaviour
                     // クロスヘアをアニメーションするものか確認して実行
                     if (target.ActivateCrosshair)
                     {
-                        cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
+                        if (cameraSwitcher)
+                            cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
 
                     }
                     else
                     {
-                        cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
+                        if (cameraSwitcher)
+                            cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
                     }
 
                     // 左クリックでインタラクト、各々の処理を実行
@@ -80,12 +82,14 @@ public class PlayerInteractor : MonoBehaviour
                 }
                 else
                 {
-                    cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
+                    if (cameraSwitcher)
+                        cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
                 }
             }
             else
             {
-                cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
+                if (cameraSwitcher)
+                    cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
 
             }
         }
@@ -99,6 +103,6 @@ public interface IInteractable
     string GetInteractText();        // 「取る」「開ける」など
     bool ShowInteractText { get; }   // テキストを表示するかどうか
     bool ActivateCrosshair { get; }  //クロスヘアをアニメーションするか 
-    void Interact(GameObject targetObject);                 // 実行アクション
+    void Interact(GameObject targetObject);          // 実行アクション
 }
 

@@ -80,7 +80,7 @@ public class GameStart : MonoBehaviour
             }
         }
         // アイテム表示中ではない、かつセリフが表示中の場合のみ処理を行う
-        if (isDisplaying && !itemDisplay.isItemDisplayON)
+        if (isDisplaying)
         {
             
             // Lキーの処理（会話全体をスキップ）
@@ -133,7 +133,7 @@ public class GameStart : MonoBehaviour
             startLogCanvas.SetActive(false);
             isDisplaying = false;
             hasFinishedStartTex = true;
-            Time.timeScale = 0f;
+            Time.timeScale = 1f;
 
            
 
