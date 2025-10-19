@@ -1,3 +1,4 @@
+using NUnit.Framework.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -17,7 +18,7 @@ public class MonologueManager : MonoBehaviour
 
 
     // インスペクターから設定する GameObject ・ Component ・ value 等
-    public MonologueData[] monologue; // 出力する発言やログ
+    public MonologueData[] AllMonologues; // 出力する発言やログ
     public TextMeshProUGUI monologueText;  // セリフテキストUI
     public GameObject monologuePanel;      // ログを表示するパネル
     public GameObject nextIndicator;       // 続きを促すマーク
@@ -29,6 +30,7 @@ public class MonologueManager : MonoBehaviour
 
     // 保持のための変数
     private Queue<string> monologueQueue = new Queue<string>(); // 会話キュー
+    public HashSet<MonologueData> ShownLogs = new HashSet<MonologueData>();
     private string currentMonologueSentence;          // 現在表示中のセリフを保持
     private MonologueData currentActiveMonologueData; // 現在表示中のMonologueDataを追跡
     private Coroutine currentCoroutine;                   // 現在のセリフコルーチン
@@ -59,6 +61,7 @@ public class MonologueManager : MonoBehaviour
     private ItemDisplay itemDisplay;
     private FadeManager fadeManager;
     private PrologueManager prologueManager;
+    private GameStateManager gameStateManager;
 
     #endregion Variables
 
@@ -82,12 +85,13 @@ public class MonologueManager : MonoBehaviour
         itemDisplay = ItemDisplay.Instance;
         fadeManager = FadeManager.Instance;
         prologueManager = PrologueManager.Instance;
+        gameStateManager = GameStateManager.Instance;
 
         monologuePanel.SetActive(false); // 最初は非表示
 
         if (!isStartElevator)
         {
-            SetMonologues(monologue[0]);
+            SetMonologues(GetLogDataFromType(MonologueType.WakeUp));
             ShowNextMonologue();
         }
 
@@ -173,7 +177,6 @@ public class MonologueManager : MonoBehaviour
             monologueQueue.Enqueue(line); // 追加
         }
         currentActiveMonologueData = monologueData;
-
     }
 
     /// <summary>
@@ -181,8 +184,12 @@ public class MonologueManager : MonoBehaviour
     /// </summary>
     public void ShowNextMonologue()
     {
+        // キューが空なら終了処理
         if (monologueQueue.Count == 0)
         {
+            ShownLogs.Add(currentActiveMonologueData); // 表示済みログに追加
+
+
             monologuePanel.SetActive(false);
             isDisplaying = false;
             Time.timeScale = 1.0f;
@@ -191,6 +198,13 @@ public class MonologueManager : MonoBehaviour
             {
                 StartCoroutine(fadeManager.FadeOutAndSceneChange(mainSceneName));
             }
+
+            // イベントをトリガー
+            gameStateManager.TriggerGameEvent(currentActiveMonologueData.EventToActivation);
+            
+            currentActiveMonologueData = null;
+
+
             // currentActiveMonologueData が monologue[1] と同じオブジェクトの場合にのみ実行
             //if (currentActiveMonologueData == monologue[1])
             //{
@@ -200,6 +214,7 @@ public class MonologueManager : MonoBehaviour
             if (!isPlayedStartTimeLine && !prologueManager)
             {
                 isPlayedStartTimeLine = true;
+                playerPD.playableAsset = gameStateManager.startTimeline;
                 playerPD.Play();
             }
 
@@ -209,6 +224,7 @@ public class MonologueManager : MonoBehaviour
         isDisplaying = true;
         monologuePanel.SetActive(true);
 
+        // キューから次のセリフを取得して表示
         if (monologueQueue.Count > 0) // 連打時のエラー回避
         {
             // Dequeueしたセリフを currentMonologueSentence にも保持する
@@ -249,6 +265,88 @@ public class MonologueManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 指定されたタイプのログを設定・表示を試みる
+    /// </summary>
+    /// <param name="type"></param>
+    public void TrySettingLog(MonologueType type)
+    {
+        // セットするログがあるか確認　＆　新しいログをセットできるか
+        if (type != MonologueType.None && CanSetNewLog())
+        {
+            // まだ表示していないログなら表示 & 前提条件のログがすべて表示されているなら表示
+            if (!HasShownLogs(type) && HasShownPrereequisiteLogs(type))
+            {
+                SetMonologues(GetLogDataFromType(type));
+                ShowNextMonologue();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 新しいログを設定できるか確認
+    /// </summary>
+    /// <returns></returns>
+    public bool CanSetNewLog()
+    {
+        return !isDisplaying;
+    }
+
+    /// <summary>
+    /// 指定されたタイプのログが既に表示されたか確認
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public bool HasShownLogs(MonologueType type)
+    {
+
+        // 既に表示されたログの中に、指定されたタイプのものがあるか確認
+        foreach (MonologueData log in ShownLogs)
+        {
+            if (log.monologueType == type)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /// <summary>
+    /// 指定されたログデータの前提条件のログがすべて表示されているか確認
+    /// </summary>
+    /// <param name="monologueData"></param>
+    /// <returns></returns>
+    private bool HasShownPrereequisiteLogs(MonologueType type)
+    {
+        MonologueData monologueData = GetLogDataFromType(type);
+        foreach (MonologueData prerequisiteData in monologueData.Prerequisites)
+        {
+            if (!HasShownLogs(prerequisiteData.monologueType))
+            {
+                return false; // 前提条件のログが表示されていない場合、falseを返す
+            }
+        }
+        return true; // すべての前提条件のログが表示されている場合、trueを返す
+    }
+
+    /// <summary>
+    /// 指定されたタイプのログデータを取得
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public MonologueData GetLogDataFromType(MonologueType type)
+    {
+        foreach (MonologueData log in AllMonologues)
+        {
+            if (log.monologueType == type)
+            {
+                return log;
+            }
+        }
+        return null; // 見つからなかった場合はnullを返す
+    }
 
 
 
@@ -262,6 +360,8 @@ public class MonologueManager : MonoBehaviour
     /// </summary>
     public void DisablePlayerControl()
     {
+        playerAnimator.enabled = true;
+
         playerMove.enabled = false;
         playerLook.enabled = false;
         EmissionLooper[] allEmissionLoopers = FindObjectsOfType<EmissionLooper>();
@@ -285,16 +385,7 @@ public class MonologueManager : MonoBehaviour
     }
 
 
-    public void ActivateWaitingReachElevator()
-    {
-        isWaitingGetFlashlight = false;
-        isWaitingReachElevator = true;
-        
-        SetMonologues(monologue[1]);
-        ShowNextMonologue();
-        
-    }
-
+    
     /// <summary>
     /// 次のセリフへ移る際に、少し猶予時間を作る
     /// </summary>
@@ -309,6 +400,10 @@ public class MonologueManager : MonoBehaviour
 
 
 
+
+
+
+    #region Next Indicator Animation
 
     /// <summary>
     /// 次へ進むマークを反復移動させるコルーチン
@@ -326,6 +421,11 @@ public class MonologueManager : MonoBehaviour
         yield return currentIndicatorAnimationCoroutine; // このコルーチンが終わるまで待つ（実質、無限ループなのでここは実行されない）
     }
 
+
+    /// <summary>
+    /// 次へ進むマークを反復移動させる実際の処理
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator DoAnimateNextIndicator()
     {
         Vector3 startPos = new Vector3(0, -485, 0);
@@ -354,6 +454,8 @@ public class MonologueManager : MonoBehaviour
         }
     }
 
+
+    #endregion
 
     #endregion Methods
 

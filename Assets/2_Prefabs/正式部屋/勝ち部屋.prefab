@@ -162,7 +162,7 @@ MonoBehaviour:
   player: {fileID: 7247795016101697177, guid: c9811cbd2012606438ebfe10ab2bdba2, type: 3}
   isOpen: 0
   lockedText: {fileID: 0}
-  isLockedDoor: 0
+  isLockedDoor: 1
   isEnemyDoor: 0
   isRoomDoor: 1
   openSound: {fileID: 8300000, guid: a7fdbe240df7eaa4cb312449c4319d6d, type: 3}

@@ -25,6 +25,9 @@ public class DoorController : MonoBehaviour, IInteractable
     public bool isEnemyDoor;        // 敵が潜む場合があるドアかどうか
     public bool isRoomDoor = true;  // 部屋にあるドアかどうか（トイレなどはオフ）
 
+    // 状態を保存する変数
+    private bool isCantOpenDisplayed = false; // 「開かない」テキストが表示されているかどうか
+
     // サウンド
     public AudioClip openSound; // 開ける音
     public AudioClip closeSound; // 閉める音
@@ -49,6 +52,10 @@ public class DoorController : MonoBehaviour, IInteractable
 
     public string GetInteractText()
     {
+        if (isCantOpenDisplayed)
+        {
+            return "開かない";
+        }
         if (!isOpen) return "開ける";
         return "閉める";
     }
@@ -74,7 +81,7 @@ public class DoorController : MonoBehaviour, IInteractable
             {
                 audioSource.pitch = 1;
                 audioSource.PlayOneShot(LockedSound);
-                StartCoroutine(DelayText());
+                StartCoroutine(ChangeTextToCantOpen());
             }
         }
         else
@@ -112,10 +119,10 @@ public class DoorController : MonoBehaviour, IInteractable
 
         // オブジェクト名から数字を抽出して必要なカギを設定
         requiredKeyName = GetRequiredKeyNameFromObjectName(gameObject.name);
-        if(requiredKeyName == null) isLockedDoor= false;
+        if (requiredKeyName == null) isLockedDoor = false;
 
 
-        
+
 
     }
 
@@ -224,9 +231,10 @@ public class DoorController : MonoBehaviour, IInteractable
     {
         System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(objectName, @"\d+");
 
-        if (match.Success)
+
+        if (match.Success && isRoomDoor)
         {
-            return $"カードキー({match.Value}号室)"; // 必要なカギの名前を生成
+            return $"カードキー_{match.Value}"; // 必要なカギの名前を生成
         }
         else
         {
@@ -252,10 +260,10 @@ public class DoorController : MonoBehaviour, IInteractable
     /// 鍵が無いときに一定の間特別なテキストを表示するコルーチン
     /// </summary>
     /// <returns></returns>
-    IEnumerator DelayText()
+    IEnumerator ChangeTextToCantOpen()
     {
-        lockedText.text = "開かない";
+        isCantOpenDisplayed = true;
         yield return new WaitForSeconds(1.0f);
-        lockedText.text = "開ける";
+        isCantOpenDisplayed = false;
     }
 }

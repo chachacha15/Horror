@@ -29,6 +29,7 @@ public class ItemChecker : MonoBehaviour
     public bool isTakeTextChanged = false;
 
     //その他・他クラス
+    private MonologueManager monologueManager;
 
 
     Ray ray;
@@ -59,7 +60,8 @@ public class ItemChecker : MonoBehaviour
     private void Start()
     {
         pickUpAS = GetComponent<AudioSource>();
-       
+        monologueManager = MonologueManager.Instance;
+
     }
 
     
@@ -92,6 +94,8 @@ public class ItemChecker : MonoBehaviour
             {
                 itemDisplay.ToggleItemDisplay();
                 inventory.UpdateInventoryUI();
+
+                monologueManager.TrySettingLog(itemData.MonologueTypeToActivation);
             }            
 
             Destroy(item);

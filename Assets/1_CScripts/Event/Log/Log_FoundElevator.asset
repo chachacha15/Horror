@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6550209775349d842a57900a9a76a358, type: 3}
+  m_Name: Log_FoundElevator
+  m_EditorClassIdentifier: 
+  monologueLines:
+  - "\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u3082\u958B\u304B\u306A\u3044\u305E..."
+  - "\u305D\u3082\u305D\u3082\u96FB\u6C17\u304C\u901A\u3063\u3066\u3044\u306A\u3044\u306E\u304B\uFF1F"
+  - "\u30D6\u30EC\u30FC\u30AB\u30FC\u306E\u3088\u3046\u306A\u3082\u306E\u3092\u898B\u3064\u3051\u3088\u3046"
+  monologueType: 3
+  prerequisites: []

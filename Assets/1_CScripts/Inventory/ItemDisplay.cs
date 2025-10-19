@@ -148,6 +148,10 @@ public class ItemDisplay : MonoBehaviour
             
     }
 
+    /// <summary>
+    /// 3Dでアイテムを表示するメソッド
+    /// </summary>
+    /// <param name="item"></param>
     private void DisplayItemIn3D(PocketItem item)
     {
         // 既に表示中のアイテムがあれば削除
@@ -166,11 +170,6 @@ public class ItemDisplay : MonoBehaviour
         Rigidbody rigidbody = currentDisplayedItem.GetComponent<Rigidbody>();
         if (rigidbody != null) rigidbody.isKinematic = true;
 
-
-        if (monologueManager.isWaitingGetFlashlight && item.item.name == "Flashlight")
-        {
-            monologueManager.GotFlashLight = true;
-        }
 
     }
 
@@ -192,7 +191,6 @@ public class ItemDisplay : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(1);
 
-        if (monologueManager.GotFlashLight) monologueManager.ActivateWaitingReachElevator();
 
     }
 }

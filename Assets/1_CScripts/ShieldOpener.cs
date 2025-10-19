@@ -13,17 +13,18 @@ public class ShieldOpener : MonoBehaviour, IInteractable
 
     [Header("UI設定")]
     [SerializeField] private TextMeshProUGUI interactTextDisplay;
-    private Inventory inventory;
 
+    // 他クラス
+    private Inventory inventory;
+    private MonologueManager monologueManager;
     private Animator shieldAnimator;
 
     private void Start()
     {
-        inventory = FindObjectOfType<Inventory>();
-        if (inventory == null)
-        {
-            Debug.LogError("Inventoryコンポーネントがシーンに見つかりません。");
-        }
+
+        monologueManager = MonologueManager.Instance;
+        inventory = Inventory.Instance;
+
 
         shieldAnimator = GetComponent<Animator>();
         if (shieldAnimator == null)
@@ -66,8 +67,8 @@ public class ShieldOpener : MonoBehaviour, IInteractable
         }
         else
         {
-            Debug.Log("鍵がありません。");
             StartCoroutine(ShowLockedText());
+            monologueManager.TrySettingLog(MonologueType.FindElectricSystem);
         }
     }
 

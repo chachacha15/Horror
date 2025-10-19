@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour
 {
     #region Variables
+    public static Inventory Instance { get; private set; }
 
     // インベントリ内容に使う
     public List<string> haveGotItems = new List<string>(); // すでに入手経験のあるアイテムリスト 
@@ -52,12 +53,15 @@ public class Inventory : MonoBehaviour
     // 他クラス
     private CameraSwitcher cameraSwitcher;
     private MonologueManager monologueManager;
-    
+
 
 
     #endregion
 
-    
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         selectedItem = null; // 手に持っているアイテムを初期化する

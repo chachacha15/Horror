@@ -138,7 +138,7 @@ public class GameStart : MonoBehaviour
            
 
             // ここで開始地点で少ししゃべるようにする（まだゲーム始めない）
-            monologueManager.SetMonologues(monologueManager.monologue[0]);
+            monologueManager.SetMonologues(monologueManager.GetLogDataFromType(MonologueType.WakeUp));
             monologueManager.ShowNextMonologue();
 
 

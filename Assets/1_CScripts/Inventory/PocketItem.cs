@@ -13,6 +13,9 @@ public class PocketItem
     [Header("出現しやすさ")] public int weight = 1; // 重み（スポーンさせやすさ）
     [Header("必ず必要なアイテムか")] public bool isImportant = false; // 必ず必要なアイテムかどうか
 
+    [Header("アイテム取得時のモノローグ(あれば)")]
+    public MonologueType MonologueTypeToActivation; // アイテム取得時に再生するモノローグの種類
+
     [Header("初ゲットでディスプレイするときのTransform")]
     public Vector3 displayPosition;            // ディスプレイ時の位置
     public Quaternion displayRotation;         // ディスプレイ時の回転

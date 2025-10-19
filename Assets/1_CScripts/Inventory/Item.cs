@@ -22,7 +22,7 @@ public class Item : MonoBehaviour, IInteractable
     public bool ActivateCrosshair => true;
 
     /// <summary>
-    /// クリック時、開閉
+    /// クリック時
     /// </summary>
     public void Interact(GameObject targetObject)
     {

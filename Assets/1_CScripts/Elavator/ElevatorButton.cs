@@ -1,3 +1,4 @@
+using NUnit.Framework.Interfaces;
 using UnityEngine;
 
 public class ElevatorButton : MonoBehaviour, IInteractable
@@ -8,6 +9,8 @@ public class ElevatorButton : MonoBehaviour, IInteractable
 
     // 他クラス
     private ElevatorManager elevatorManager;
+    private GameStateManager gameStateManager;
+    private MonologueManager monologueManager;
 
     #endregion
 
@@ -27,13 +30,21 @@ public class ElevatorButton : MonoBehaviour, IInteractable
     /// </summary>
     public void Interact(GameObject targetObject)
     {
-        if (elevatorManager.IsMovingDoor) return;
-        elevatorManager.IsMovingDoor = true;
-        if (elevatorManager.IsOpen) elevatorManager.OnClose();
-        else elevatorManager.OnOpen();
-        elevatorManager.IsOpen = !elevatorManager.IsOpen;
-        StartCoroutine(elevatorManager.WaitStoppingAnimation(elevatorManager.IsOpen));
+        if (gameStateManager.IsElectricSystemON)
+        {
 
+
+            if (elevatorManager.IsMovingDoor) return;
+            elevatorManager.IsMovingDoor = true;
+            if (elevatorManager.IsOpen) elevatorManager.OnClose();
+            else elevatorManager.OnOpen();
+            elevatorManager.IsOpen = !elevatorManager.IsOpen;
+            StartCoroutine(elevatorManager.WaitStoppingAnimation(elevatorManager.IsOpen));
+        }
+        else
+        {
+            monologueManager.TrySettingLog(MonologueType.FindElevator);
+        }
     }
 
     #endregion
@@ -46,6 +57,8 @@ public class ElevatorButton : MonoBehaviour, IInteractable
     {
         // 他クラスを取得
         elevatorManager = ElevatorManager.Instance;
+        gameStateManager = GameStateManager.Instance;
+        monologueManager = MonologueManager.Instance;
     }
 
     
