@@ -350,7 +350,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unityfx.outline": {
-      "version": "0.8.3",
+      "version": "0.8.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
