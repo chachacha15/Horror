@@ -258,7 +258,7 @@ MonoBehaviour:
   - item: {fileID: 5367161972318017973, guid: 2346c9e501170594abcbf4646ea9d855, type: 3}
     explainText: "\u3055\u304B\u306A"
     weight: 1
-    isImportant: 1
+    isImportant: 0
     MonologueTypeToActivation: 0
     displayPosition: {x: 0, y: 0, z: 0}
     displayRotation: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}

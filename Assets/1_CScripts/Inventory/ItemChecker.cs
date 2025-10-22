@@ -20,7 +20,7 @@ public class ItemChecker : MonoBehaviour
 
     // サウンド
     public AudioClip pickUpSound; //拾った時に鳴る音
-    private AudioSource pickUpAS; 
+    private AudioSource pickUpAS;
 
 
     // 表示するUI用
@@ -33,7 +33,7 @@ public class ItemChecker : MonoBehaviour
 
 
     Ray ray;
- 
+
 
     // 血・スポンジギミック用
     public Material bloodMaterial; // 血のマテリアル
@@ -64,7 +64,7 @@ public class ItemChecker : MonoBehaviour
 
     }
 
-    
+
     /// <summary>
     /// アイテムをインベントリに格納するメソッド
     /// </summary>
@@ -87,7 +87,7 @@ public class ItemChecker : MonoBehaviour
 
             bool haveGotThisItem = inventory.haveGotItems.Contains(item.name);
             inventory.AddItem(itemData);
-            Debug.Log(itemData.item.transform.name +" : "+itemData.item.transform.rotation.x);
+            Debug.Log(itemData.item.transform.name + " : " + itemData.item.transform.rotation.x);
 
             // 初ゲットならディスプレイに表示
             if (!haveGotThisItem)
@@ -96,7 +96,7 @@ public class ItemChecker : MonoBehaviour
                 inventory.UpdateInventoryUI();
 
                 monologueManager.TrySettingLog(itemData.MonologueTypeToActivation);
-            }            
+            }
 
             Destroy(item);
 
@@ -108,10 +108,10 @@ public class ItemChecker : MonoBehaviour
 
     }
 
-   /// <summary>
-   /// アイテムが拾えないときのテキストを一時変更するコルーチン
-   /// </summary>
-   /// <returns></returns>
+    /// <summary>
+    /// アイテムが拾えないときのテキストを一時変更するコルーチン
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ChangeTakeText()
     {
         isTakeTextChanged = true;
@@ -119,4 +119,3 @@ public class ItemChecker : MonoBehaviour
         isTakeTextChanged = false;
     }
 }
-
