@@ -845,7 +845,7 @@ public class GhostAI : MonoBehaviour
 
     public float detectionRadius = 60f;
     public float fieldOfView = 150f;
-    private bool isPlayerVisible = false;
+    public bool isPlayerVisible = false;
 
 
     public bool isWallEnemy = false;
@@ -937,7 +937,7 @@ public class GhostAI : MonoBehaviour
             }
         }
 
-        // ★修正: 調査モードとChaseモードを明確に分ける
+        // 調査モードとChaseモードを明確に分ける
         if (isInvestigatingPuzzle)
         {
             InvestigatePuzzlePoint();
@@ -1105,7 +1105,7 @@ public class GhostAI : MonoBehaviour
         }
     }
 
-    // ★追加: パズル失敗時の調査モード
+    // パズル失敗時の調査モード
     private void InvestigatePuzzlePoint()
     {
         if (puzzleInvestigateTarget == null)

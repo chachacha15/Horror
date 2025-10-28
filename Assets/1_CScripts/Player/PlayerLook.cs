@@ -14,6 +14,8 @@ public class PlayerLook : MonoBehaviour
 
     [SerializeField] private Transform playerBody;
 
+    public bool IsCameraLocked = false;
+
     // メインカメラ用の回転値
     private float xAxisClamp;
 
@@ -72,7 +74,12 @@ public class PlayerLook : MonoBehaviour
 
     private void Update()
     {
-         CameraRotation();
+        if (!IsCameraLocked) CameraRotation();
+        else
+        {
+            mainCamera.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+            xAxisClamp = 0f;
+        }
     }
 
 

@@ -192,7 +192,7 @@ public class MonologueManager : MonoBehaviour
 
             monologuePanel.SetActive(false);
             isDisplaying = false;
-            Time.timeScale = 1.0f;
+            Time.timeScale = 2.0f;
 
             if (isStartElevator)
             {
@@ -363,7 +363,11 @@ public class MonologueManager : MonoBehaviour
         playerAnimator.enabled = true;
 
         playerMove.enabled = false;
-        playerLook.enabled = false;
+        playerLook.IsCameraLocked = true;
+
+        playerMove.isHeadBobEnabled = false;
+        playerMove.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+
         EmissionLooper[] allEmissionLoopers = FindObjectsOfType<EmissionLooper>();
         foreach (EmissionLooper emissionLooper in allEmissionLoopers) emissionLooper.enabled = false;
     }
@@ -376,7 +380,7 @@ public class MonologueManager : MonoBehaviour
         playerAnimator.enabled = false;
 
         playerMove.enabled = true;
-        playerLook.enabled = true;
+        playerLook.IsCameraLocked = false;
 
         EmissionLooper[] allEmissionLoopers = FindObjectsOfType<EmissionLooper>();
         foreach (EmissionLooper emissionLooper in allEmissionLoopers) emissionLooper.enabled = true;

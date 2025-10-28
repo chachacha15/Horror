@@ -29,6 +29,7 @@ public class PlayerMove : MonoBehaviour
     private Transform cameraTransform;
 
     // 一人称カメラの揺れについて
+    public bool isHeadBobEnabled = true;
     Vector3 HeadBob;
     [SerializeField] private CurveControlledBob bob = new CurveControlledBob();
     [SerializeField] private float runSwayAmount = 3.0f;
@@ -60,6 +61,9 @@ public class PlayerMove : MonoBehaviour
     private void Start()
     {
 
+         
+
+
         staminaBar = FindObjectOfType<StaminaBar>();
         shakeCamera = ShakeCamera.Instance;
         prologueManager = PrologueManager.Instance;
@@ -86,7 +90,7 @@ public class PlayerMove : MonoBehaviour
     private void Update()
     {
         PlayerMovement();
-
+        if (!isHeadBobEnabled) return;
         if (shakeCamera.isShaking) return;
 
         // 状態に応じた揺れ倍率を設定

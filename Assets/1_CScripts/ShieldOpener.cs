@@ -71,7 +71,7 @@ public class ShieldOpener : MonoBehaviour, IInteractable
 
             if (monologueManager != null)
             {
-                // monologueManager.TrySettingLog(MonologueType.FindElectricSystem); 
+                monologueManager.TrySettingLog(MonologueType.FindElectricSystem); 
                 Debug.Log("モノローグを試行しました。");
             }
         }
