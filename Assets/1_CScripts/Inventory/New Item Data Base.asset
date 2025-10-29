@@ -288,3 +288,14 @@ MonoBehaviour:
     iconPosition: {x: 0, y: -0.1, z: 0}
     iconRotation: {x: 0, y: 0, z: 0, w: 1}
     iconScale: {x: 0, y: 0, z: 0}
+  - item: {fileID: 3877866506721863982, guid: 5db66dcabfcd33f44a22f97786c3801a, type: 3}
+    explainText: "\u304B\u308F\u3044\u3044\u306D\u3053\u306E\u305F\u304B\u3089\u3082\u306E"
+    weight: 0
+    isImportant: 1
+    MonologueTypeToActivation: 0
+    displayPosition: {x: 0, y: 0, z: 0}
+    displayRotation: {x: 0, y: 0, z: 0, w: 1}
+    displayScale: {x: 0, y: 0, z: 0}
+    iconPosition: {x: 0, y: -0.1, z: 0}
+    iconRotation: {x: 0, y: 0, z: 0, w: 1}
+    iconScale: {x: 0, y: 0, z: 0}
