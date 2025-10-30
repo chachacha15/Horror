@@ -2,45 +2,6 @@
 using System;
 using UnityEngine;
 
-
-/*
-public class PictureRotator : MonoBehaviour
-{
-    public ArrowType arrowType;
-
-    [Header("左側の絵かどうか")]
-    public bool isLeft;  // true: 左, false: 右
-
-    private float currentRotation = 0f;
-
-    public static event Action<string> OnPictureRotated; // "L" または "R" を送信
-
-    /// <summary>
-    /// プレイヤーがクリックなどでこの関数を呼ぶと15度回転
-    /// </summary>
-    public void Rotate()
-    {
-        transform.Rotate(0f, 15f, 0f);
-        currentRotation += 15f;
-
-        if (currentRotation >= 360f) currentRotation -= 360f;
-
-        // PuzzleManagerに通知
-        OnPictureRotated?.Invoke(isLeft ? "L" : "R");
-    }
-
-    /// <summary>
-    /// 間違えたときにリセット用
-    /// </summary>
-    public void ResetRotation()
-    {
-        transform.localRotation = Quaternion.identity;
-        currentRotation = 0f;
-    }
-}
-*/
-
-
 public class PictureRotator : MonoBehaviour
 {
     public ArrowType arrowType;
