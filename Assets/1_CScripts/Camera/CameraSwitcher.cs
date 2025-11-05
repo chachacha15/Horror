@@ -11,6 +11,8 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
 
     #region Variables
 
+    public static CameraSwitcher Instance;
+
     public Camera mainCamera;
 
     public MonoBehaviour playerLookScript; // PlayerLookスクリプトを参照
@@ -37,6 +39,7 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
 
     private float currentSize; // 現在のサイズ
     public bool hasHiddenUnderDesk = false; //一回はクローゼットに隠れたことがあるか
+    public bool CanControl = true; // プレイヤーがカメラ切り替えをできるかどうか
     private Vector3 targetCameraBaseLocalPosition;
 
     // サウンド
@@ -90,14 +93,20 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
                 bob.Setup(targetClosetCamera, 1.0f);
 
 
+                if (!hasHiddenUnderDesk && GameStateManager.Instance.HasMetEnemy)
+                {
+                    StartCoroutine(HidingUnderDesk.Instance.ActivateHidingEvent());
+
+                }
+
             }
             else
             {
                 Debug.LogWarning("対象のクローゼットにカメラが見つかりません！");
             }
 
-            hasHiddenUnderDesk = true;
 
+            
         }
     }
 
@@ -112,6 +121,7 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
         activeCrosshairBoolList = new List<BoolWrapper>();
 
         shakeCamera = ShakeCamera.Instance;
+        Instance = this;
 
     }
 
@@ -139,12 +149,17 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
 
     void Update()
     {
-
+        if (!CanControl) return;
 
         // 右クリックでメインカメラに切り替える
         if (Input.GetMouseButtonDown(1) && isClosetCameraActive)
         {
             // クローゼットカメラがアクティブならメインカメラに戻る
+            if (!hasHiddenUnderDesk)
+            {
+                TutorialManager.Instance.DisappearTutorialText();
+                hasHiddenUnderDesk = true;
+            }
             SwitchToMainCamera();
         }
 

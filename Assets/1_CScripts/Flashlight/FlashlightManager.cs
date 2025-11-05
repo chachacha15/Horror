@@ -48,10 +48,7 @@ public class FlashlightManager : MonoBehaviour
 
                     if (tutorialManager != null && !hasTutorialShown)
                     {
-                        hasTutorialShown = true; // チュートリアル画面が見えているというフラグを立てる
-                        StartCoroutine(tutorialManager.ShowTutorial()); // チュートリアル表示
-                        flashlightTutorial.SetActive(true); // フラッシュライトチュートリアル表示
-                        flashlightTutorial.transform.GetChild(0).gameObject.SetActive(true); // フラッシュライトオブジェクトをONにする
+                        hasTutorialShown = true;
                     }
                 }
             }

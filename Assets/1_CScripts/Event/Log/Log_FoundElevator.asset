@@ -17,4 +17,6 @@ MonoBehaviour:
   - "\u305D\u3082\u305D\u3082\u96FB\u6C17\u304C\u901A\u3063\u3066\u3044\u306A\u3044\u306E\u304B\uFF1F"
   - "\u30D6\u30EC\u30FC\u30AB\u30FC\u306E\u3088\u3046\u306A\u3082\u306E\u3092\u898B\u3064\u3051\u3088\u3046"
   monologueType: 3
-  prerequisites: []
+  Prerequisites:
+  - {fileID: 11400000, guid: 130a441079fe0fb4188e6d4876ae5243, type: 2}
+  EventToActivation: 3

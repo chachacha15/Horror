@@ -7,16 +7,28 @@ using UnityEngine;
 /// </summary>
 public class PlayerInteractor : MonoBehaviour
 {
+    public static PlayerInteractor Instance { get; private set; }
+
     [SerializeField] private float interactDistance = 5f;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private LayerMask interactLayer;
     [SerializeField] private TextMeshProUGUI interactText;
     [SerializeField] private GameObject interactCanvas;
 
+    public bool CanInteract = true;
+
     private Camera currentCamera;
     private NearbyItemHighlighter nearbyItemHighlighter;
 
     CameraSwitcher cameraSwitcher;
+
+
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         cameraSwitcher = FindObjectOfType<CameraSwitcher>();
@@ -26,6 +38,9 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (Camera.main != null) currentCamera = Camera.main; // ‚Ü‚½‚Í cameraSwitcher.currentClosetCamera
         else currentCamera = cameraSwitcher.currentClosetCamera;
+
+        if (!CanInteract) return;
+        
 
         Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;

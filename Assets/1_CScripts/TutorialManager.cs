@@ -1,29 +1,53 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class TutorialManager : MonoBehaviour
 {
-    public CanvasGroup tutorialCanvasGroup; // チュートリアル全体のフェード管理
-    public float displayTime = 4f;         // 表示時間
-    public float fadeDuration = 1f;         // フェード時間
+
+    #region Constants
+
+    private const float DISPLAY_DURATION = 5.0f; // 時間制御時の表示時間
+    private const float FADE_DURATION = 1.0f;    // フェードアウト時のフェード時間
+
+    #endregion
+
+    #region Variables
+
+    public static TutorialManager Instance;
+
+    [SerializeField] private TutorialTextData[] tutorialTextDataList; // 全チュートリアルテキストデータ
+
+    [SerializeField] private TextMeshProUGUI tutorialText; // チュートリアルテキスト
+    private CanvasGroup tutorialCanvasGroup; // チュートリアル全体のフェード管理
+
     private bool isFading = false;          // フェード中かどうかのフラグ
 
 
     // 他クラス
-    private GameStart gameStart;
+
+
+    #endregion
+
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         // 他クラスを取得
-        gameStart = FindObjectOfType<GameStart>();
 
+
+        tutorialCanvasGroup = tutorialText.GetComponent<CanvasGroup>();
+        tutorialCanvasGroup.alpha = 0f;
         if(tutorialCanvasGroup.name == "StartTutorial")
         {
             // チュートリアルを表示
-            StartCoroutine(ShowTutorial());
         }
 
     }
-        
+
 
     //private void Update()
     //{
@@ -34,19 +58,68 @@ public class TutorialManager : MonoBehaviour
     //    }
     //}
 
-    public IEnumerator ShowTutorial()
+    private void UpdateTutorialText(string text)
     {
+        tutorialText.text = text;
+    }
+   
+
+    public void SetTutorialText(TutorialDataType type)
+    {
+        foreach(var data in tutorialTextDataList)
+        {
+            if (data.Type == type)
+            {
+                UpdateTutorialText(data.Text);
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public TutorialTextData GetTutorialTextData(TutorialDataType type)
+    {
+        foreach (var data in tutorialTextDataList)
+        {
+            if (data.Type == type)
+            {
+                return data;
+            }
+        }
+        return null;
+    }
+
+    public IEnumerator ShowTutorial(TutorialDataType type)
+    {
+        // タイプからデータを特定
+        TutorialTextData data = GetTutorialTextData(type);
+        Debug.Log(data);
+        SetTutorialText(data.Type); // テキストを変更
+
         // 表示中のアルファ値を最大に設定
         tutorialCanvasGroup.alpha = 1.0f;
 
-        // 表示時間を待つ
-        yield return new WaitForSeconds(displayTime);
-
-        // フェードアウト開始
-        if (!isFading)
+        // 時間ベースで制御するチュートリアルは一定の時間でフェードアウト
+        if (data.IsTimeBasedDisappear)
         {
-            StartCoroutine(FadeOut());
+            // 表示時間を待つ
+            yield return new WaitForSeconds(DISPLAY_DURATION);
+
+            // フェードアウト開始
+            if (!isFading)
+            {
+                StartCoroutine(FadeOut());
+            }
         }
+    }
+
+    public void DisappearTutorialText()
+    {
+        StartCoroutine(FadeOut());
     }
 
     private IEnumerator FadeOut()
@@ -57,17 +130,15 @@ public class TutorialManager : MonoBehaviour
         float startAlpha = tutorialCanvasGroup.alpha;
         float elapsedTime = 0f;
 
-        while (elapsedTime < fadeDuration)
+        while (elapsedTime < FADE_DURATION)
         {
             elapsedTime += Time.deltaTime;
-            tutorialCanvasGroup.alpha = Mathf.Lerp(startAlpha, 0, elapsedTime / fadeDuration);
+            tutorialCanvasGroup.alpha = Mathf.Lerp(startAlpha, 0, elapsedTime / FADE_DURATION);
             yield return null;
         }
 
         tutorialCanvasGroup.alpha = 0;
         isFading = false;
 
-        // チュートリアルを完全に非表示に
-        tutorialCanvasGroup.gameObject.SetActive(false);
     }
 }

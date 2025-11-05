@@ -21,4 +21,4 @@ MonoBehaviour:
   monologueType: 4
   Prerequisites:
   - {fileID: 11400000, guid: 01970bd4fe5d8e04a99086692b0fbe76, type: 2}
-  EventToActivation: 1
+  EventToActivation: 2

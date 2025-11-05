@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6dcfb8ae2604044b830c3b1023e3ba7, type: 3}
+  m_Name: HideUnderDesk
+  m_EditorClassIdentifier: 
+  Text: "\u3007 \u90E8\u5C4B\u306E\u673A\u306E\u4E0B\u306B\u9003\u3052\u8FBC\u3082\u3046"
+  Type: 4

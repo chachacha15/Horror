@@ -24,4 +24,5 @@ public enum MonologueType
     GetFlashlight,
     FindElevator,
     FindElectricSystem,
+    HidingUnderDesk,
 }

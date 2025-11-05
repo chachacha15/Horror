@@ -22,8 +22,8 @@ public class MonologueManager : MonoBehaviour
     public TextMeshProUGUI monologueText;  // セリフテキストUI
     public GameObject monologuePanel;      // ログを表示するパネル
     public GameObject nextIndicator;       // 続きを促すマーク
-    public TextMeshProUGUI objectiveText;  // 目標を表示するテキストUI
     public float textSpeed = 0.05f;        // 文字を1つずつ表示する速度
+    [SerializeField] private EmissionLooper flashlightEmissionLooper; // フラッシュライトのEmissionLooper
     [SerializeField] private string mainSceneName = "demoScene";
 
 
@@ -62,6 +62,7 @@ public class MonologueManager : MonoBehaviour
     private FadeManager fadeManager;
     private PrologueManager prologueManager;
     private GameStateManager gameStateManager;
+    private PlayerInteractor playerInteractor;
 
     #endregion Variables
 
@@ -86,6 +87,7 @@ public class MonologueManager : MonoBehaviour
         fadeManager = FadeManager.Instance;
         prologueManager = PrologueManager.Instance;
         gameStateManager = GameStateManager.Instance;
+        playerInteractor = PlayerInteractor.Instance;
 
         monologuePanel.SetActive(false); // 最初は非表示
 
@@ -205,11 +207,7 @@ public class MonologueManager : MonoBehaviour
             currentActiveMonologueData = null;
 
 
-            // currentActiveMonologueData が monologue[1] と同じオブジェクトの場合にのみ実行
-            //if (currentActiveMonologueData == monologue[1])
-            //{
-            //    objectiveText.text = "〇 周囲を探索する";
-            //}
+            
 
             if (!isPlayedStartTimeLine && !prologueManager)
             {
@@ -351,6 +349,8 @@ public class MonologueManager : MonoBehaviour
 
 
 
+    #region Timeline Control Methods
+
 
 
 
@@ -364,12 +364,11 @@ public class MonologueManager : MonoBehaviour
 
         playerMove.enabled = false;
         playerLook.IsCameraLocked = true;
+        playerInteractor.CanInteract = false;
 
-        playerMove.isHeadBobEnabled = false;
         playerMove.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-        EmissionLooper[] allEmissionLoopers = FindObjectsOfType<EmissionLooper>();
-        foreach (EmissionLooper emissionLooper in allEmissionLoopers) emissionLooper.enabled = false;
+        
     }
 
     /// <summary>
@@ -381,15 +380,31 @@ public class MonologueManager : MonoBehaviour
 
         playerMove.enabled = true;
         playerLook.IsCameraLocked = false;
+        playerInteractor.CanInteract = true;
 
+    }
+
+    /// <summary>
+    /// タイムラインから参照する。起床時のタイムライン開始・終了時の処理
+    /// </summary>
+    public void OnWakeupTimelineStart()
+    {
         EmissionLooper[] allEmissionLoopers = FindObjectsOfType<EmissionLooper>();
-        foreach (EmissionLooper emissionLooper in allEmissionLoopers) emissionLooper.enabled = true;
-
+        foreach (EmissionLooper emissionLooper in allEmissionLoopers) emissionLooper.enabled = false;
+    }
+    public void OnWakeupTimelineEnd()
+    {
+        flashlightEmissionLooper.enabled = true;
         isWaitingGetFlashlight = true;
     }
 
 
     
+
+    #endregion Timeline Control Methods
+
+
+
     /// <summary>
     /// 次のセリフへ移る際に、少し猶予時間を作る
     /// </summary>
