@@ -13,45 +13,55 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
 
     public static CameraSwitcher Instance;
 
+
+    [Header("General Settings")]
     public Camera mainCamera;
-
-    public MonoBehaviour playerLookScript; // PlayerLookスクリプトを参照
-
-    public LayerMask layerMask; // レイキャストの対象レイヤー
     public float hideDistance = 5f;    // 隠れられる距離
+    [SerializeField] private Vector3 baseLocalRotation; // 隠れ状態カメラの基本向き
 
-    private bool isClosetCameraActive = false; // 現在のカメラ状態を追跡
-    public Camera currentClosetCamera; // 現在のクローゼットカメラを追跡
 
+
+    [Header("Hiding Cross Hair Settings")]
     public Image crosshair;   // クロスヘアのImageコンポーネント
     public Sprite normalCrosshair; // 通常時のスプライト
-    public Sprite closetCrosshair; // クローゼット時のスプライト
+    public Sprite closetCrosshair; // 隠れ状態時のスプライト
     public List<BoolWrapper> activeCrosshairBoolList; // クロスヘアに関わるboolを格納
     public float crosshairDurarion = 8f; // アニメーションスピード
     public float crosshairNormalSize = 10f; // クロスヘアのノーマルサイズ
     public float crosshairActiveSize = 30f; // アクティブサイズ
-
-    public GameObject hideText;       // 隠れるTextオブジェクト
-    public GameObject player;
-    public bool isPlayerHiding = false;
-
+    private float currentSize; // 現在のサイズ
     public RectTransform crosshairRectTransform; // クロスヘアのRectTransform
 
-    private float currentSize; // 現在のサイズ
-    public bool hasHiddenUnderDesk = false; //一回はクローゼットに隠れたことがあるか
-    public bool CanControl = true; // プレイヤーがカメラ切り替えをできるかどうか
-    private Vector3 targetCameraBaseLocalPosition;
+
 
     // サウンド
+    [Header("Sound Settings")]
     [SerializeField] private AudioClip hideSound;
     private AudioSource audioSource;
 
     // カメラ揺れ用
+    [Header("Hiding Bob Settings")]
     [SerializeField] private CurveControlledBob bob = new CurveControlledBob();
-    private Transform closetCameraTransform;
+
+
+    // 状態管理用
+    public bool isPlayerHiding = false; // プレイヤーが隠れているかどうか
+    public bool CanControl = true; // プレイヤーがカメラ切り替えをできるかどうか
+    private bool isClosetCameraActive = false; // 現在のカメラ状態を追跡
+    public bool hasHiddenUnderDesk = false; //一回は隠れ状態に隠れたことがあるか
+    public Camera currentClosetCamera; // 現在の隠れ状態カメラを追跡
+
+
+    // インスタンス保存用
+    private GameObject player;
+    public Transform closetCameraTransform; // 隠れ状態カメラのTransformを保持
+
 
     // 他クラス
     ShakeCamera shakeCamera;
+    private GameStateManager gameStateManager;
+    private PlayerLook playerLook;
+    private PlayerInteractor playerInteractor;
 
 
     #endregion
@@ -73,21 +83,22 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
     public void Interact(GameObject targetObject)
     {
 
-        // 左クリックでクローゼットカメラに切り替える
+        // 左クリックで隠れ状態カメラに切り替える
         if (!isClosetCameraActive)
         {
 
-            // クローゼットカメラに切り替え
+            // 隠れ状態カメラに切り替え
             Camera targetClosetCamera = FindClosetCamera(targetObject);
 
             if (targetClosetCamera != null)
             {
 
-                SwitchToClosetCamera(targetClosetCamera);
-                targetClosetCamera.transform.localPosition =
-                    new Vector3(targetClosetCamera.transform.localPosition.x,
-                                    0,
-                                    targetClosetCamera.transform.localPosition.z);
+                SwitchToHidingCamera(targetClosetCamera);
+                targetClosetCamera.transform.localPosition = new Vector3(
+                    targetClosetCamera.transform.localPosition.x,
+                    0,
+                    targetClosetCamera.transform.localPosition.z
+                    );
 
                 //カメラ揺れのセットアップ
                 bob.Setup(targetClosetCamera, 1.0f);
@@ -102,7 +113,7 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
             }
             else
             {
-                Debug.LogWarning("対象のクローゼットにカメラが見つかりません！");
+                Debug.LogWarning("対象の隠れ状態にカメラが見つかりません！");
             }
 
 
@@ -127,7 +138,10 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
 
     private void Start()
     {
-
+        // 他クラスを取得
+        gameStateManager = GameStateManager.Instance;
+        playerLook = PlayerLook.Instance;
+        playerInteractor = PlayerInteractor.Instance;
 
         mainCamera = Camera.main; // メインカメラを動的に取得
         player = GameObject.FindWithTag("Player");
@@ -136,42 +150,40 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
         // サウンド初期設定
         audioSource = GetComponent<AudioSource>();
 
-
-        // 他クラスを取得
-        playerLookScript = mainCamera.GetComponent<PlayerLook>();
-
-        targetCameraBaseLocalPosition = this.transform.localPosition;
-
-
-
-
     }
 
     void Update()
     {
+        // ゲーム状態が隠れている状態でなければ何もしない
+        if (gameStateManager.CurrentGameState != GameState.Hiding)
+            return;
+
+        // 隠れている間のカメラ揺れ
+        if (isClosetCameraActive && closetCameraTransform)
+        {
+            Vector3 bobOffset = bob.DoHeadBob(0.15f); // 揺れの計算
+            closetCameraTransform.localPosition = bobOffset; // 隠れ状態カメラを揺らす
+        }
+
+
+
+        // カメラ操作可能かどうか
         if (!CanControl) return;
 
         // 右クリックでメインカメラに切り替える
-        if (Input.GetMouseButtonDown(1) && isClosetCameraActive)
+        if (Input.GetMouseButtonDown(1))
         {
-            // クローゼットカメラがアクティブならメインカメラに戻る
+            // 隠れ状態カメラがアクティブならメインカメラに戻る
             if (!hasHiddenUnderDesk)
             {
                 TutorialManager.Instance.DisappearTutorialText();
-                hasHiddenUnderDesk = true;
             }
             SwitchToMainCamera();
         }
 
        
        
-        // 隠れている間のカメラ揺れ
-        if (isClosetCameraActive && closetCameraTransform != null && !shakeCamera.isShaking)
-        {
-            Vector3 bobOffset = bob.DoHeadBob(0.15f); // 揺れの計算
-            closetCameraTransform.localPosition = bobOffset; // クローゼットカメラを揺らす
-        }
-
+        
         
 
     }
@@ -192,20 +204,28 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
 
 
     /// <summary>
-    /// クローゼットカメラに切り替えるメソッド
+    /// 隠れ状態カメラに切り替えるメソッド
     /// </summary>
-    void SwitchToClosetCamera(Camera targetCamera)
+    void SwitchToHidingCamera(Camera targetCamera)
     {
-        isPlayerHiding = true;
+
+        // プレイヤーが隠れている状態に設定
+        gameStateManager.SetGameState(GameState.Hiding);
+        playerInteractor.ClearInteractUI(); // インタラクトUIを「一時的に」クリア
+
         mainCamera.gameObject.SetActive(false);
         targetCamera.gameObject.SetActive(true); // 指定されたカメラをアクティブに
         isClosetCameraActive = true;
 
-        currentClosetCamera = targetCamera; // 現在のクローゼットカメラを保持
-        closetCameraTransform = targetCamera.transform; // クローゼットカメラのTransformを取得
+        currentClosetCamera = targetCamera; // 現在の隠れ状態カメラを保持
+        closetCameraTransform = targetCamera.transform; // 隠れ状態カメラのTransformを取得
+        closetCameraTransform.localRotation = Quaternion.Euler(baseLocalRotation); // 基本向きに設定
+
+        playerLook.ResetHidingCameraRotation(); // プレイヤーの視点回転をリセット
+
 
         // クロスヘアと隠れるテキストを非表示にする
-        crosshair.gameObject.SetActive(false);
+        //crosshair.gameObject.SetActive(false);
 
         // プレイヤーのオブジェクトを無効化
         player.SetActive(false);
@@ -219,19 +239,21 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
     /// </summary>
     void SwitchToMainCamera()
     {
-        isPlayerHiding = false;
+        // プレイヤーが隠れていない状態に設定
+        gameStateManager.SetGameState(GameState.Playing);
+
         mainCamera.gameObject.SetActive(true);
 
         if (currentClosetCamera != null)
         {
-            currentClosetCamera.gameObject.SetActive(false); // 現在のクローゼットカメラを無効化
+            currentClosetCamera.gameObject.SetActive(false); // 現在の隠れ状態カメラを無効化
             currentClosetCamera = null; // 保持するカメラをリセット
         }
 
         isClosetCameraActive = false;
 
         // クロスヘアを再表示
-        crosshair.gameObject.SetActive(true);
+        //crosshair.gameObject.SetActive(true);
 
         // プレイヤーオブジェクトを有効化
         player.SetActive(true);
@@ -242,14 +264,14 @@ public class CameraSwitcher : MonoBehaviour, IInteractable
 
 
     /// <summary>
-    /// クローゼットカメラを取得するメソッド
+    /// 隠れ状態カメラを取得するメソッド
     /// </summary>
     Camera FindClosetCamera(GameObject closetObject)
     {
         Transform[] children = closetObject.GetComponentsInChildren<Transform>(true);
         foreach (Transform child in children)
         {
-            if (child.CompareTag("ClosetCamera")) // クローゼットカメラを探す
+            if (child.CompareTag("ClosetCamera")) // 隠れ状態カメラを探す
             {
                 return child.GetComponent<Camera>();
             }

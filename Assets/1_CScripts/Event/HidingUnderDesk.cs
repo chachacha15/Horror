@@ -49,6 +49,7 @@ public class HidingUnderDesk : MonoBehaviour
     {
 
         CameraSwitcher.Instance.CanControl = false;
+
         emissionLooper.enabled = false;
         gameStateManager.DisablePlayerControl();
         yield return StartCoroutine(gameStateManager.WaitForSeconds(WAIT_TIME_AFTER_HIDING));

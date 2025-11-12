@@ -143,7 +143,7 @@ public class CatWander : MonoBehaviour, IInteractable
 
         agent.isStopped = false;
 
-        // ★ 修正: NavMeshの安全チェック（推奨）
+        // NavMeshの安全チェック（推奨）
         NavMeshHit hit;
         if (NavMesh.SamplePosition(fishPosition, out hit, 1.5f, NavMesh.AllAreas))
         {
@@ -291,11 +291,11 @@ public class CatWander : MonoBehaviour, IInteractable
             {
                 // ... (ログのコード) ...
 
-                agent.speed = normalSpeed; // ★追加: 徘徊速度に戻す
+                agent.speed = normalSpeed; // 徘徊速度に戻す
                 agent.isStopped = false;
                 agent.SetDestination(newPos);
 
-                if (animator != null) animator.SetBool("IsWalking", true);
+                //if (animator != null) animator.SetBool("IsWalking", true);
             }
         }
     }
@@ -312,7 +312,7 @@ public class CatWander : MonoBehaviour, IInteractable
             agent.speed = escapeSpeed; // ★追加: 逃走速度に変更
             agent.isStopped = false;
             agent.SetDestination(navHit.position);
-            if (animator != null) animator.SetBool("IsWalking", true);
+            //if (animator != null) animator.SetBool("IsWalking", true);
         }
         else
         {

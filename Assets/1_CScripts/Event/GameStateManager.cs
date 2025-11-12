@@ -12,6 +12,10 @@ public class GameStateManager : MonoBehaviour
     #region Variables
     public static GameStateManager Instance;
 
+
+    public GameState CurrentGameState = GameState.Loading; // 現在のゲーム状態
+    public GameState PreviousGameState = GameState.Loading; // 前のゲーム状態
+
     // タイムライン
     public TimelineAsset startTimeline; // ゲーム開始時のタイムライン
     [SerializeField] private TimelineAsset foundByEnemyFirstTime; // 初めて敵に見つかる演出のタイムライン
@@ -100,9 +104,8 @@ public class GameStateManager : MonoBehaviour
     public void DisablePlayerControl()
     {
 
-        playerMove.enabled = false;
-        playerLook.IsCameraLocked = true;
-        playerInteractor.CanInteract = false;
+        SetGameState(GameState.Movie);
+        playerInteractor.ClearInteractUI(); // インタラクトUIを「一時的に」クリア
 
         playerMove.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
@@ -115,10 +118,18 @@ public class GameStateManager : MonoBehaviour
     public void EnablePlayerControl()
     {
 
-        playerMove.enabled = true;
-        playerLook.IsCameraLocked = false;
-        playerInteractor.CanInteract = true;
+        SetGameState(PreviousGameState);
 
+    }
+
+    /// <summary>
+    /// ゲーム状態を設定するメソッド
+    /// </summary>
+    /// <param name="newState"></param>
+    public void SetGameState(GameState newState)
+    {
+        PreviousGameState = CurrentGameState;
+        CurrentGameState = newState;
     }
 
 
@@ -130,6 +141,20 @@ public class GameStateManager : MonoBehaviour
 }
 
 
+public enum GameState
+{
+    Playing,
+    Hiding,
+    Log,
+    Movie,
+    UI,
+    ViewingItem,
+    Loading,
+
+}
+
+
+
 public enum GameEvent
 {
     None,
@@ -137,5 +162,6 @@ public enum GameEvent
     FoundByEnemyFirstTime,
     FoundElevator,
     HidingUnderDesk,
+
 
 }

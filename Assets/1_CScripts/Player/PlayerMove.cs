@@ -20,7 +20,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private bool isRunning;
     [SerializeField] private float runNoiseRadius = 20f;
 
-    [SerializeField] private StaminaBar staminaBar;
 
     private AudioSource audiowalk;
     private AudioSource audiorun;
@@ -39,8 +38,10 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private GameOverScript gameOverScript; // GameOver用のスクリプト参照
 
     // 他クラス
-    ShakeCamera shakeCamera;
+    private StaminaBar staminaBar;
+    private ShakeCamera shakeCamera;
     private PrologueManager prologueManager;
+    private GameStateManager gameStateManager;
 
 
     #endregion
@@ -48,7 +49,7 @@ public class PlayerMove : MonoBehaviour
 
     #region Methods
 
-
+    #region Unity Methods
 
 
     private void Awake()
@@ -61,10 +62,12 @@ public class PlayerMove : MonoBehaviour
     private void Start()
     {
 
-         
 
 
-        staminaBar = FindObjectOfType<StaminaBar>();
+        // 他クラスのインスタンス取得
+        gameStateManager = GameStateManager.Instance;
+        staminaBar = StaminaBar.Instance;
+        gameOverScript = GameOverScript.Instance;
         shakeCamera = ShakeCamera.Instance;
         prologueManager = PrologueManager.Instance;
 
@@ -83,12 +86,15 @@ public class PlayerMove : MonoBehaviour
         bob.Setup(MainCamera, 1.0f);
 
         // GameOverScriptを取得
-        gameOverScript = FindObjectOfType<GameOverScript>();
         
     }
 
     private void Update()
     {
+        // ゲームプレイ中のみ動作
+        if (gameStateManager.CurrentGameState != GameState.Playing) 
+            return;
+
         PlayerMovement();
         if (!isHeadBobEnabled) return;
         if (shakeCamera.isShaking) return;
@@ -113,6 +119,10 @@ public class PlayerMove : MonoBehaviour
         HeadBob = bob.DoHeadBob(bobSpeedMultiplier);
         SetCameraLocalPosition(HeadBob);
     }
+
+
+    #endregion
+
 
     private void PlayerMovement()
     {

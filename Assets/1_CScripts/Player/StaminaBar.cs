@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class StaminaBar : MonoBehaviour
 {
+    public static StaminaBar Instance;
+
     private Image staminaBarImage;
     public float maxStamina = 100f;
     public float currentStamina;
@@ -13,6 +15,13 @@ public class StaminaBar : MonoBehaviour
     public float staminaRecoveryRate = 5f;
     private bool isRunning;
 
+
+    #region Unity Methods
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         // 自身のオブジェクトにアタッチされているImageコンポーネントを取得
@@ -35,6 +44,10 @@ public class StaminaBar : MonoBehaviour
 
         UpdateStaminaBar();
     }
+
+    #endregion
+
+
 
     public void SetRunning(bool running)
     {

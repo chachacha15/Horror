@@ -20,10 +20,15 @@ public class PlayerInteractor : MonoBehaviour
     private Camera currentCamera;
     private NearbyItemHighlighter nearbyItemHighlighter;
 
-    CameraSwitcher cameraSwitcher;
+
+    // 他クラス
+    private CameraSwitcher cameraSwitcher;
+    private GameStateManager gameStateManager;
 
 
 
+
+    #region Unity Methods
     private void Awake()
     {
         Instance = this;
@@ -31,88 +36,126 @@ public class PlayerInteractor : MonoBehaviour
 
     private void Start()
     {
-        cameraSwitcher = FindObjectOfType<CameraSwitcher>();
+        // 他クラスを取得
+        cameraSwitcher = CameraSwitcher.Instance;
+        gameStateManager = GameStateManager.Instance;
         nearbyItemHighlighter = NearbyItemHighlighter.Instance;
+
     }
     private void Update()
     {
-        if (Camera.main != null) currentCamera = Camera.main; // または cameraSwitcher.currentClosetCamera
-        else currentCamera = cameraSwitcher.currentClosetCamera;
-
-        if (!CanInteract) return;
-        
-
-        Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        // マウスの位置（クロスヘアの位置）から少し光線を出して、見ているモノを把握
-        if (Physics.Raycast(ray, out hit, interactDistance, obstacleLayer))
+        // ゲームプレイ中のみ実行
+        if (gameStateManager.CurrentGameState == GameState.Playing || gameStateManager.CurrentGameState == GameState.Hiding)
         {
 
-            //Debug.Log("見ているモノ　：　"+hit.collider.gameObject);
+            if (Camera.main != null) currentCamera = Camera.main; // または cameraSwitcher.currentClosetCamera
+            else currentCamera = cameraSwitcher.currentClosetCamera;
 
-            if (((1 << hit.collider.gameObject.layer) & interactLayer) != 0)
+            if (!CanInteract) return;
+
+
+            Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            // マウスの位置（クロスヘアの位置）から少し光線を出して、見ているモノを把握
+            if (Physics.Raycast(ray, out hit, interactDistance, obstacleLayer))
             {
-                IInteractable target = hit.collider.GetComponent<IInteractable>();
-                if (target != null)
+
+                //Debug.Log("見ているモノ　：　"+hit.collider.gameObject);
+
+                if (((1 << hit.collider.gameObject.layer) & interactLayer) != 0)
                 {
-                    // アイテムを強調
-                    if (nearbyItemHighlighter.currentHighlightedItem != hit.collider.gameObject)
+                    IInteractable target = hit.collider.GetComponent<IInteractable>();
+                    if (target != null)
                     {
-                        nearbyItemHighlighter.ClearHighlight();  // 既存のハイライトを解除
-                        nearbyItemHighlighter.ApplyHighlight(hit.collider.gameObject);  // 新しいアイテムを強調
-                    }
+                        // アイテムを強調
+                        if (nearbyItemHighlighter.currentHighlightedItem != hit.collider.gameObject)
+                        {
+                            nearbyItemHighlighter.ClearHighlight();  // 既存のハイライトを解除
+                            nearbyItemHighlighter.ApplyHighlight(hit.collider.gameObject);  // 新しいアイテムを強調
+                            Debug.Log("強調されたアイテム: " + hit.collider.gameObject.name);
+                        }
 
-                    // インタラクトテキストを表示するものは、内容を更新して表示
-                    if (target.ShowInteractText)
-                    {
-                        interactText.text = target.GetInteractText();
-                        interactCanvas.SetActive(true);
+                        // インタラクトテキストを表示するものは、内容を更新して表示
+                        if (target.ShowInteractText)
+                        {
+                            interactText.text = target.GetInteractText();
+                            interactCanvas.SetActive(true);
+                        }
+                        else
+                        {
+                            interactCanvas.SetActive(false); // 表示なし
+                        }
+
+                        // クロスヘアをアニメーションするものか確認して実行
+                        if (target.ActivateCrosshair)
+                        {
+                            if (cameraSwitcher)
+                                cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
+
+                        }
+                        else
+                        {
+                            if (cameraSwitcher)
+                                cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
+                        }
+
+                        // 左クリックでインタラクト、各々の処理を実行
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            target.Interact(hit.collider.gameObject);
+                        }
+
+                        return;
                     }
                     else
                     {
-                        interactCanvas.SetActive(false); // 表示なし
-                    }
-
-                    // クロスヘアをアニメーションするものか確認して実行
-                    if (target.ActivateCrosshair)
-                    {
-                        if (cameraSwitcher)
-                            cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
-
-                    }
-                    else
-                    {
+                        // interactLayerだがIInteractableがない場合
                         if (cameraSwitcher)
                             cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
+                        nearbyItemHighlighter.ClearHighlight();
                     }
-
-                    // 左クリックでインタラクト、各々の処理を実行
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        target.Interact(hit.collider.gameObject);
-                    }
-
-                    return;
                 }
                 else
                 {
+                    // 障害物だがinteractLayerではない場合
                     if (cameraSwitcher)
                         cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
+                    nearbyItemHighlighter.ClearHighlight();
                 }
             }
             else
             {
+                // Raycastが何もヒットしなかった場合
                 if (cameraSwitcher)
                     cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
 
+                nearbyItemHighlighter.ClearHighlight();
             }
-        }
 
+            interactCanvas.SetActive(false);
+        }
+    }
+
+    #endregion
+
+    /// <summary>
+    /// インタラクトUIをクリアする（上記のUpdateに上書きされるため注意）
+    /// </summary>
+    public void ClearInteractUI()
+    {
         interactCanvas.SetActive(false);
+        cameraSwitcher.ClosshairAnimation(cameraSwitcher.crosshairActiveSize, cameraSwitcher.crosshairNormalSize, cameraSwitcher.crosshairDurarion, cameraSwitcher.crosshairRectTransform);
+        nearbyItemHighlighter.ClearHighlight();
+
     }
 }
 
+
+
+/// <summary>
+/// インタラクト可能なオブジェクトが実装するインターフェース
+/// </summary>
 public interface IInteractable
 {
     string GetInteractText();        // 「取る」「開ける」など

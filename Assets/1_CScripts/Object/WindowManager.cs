@@ -79,7 +79,9 @@ public class WindowManager : MonoBehaviour, IInteractable
 
 
 
-    // 窓にインタラクトしたときに呼ばれる。開閉を操作する
+    /// <summary>
+    /// 窓にインタラクトしたときに呼ばれる。開閉を操作する
+    /// </summary>
     public void ToggleWindow()
     {
         if (isMoving) return;

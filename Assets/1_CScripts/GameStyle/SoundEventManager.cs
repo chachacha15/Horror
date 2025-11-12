@@ -27,12 +27,13 @@ public class SoundEventManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+       
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
-    /// <summary>音イベントを発火する。tag は敵の反応を絞り込むのに使える。</summary>
+    /// <summary>
+    /// 音イベントを発火する。tag は敵の反応を絞り込むのに使える。
+    /// </summary>
     public static void Emit(Vector3 position, float radius, string tag = null)
     {
         if (Instance == null) return;

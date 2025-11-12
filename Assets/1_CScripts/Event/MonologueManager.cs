@@ -35,6 +35,7 @@ public class MonologueManager : MonoBehaviour
     private MonologueData currentActiveMonologueData; // 現在表示中のMonologueDataを追跡
     private Coroutine currentCoroutine;                   // 現在のセリフコルーチン
     private Coroutine currentIndicatorAnimationCoroutine; // アニメーションコルーチンを管理する変数
+    private MonologueData pendingMonologueData = null; // itemDisplay表示中などで、これがセットされていればUpdateが監視する。
 
 
     // フラグ等
@@ -71,6 +72,8 @@ public class MonologueManager : MonoBehaviour
 
     #region Methods
 
+    #region Unity Methods
+
 
     private void Awake()
     {
@@ -99,12 +102,34 @@ public class MonologueManager : MonoBehaviour
 
     }
 
-    /// <summary>
-    /// クリックで次のセリフへ
-    /// </summary>
+
     private void Update()
     {
+        
 
+
+        // モノローグが保留中で、かつ再生しても安全な状態か
+        if (pendingMonologueData != null && !isDisplaying && 
+            (gameStateManager.CurrentGameState == GameState.Playing || gameStateManager.CurrentGameState == GameState.Hiding))
+        {
+            // 保留データを取得
+            MonologueData dataToPlay = pendingMonologueData;
+
+            // 保留状態を解除 (重要: SetMonologuesの前にnullにする)
+            pendingMonologueData = null;
+
+            // モノローグを再生開始
+            SetMonologues(dataToPlay);
+            ShowNextMonologue();
+        }
+
+
+        // 現在のゲーム状態がLogでない場合ここからは処理しない
+        if (gameStateManager.CurrentGameState != GameState.Log)
+            return;
+
+
+        // マウスクリックの処理
         if (isDisplaying && Input.GetMouseButtonDown(0) && !itemDisplay.isItemDisplayON)
         {
             if (isTyping)
@@ -129,9 +154,7 @@ public class MonologueManager : MonoBehaviour
             {
                 StartCoroutine(WaitSecondsShowNextMonologue(0.1f));
 
-            }
-
-            
+            }        
         }
 
         // アイテム表示中ではない、かつセリフが表示中の場合のみ処理を行う
@@ -147,6 +170,11 @@ public class MonologueManager : MonoBehaviour
 
 
     }
+
+
+    #endregion
+
+
     /// <summary>
     /// Lキーによる会話全体スキップのロジック
     /// </summary>
@@ -186,10 +214,12 @@ public class MonologueManager : MonoBehaviour
     /// </summary>
     public void ShowNextMonologue()
     {
+
         // キューが空なら終了処理
         if (monologueQueue.Count == 0)
         {
             ShownLogs.Add(currentActiveMonologueData); // 表示済みログに追加
+
 
 
             monologuePanel.SetActive(false);
@@ -206,8 +236,8 @@ public class MonologueManager : MonoBehaviour
             
             currentActiveMonologueData = null;
 
+            gameStateManager.SetGameState(gameStateManager.PreviousGameState);
 
-            
 
             if (!isPlayedStartTimeLine && !prologueManager)
             {
@@ -218,6 +248,9 @@ public class MonologueManager : MonoBehaviour
 
             return;
         }
+
+        if (gameStateManager.CurrentGameState != GameState.Log)
+            gameStateManager.SetGameState(GameState.Log);
 
         isDisplaying = true;
         monologuePanel.SetActive(true);
@@ -270,15 +303,19 @@ public class MonologueManager : MonoBehaviour
     public void TrySettingLog(MonologueType type)
     {
         // セットするログがあるか確認　＆　新しいログをセットできるか
-        if (type != MonologueType.None && CanSetNewLog())
+        if (type == MonologueType.None || !CanSetNewLog())
+            return;
+        
+        // まだ表示していないログなら表示 & 前提条件のログがすべて表示されているなら表示
+        if (!HasShownLogs(type) && HasShownPrereequisiteLogs(type))
         {
-            // まだ表示していないログなら表示 & 前提条件のログがすべて表示されているなら表示
-            if (!HasShownLogs(type) && HasShownPrereequisiteLogs(type))
-            {
-                SetMonologues(GetLogDataFromType(type));
-                ShowNextMonologue();
-            }
+            // すぐに再生せず、pendingMonologueData にセットする
+            pendingMonologueData = GetLogDataFromType(type);
+
+            //SetMonologues(GetLogDataFromType(type));
+            //ShowNextMonologue();
         }
+        
     }
 
     /// <summary>
@@ -362,9 +399,8 @@ public class MonologueManager : MonoBehaviour
     {
         playerAnimator.enabled = true;
 
-        playerMove.enabled = false;
-        playerLook.IsCameraLocked = true;
-        playerInteractor.CanInteract = false;
+        gameStateManager.SetGameState(GameState.Movie);
+        playerInteractor.ClearInteractUI(); // インタラクトUIを「一時的に」クリア
 
         playerMove.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
@@ -378,9 +414,7 @@ public class MonologueManager : MonoBehaviour
     {
         playerAnimator.enabled = false;
 
-        playerMove.enabled = true;
-        playerLook.IsCameraLocked = false;
-        playerInteractor.CanInteract = true;
+       gameStateManager.SetGameState(GameState.Playing);
 
     }
 
@@ -389,8 +423,7 @@ public class MonologueManager : MonoBehaviour
     /// </summary>
     public void OnWakeupTimelineStart()
     {
-        EmissionLooper[] allEmissionLoopers = FindObjectsOfType<EmissionLooper>();
-        foreach (EmissionLooper emissionLooper in allEmissionLoopers) emissionLooper.enabled = false;
+        
     }
     public void OnWakeupTimelineEnd()
     {

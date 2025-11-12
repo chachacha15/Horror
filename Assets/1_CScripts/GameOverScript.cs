@@ -7,6 +7,8 @@ using TMPro; //TextMeshPro用
 
 public class GameOverScript : MonoBehaviour
 {
+    public static GameOverScript Instance;
+
     public GameObject gameOverUI; // GameOver UIを紐づけ
     public TextMeshProUGUI gameOverText; // GameOver Textオブジェクト
     private Color textColor;
@@ -17,6 +19,13 @@ public class GameOverScript : MonoBehaviour
     private AudioSource audioSource;
     public AudioClip gameOverSound;
 
+
+
+    #region Unity Methods
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         // このオブジェクトの最初の子オブジェクトを取得し、Canvasかどうかを確認して設定
@@ -60,6 +69,11 @@ public class GameOverScript : MonoBehaviour
             RestartGame();
         }
     }
+
+
+    #endregion
+
+
 
     public void TriggerGameOver()
     {

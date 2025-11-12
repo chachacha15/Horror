@@ -24,6 +24,7 @@ public class ItemDisplay : MonoBehaviour
 
     // 他クラス
     private MonologueManager monologueManager;
+    private GameStateManager gameStateManager;
     #endregion
 
 
@@ -36,6 +37,7 @@ public class ItemDisplay : MonoBehaviour
     {
         // 他クラスを取得
         monologueManager = MonologueManager.Instance;
+        gameStateManager = GameStateManager.Instance;
 
         if (ItemDisplayUI != null)
         {
@@ -45,6 +47,11 @@ public class ItemDisplay : MonoBehaviour
 
     void Update()
     {
+        // アイテム表示中の処理
+        if (gameStateManager.CurrentGameState != GameState.ViewingItem)
+            return;
+
+
         // ディスプレイ中は、アイテムをふわふわさせて横回転させる
         if (isItemDisplayON)
         {
@@ -73,7 +80,9 @@ public class ItemDisplay : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// アイテム表示UIの開閉を切り替えるメソッド
+    /// </summary>
     public void ToggleItemDisplay()
     {
 
@@ -94,6 +103,9 @@ public class ItemDisplay : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// アイテム表示UIの内容を更新するメソッド
+    /// </summary>
     private void UpdateItemDisplayUI()
     {
         
@@ -154,6 +166,9 @@ public class ItemDisplay : MonoBehaviour
     /// <param name="item"></param>
     private void DisplayItemIn3D(PocketItem item)
     {
+        // ゲーム状態をアイテム表示状態に変更
+        gameStateManager.SetGameState(GameState.ViewingItem);
+
         // 既に表示中のアイテムがあれば削除
         ClearDisplayedItem();
 
@@ -185,6 +200,8 @@ public class ItemDisplay : MonoBehaviour
 
     private IEnumerator ResumeGame()
     {
+        gameStateManager.SetGameState(gameStateManager.PreviousGameState); // ゲーム状態をプレイ中に戻す
+
         Time.timeScale = 1f; // ゲームを再開
         isItemDisplayON = false; // フラグをリセット
         ItemDisplayUI.SetActive(isItemDisplayON);

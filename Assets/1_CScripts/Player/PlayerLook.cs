@@ -19,20 +19,26 @@ public class PlayerLook : MonoBehaviour
     // メインカメラ用の回転値
     private float xAxisClamp;
 
-    // クローゼットカメラ用の回転値
+    // 隠れ状態カメラ用の回転値
     private float closetXAxisRotation = 0f;
     private float closetYAxisRotation = 0f;
+    [SerializeField] private Vector2 baseHidingCameraRotation; // 隠れ状態カメラの基本向き
     private bool m_cursorIsLocked = true;
 
     [SerializeField] private Camera mainCamera; // メイン一人称カメラ
 
     // 他クラス
     private CameraSwitcher cameraSwitcher;
+    private GameStateManager gameStateManager;
 
     #endregion
 
 
     #region Methods
+
+
+    #region Unity Methods
+
 
     private void Awake()
     {
@@ -44,7 +50,8 @@ public class PlayerLook : MonoBehaviour
     private void Start()
     {
         // 他クラスを取得
-        cameraSwitcher = FindObjectOfType<CameraSwitcher>();
+        cameraSwitcher = CameraSwitcher.Instance;
+        gameStateManager = GameStateManager.Instance;
     }
 
     private void LockCursor()
@@ -74,37 +81,43 @@ public class PlayerLook : MonoBehaviour
 
     private void Update()
     {
-        if (!IsCameraLocked) CameraRotation();
-        else
+        // ゲーム中のみカメラ操作を有効化
+        if (gameStateManager.CurrentGameState == GameState.Playing)
         {
-            mainCamera.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
-            xAxisClamp = 0f;
+            // 通常状態でのカメラ操作
+            if (!IsCameraLocked) RotateMainCamera();
+            else
+            {
+                mainCamera.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+                xAxisClamp = 0f;
+            }
+        }
+        if (gameStateManager.CurrentGameState == GameState.Hiding)
+        {
+            // 隠れ状態でのカメラ操作
+            if (!IsCameraLocked) RotateHidingCamera();
+            //else
+            //{
+            //    mainCamera.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+            //    xAxisClamp = 0f;
+            //}
+
         }
     }
 
 
+
+    #endregion
+
     /// <summary>
     /// カメラ視点操作メソッド
     /// </summary>
-    private void CameraRotation()
+    private void RotateMainCamera()
     {
         float mouseX = Input.GetAxis(mouseXInputName) * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis(mouseYInputName) * mouseSensitivity * Time.deltaTime;
 
-        
-        if (cameraSwitcher && cameraSwitcher.isPlayerHiding && cameraSwitcher.currentClosetCamera)
-        {
-            // クローゼット時の視点操作（新しく作った回転値を使用）
-            closetXAxisRotation += mouseY;
-            closetYAxisRotation += mouseX;
-
-            // 回転制限
-            closetXAxisRotation = Mathf.Clamp(closetXAxisRotation, -90f, 90f);
-
-            cameraSwitcher.currentClosetCamera.transform.rotation =
-                Quaternion.Euler(-closetXAxisRotation, closetYAxisRotation, 0f);
-        }
-        else if(mainCamera)
+        if(mainCamera)
         {
             // 通常時の視点操作
             xAxisClamp += mouseY;
@@ -115,6 +128,34 @@ public class PlayerLook : MonoBehaviour
         }
 
     }
+
+    /// <summary>
+    /// 隠れ中のカメラ視点操作メソッド
+    /// </summary>
+    private void RotateHidingCamera()
+    {
+        float mouseX = Input.GetAxis(mouseXInputName) * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis(mouseYInputName) * mouseSensitivity * Time.deltaTime;
+
+        // 隠れ状態時の視点操作（新しく作った回転値を使用）
+        closetXAxisRotation += mouseY;
+        closetYAxisRotation += mouseX;
+
+        // 回転制限
+        closetXAxisRotation = Mathf.Clamp(closetXAxisRotation, -90f, 90f);
+
+        cameraSwitcher.currentClosetCamera.transform.localRotation =
+            Quaternion.Euler(-closetXAxisRotation, closetYAxisRotation, 0f);
+        
+        
+    }
+
+    public void ResetHidingCameraRotation()
+    {
+        closetXAxisRotation = baseHidingCameraRotation.x;
+        closetYAxisRotation = baseHidingCameraRotation.y;
+    }
+
     private void ClampXAxisRotationToValue(float value)
     {
         Vector3 eulerRotation = transform.eulerAngles;

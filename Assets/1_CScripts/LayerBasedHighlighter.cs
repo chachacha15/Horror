@@ -12,15 +12,8 @@ public class NearbyItemHighlighter : MonoBehaviour
 
 
     private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
+    {        
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Update()
@@ -51,6 +44,11 @@ public class NearbyItemHighlighter : MonoBehaviour
         ClearHighlight(); // 何も見つからなかった場合は強調を解除
     }
 
+
+    /// <summary>
+    /// 強調を適用するメソッド
+    /// </summary>
+    /// <param name="item"></param>
     public void ApplyHighlight(GameObject item)
     {
         // このオブジェクトがメッシュを持っている場合、そのままハイライト
@@ -73,6 +71,9 @@ public class NearbyItemHighlighter : MonoBehaviour
          currentHighlightedItem.layer = highlightLayerIndex;
     }
 
+    /// <summary>
+    /// 強調を解除するメソッド
+    /// </summary>
     public void ClearHighlight()
     {
         if (currentHighlightedItem != null)

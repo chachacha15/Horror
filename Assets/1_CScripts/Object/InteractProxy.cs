@@ -27,6 +27,5 @@ public class InteractProxy : MonoBehaviour, IInteractable
     private void Start()
     {
         realTarget = GameObject.Find(realTargetName).GetComponent<IInteractable>();
-        Debug.Log("InteractProxy‚ª" + realTarget + "‚ğŒ©‚Â‚¯‚Ü‚µ‚½B");
     }
 }
